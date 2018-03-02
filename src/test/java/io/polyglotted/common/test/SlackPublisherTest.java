@@ -12,13 +12,13 @@ import static io.polyglotted.common.util.MapBuilder.immutableMap;
 public class SlackPublisherTest {
     @Test
     public void publish() throws Exception {
-        SlackConfig slackConfig = new SlackConfig().setEnabled(true).setHookUrl(System.getProperty("slack.hook.url"));
+        SlackConfig slackConfig = new SlackConfig().setEnabled(true).setChannel("releases").setHookUrl(System.getProperty("slack.hook.url"));
         try (SlackPublisher publisher = new SlackPublisher(slackConfig)) {
             publisher.publish("test", ImmutableMap.<String, Object>builder()
                 .put("fallback", "test success")
                 .put("pretext", "test pretext")
                 .put("color", "#08C309")
-                .put("author_name", "svasudevan")
+                .put("author_name", "Shankar Vasudevan")
                 .put("title", "Task Summary")
                 .put("text", "")
                 .put("fields", of(immutableMap("title", "Foo", "value", "/foo/feeds/do/everything/in/url", "short", false),

@@ -44,7 +44,7 @@ public class SlackPublisher implements AutoCloseable {
     public static class SlackConfig {
         private boolean enabled = false;
         private String hookUrl = "";
-        private String channel = "sns-notifications";
+        private String channel = "";
         private String filter = ".*";
     }
 }
