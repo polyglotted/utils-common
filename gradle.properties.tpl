@@ -4,3 +4,5 @@ signing.secretKeyRingFile=secring.gpg
 
 ossrhUsername=${NEXUS_USER}
 ossrhPassword=${NEXUS_PASS}
+
+slack.hook.url=${SLACK_HOOK_URL}

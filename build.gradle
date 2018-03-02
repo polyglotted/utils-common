@@ -79,11 +79,6 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
     }
-    compile("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}") {
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
-    }
     compile("com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}") {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
@@ -113,14 +108,6 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     }
-    compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}") {
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
-        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-jaxb-annotations"
-        exclude group: "com.fasterxml.woodstox", module: "woodstox-core"
-        exclude group: "org.codehaus.woodstox", module: "stax2-api"
-    }
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}") {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
@@ -143,6 +130,9 @@ dependencies {
         exclude group: "org.apache.httpcomponents", module: "httpclient"
     }
 
+    testCompile("org.apache.logging.log4j:log4j-jcl:${log4jVersion}") {
+        exclude group: "org.apache.logging.log4j", module: "log4j-api"
+    }
     testCompile "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testCompile("junit:junit:${junitVersion}") {
         exclude group: "org.hamcrest", module: "hamcrest-core"
@@ -156,6 +146,9 @@ sourceSets {
     test.runtimeClasspath += configurations.compileOnly
 }
 
+test {
+    systemProperty "slack.hook.url", project.getProperty("slack.hook.url")
+}
 jacocoTestReport {
     reports {
         xml.enabled true
