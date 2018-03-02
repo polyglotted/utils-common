@@ -1,7 +1,7 @@
 # utils-common
 Utility Common Module
 
-[![CircleCI](https://circleci.com/gh/polyglotted/utils-common.svg?style=shield)](https://circleci.com/gh/polyglotted/utils-common)  [![codecov](https://codecov.io/gh/polyglotted/utils-common/branch/master/graph/badge.svg?style=shield)](https://codecov.io/gh/polyglotted/utils-common)  [![Known Vulnerabilities](https://snyk.io/test/github/polyglotted/utils-common/badge.svg?targetFile=build.gradle&style=shield)](https://snyk.io/test/github/polyglotted/utils-common?targetFile=build.gradle)  [![Maintainability](https://api.codeclimate.com/v1/badges/959fac82a55aca5421a6/maintainability?style=shield)](https://codeclimate.com/github/polyglotted/utils-common/maintainability)
+[![CircleCI](https://circleci.com/gh/polyglotted/utils-common.svg?style=shield)](https://circleci.com/gh/polyglotted/utils-common)  [![codecov](https://codecov.io/gh/polyglotted/utils-common/branch/master/graph/badge.svg?style=shield)](https://codecov.io/gh/polyglotted/utils-common)  [![Known Vulnerabilities](https://snyk.io/test/github/polyglotted/utils-common/badge.svg?targetFile=build.gradle&style=shield)](https://snyk.io/test/github/polyglotted/utils-common?targetFile=build.gradle)  [![Maintainability](https://api.codeclimate.com/v1/badges/fdd380bc4028f11beeef/maintainability)](https://codeclimate.com/github/polyglotted/utils-common/maintainability)
 
 #### Distribution
 
