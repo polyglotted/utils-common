@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import io.polyglotted.common.model.GeoPoint;
+import io.polyglotted.common.model.MapResult;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -33,7 +34,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fasterxml.jackson.databind.DeserializationFeature.*;
 import static com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.DateFormatters.parseDateTime;
+import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BaseSerializer {
@@ -62,9 +65,9 @@ public abstract class BaseSerializer {
 
     @SneakyThrows public static <T> T deserialize(Reader reader, Class<T> clazz) { return MAPPER.readValue(reader, clazz); }
 
-    @SneakyThrows public static Map<String, Object> deserialize(byte[] bytes) { return deserialize(bytes, MapRetriever.MAP_CLASS); }
+    @SneakyThrows public static MapResult deserialize(byte[] bytes) { return simpleResult(deserialize(bytes, MAP_CLASS)); }
 
-    @SneakyThrows public static Map<String, Object> deserialize(String json) { return deserialize(json, MapRetriever.MAP_CLASS); }
+    @SneakyThrows public static MapResult deserialize(String json) { return simpleResult(deserialize(json, MAP_CLASS)); }
 
     public static void writeNotEmptyMap(JsonGenerator gen, String name, Map<?, ?> map) throws IOException {
         if (!map.isEmpty()) { gen.writeObjectField(name, map); }

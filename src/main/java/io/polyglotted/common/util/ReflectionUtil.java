@@ -3,7 +3,9 @@ package io.polyglotted.common.util;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
+import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.*;
@@ -14,6 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.transform;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
+import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
 import static io.polyglotted.common.util.NullUtil.nonNullFn;
 import static java.lang.reflect.Modifier.*;
 
@@ -98,15 +101,15 @@ public abstract class ReflectionUtil {
         return result;
     }
 
-    public static Map<String, Object> fieldValues(Object object) {
-        ImmutableSortedMap.Builder<String, Object> builder = ImmutableSortedMap.naturalOrder();
+    public static MapResult fieldValues(Object object) {
+        ImmutableMapBuilder<String, Object> builder = immutableMapBuilder(ImmutableSortedMap::naturalOrder);
         for (Field field : declaredFields(object.getClass())) {
             if (isFieldSerializable(field)) {
                 Object value = fieldValue(object, field);
                 if (value != null) builder.put(field.getName(), value);
             }
         }
-        return builder.build();
+        return builder.result();
     }
 
     public static List<Field> declaredFields(Class<?> clazz) {

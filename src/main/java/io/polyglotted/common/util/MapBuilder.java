@@ -1,6 +1,7 @@
 package io.polyglotted.common.util;
 
 import com.google.common.collect.ImmutableMap;
+import io.polyglotted.common.model.MapResult;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static io.polyglotted.common.model.MapResult.immutableResult;
+import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 
 @SuppressWarnings({"unchecked", "unused", "WeakerAccess"})
@@ -23,7 +26,11 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
     M build();
 
-    static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder() { return new ImmutableMapBuilder<>(); }
+    MapResult result();
+
+    static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder() { return immutableMapBuilder(ImmutableMap::builder); }
+
+    static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder(Supplier<ImmutableMap.Builder<K, V>> s) { return new ImmutableMapBuilder<>(s.get()); }
 
     static <K, V> ImmutableMap<K, V> immutableMap() { return ImmutableMap.of(); }
 
@@ -71,9 +78,8 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
     static <K, V> Map<K, V> simpleMap(Map<K, V> map) { return MapBuilder.<K, V>simpleMapBuilder().putAll(map).build(); }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class ImmutableMapBuilder<K, V> implements MapBuilder<K, V, ImmutableMap<K, V>> {
-        private final ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableMapBuilder<K, V> implements MapBuilder<K, V, ImmutableMap<K, V>> {
+        private final ImmutableMap.Builder<K, V> builder;
 
         @Override public MapBuilder<K, V, ImmutableMap<K, V>> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
@@ -88,10 +94,11 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
         @Override public int size() { return fieldValue(builder, "size"); }
 
         @Override public ImmutableMap<K, V> build() { return builder.build(); }
+
+        @Override public MapResult result() { return immutableResult((ImmutableMap<String, Object>) builder.build()); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class SimpleMapBuilder<K, V> implements MapBuilder<K, V, Map<K, V>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V> implements MapBuilder<K, V, Map<K, V>> {
         private final Map<K, V> builder;
 
         @Override public MapBuilder<K, V, Map<K, V>> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
@@ -107,5 +114,7 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
         @Override public int size() { return builder.size(); }
 
         @Override public Map<K, V> build() { return builder; }
+
+        @Override public MapResult result() { return simpleResult((Map<String, Object>) builder); }
     }
 }

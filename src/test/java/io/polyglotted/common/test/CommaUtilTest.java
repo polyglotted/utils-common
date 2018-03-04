@@ -1,6 +1,5 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.CommaUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -10,6 +9,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.of;
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -35,5 +35,5 @@ public class CommaUtilTest extends CommaUtil {
     public void splitEmpty() { assertThat(commaSplit(""), is(of())); }
 
     @Test
-    public void mapSplitSuccess() { assertThat(mapSplit("foo=bar, tux=qux", "="), is(ImmutableMap.of("foo", "bar", "tux", "qux"))); }
+    public void mapSplitSuccess() { assertThat(mapSplit("foo=bar, tux=qux", "="), is(immutableMap("foo", "bar", "tux", "qux"))); }
 }

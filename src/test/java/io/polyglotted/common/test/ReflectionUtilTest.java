@@ -1,11 +1,16 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.ReflectionUtil;
 import lombok.Data;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static io.polyglotted.common.model.MapResult.immutableResult;
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ReflectionUtilTest extends ReflectionUtil {
 
@@ -62,8 +67,8 @@ public class ReflectionUtilTest extends ReflectionUtil {
     }
 
     @Test public void testFieldValues() throws Exception {
-        assertEquals(fieldValues(new MyInner("hi", 3)), ImmutableMap.of("value", "hi"));
-        assertEquals(fieldValues(new MyInner(null, 3)), ImmutableMap.of());
+        assertEquals(fieldValues(new MyInner("hi", 3)), immutableResult(immutableMap("value", "hi")));
+        assertEquals(fieldValues(new MyInner(null, 3)), immutableResult(immutableMap()));
     }
 
     @Test public void testInvoke() throws Exception {

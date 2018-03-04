@@ -2,6 +2,7 @@ package io.polyglotted.common.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import io.polyglotted.common.model.MapResult;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -10,12 +11,15 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.*;
+import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.Assertions.checkBetween;
 import static io.polyglotted.common.util.BaseSerializer.deserialize;
+import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.DELETE;
+import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.GET;
+import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.POST;
+import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.PUT;
 import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
 import static org.apache.http.HttpStatus.SC_MULTIPLE_CHOICES;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -31,10 +35,10 @@ public abstract class HttpUtil {
 
     public static HttpRequestBuilder buildDelete(String uri, String path, String auth) { return new HttpRequestBuilder(DELETE, uri, path).withAuth(auth); }
 
-    public static Map<String, Object> execute(HttpClient client, HttpRequestBuilder builder) { return execute(client, builder.request()); }
+    public static MapResult execute(HttpClient client, HttpRequestBuilder builder) { return execute(client, builder.request()); }
 
-    @SneakyThrows public static <H extends HttpRequestBase> Map<String, Object> execute(HttpClient client, H post) {
-        return execute(client, post, MAP_CLASS);
+    @SneakyThrows public static <H extends HttpRequestBase> MapResult execute(HttpClient client, H post) {
+        return simpleResult(execute(client, post, MAP_CLASS));
     }
 
     public static <R> R execute(HttpClient client, HttpRequestBuilder builder, Class<R> clazz) { return execute(client, builder.request(), clazz); }

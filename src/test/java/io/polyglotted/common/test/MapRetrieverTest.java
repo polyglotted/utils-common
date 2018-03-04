@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import java.math.BigInteger;
 import java.util.Map;
 
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -23,7 +24,7 @@ public class MapRetrieverTest extends MapRetriever {
 
     public static Object[][] longStrValInputs() {
         return new Object[][]{
-            {ImmutableMap.of(), -1L},
+            {immutableMap(), -1L},
             {simpleMap("longStr", null), -1L},
             {simpleMap("longStr", 25), 25L},
             {simpleMap("longStr", 18286378909L), 18286378909L},
@@ -79,14 +80,14 @@ public class MapRetrieverTest extends MapRetriever {
     }
 
     private static Map<String, Object> varMap() {
-        return ImmutableMap.of("z", 10, "y", 2.4, "xv", true, "s2", simple(102, "bill"), "list", varList());
+        return immutableMap("z", 10, "y", 2.4, "xv", true, "s2", simple(102, "bill"), "list", varList());
     }
 
     private static ImmutableList<Object> varList() { return ImmutableList.of("hello", 25, simple(103, "dave")); }
 
-    private static ImmutableMap<String, Double> stringDoubleMap() { return ImmutableMap.of("z", 1.2, "y", 2.4); }
+    private static ImmutableMap<String, Double> stringDoubleMap() { return immutableMap("z", 1.2, "y", 2.4); }
 
-    private static ImmutableMap<String, SimpleClass> nativeStringInnerMap() { return ImmutableMap.of("a3", simple(103, "dave")); }
+    private static ImmutableMap<String, SimpleClass> nativeStringInnerMap() { return immutableMap("a3", simple(103, "dave")); }
 
     private static SimpleClass simple(int id, String name) { return new SimpleClass(id, name); }
 

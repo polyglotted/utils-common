@@ -1,5 +1,6 @@
 package io.polyglotted.common.util;
 
+import io.polyglotted.common.model.MapResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.polyglotted.common.util.BaseSerializer.serialize;
@@ -32,7 +32,7 @@ public class SlackPublisher implements AutoCloseable {
 
     @Override public void close() throws IOException { client.close(); }
 
-    public void publish(String route, Map<String, Object> attachment) {
+    public void publish(String route, MapResult attachment) {
         if (!slackConfig.enabled || !pattern.matcher(route).matches()) { return; }
         HttpPost post = new HttpPost(slackConfig.hookUrl);
         post.setEntity(new StringEntity(serialize(MapBuilder.immutableMap("channel", slackConfig.channel, "username", attachment.get("author_name"),
