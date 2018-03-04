@@ -137,7 +137,7 @@ public abstract class MapRetriever {
 
     public static <T> T removeVal(Map<String, Object> map, String prop) { return (T) map.remove(reqdProp(map, prop)); }
 
-    public static <T> T removeIfExists(Map<String, Object> map, String prop, T defVal) {
-        return map.containsKey(prop) ? (T) map.remove(prop) : defVal;
-    }
+    public static <T> T removeIfExists(Map<String, Object> map, String prop) { return removeIfExists(map, prop, null); }
+
+    public static <T> T removeIfExists(Map<String, Object> map, String prop, T defVl) { return map.containsKey(prop) ? (T) map.remove(prop) : defVl; }
 }

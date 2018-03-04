@@ -16,9 +16,9 @@ import static java.util.Arrays.asList;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public interface ListBuilder<E, L extends List<E>> {
 
-    ListBuilder<E, L> add(E elem);
+    @SuppressWarnings("UnusedReturnValue") ListBuilder<E, L> add(E elem);
 
-    ListBuilder<E, L> addAll(Collection<E> elems);
+    ListBuilder<E, L> addAll(Collection<? extends E> elems);
 
     int size();
 
@@ -30,7 +30,9 @@ public interface ListBuilder<E, L extends List<E>> {
 
     static <E> ImmutableList<E> immutableList() { return ImmutableList.of(); }
 
-    @SafeVarargs static <E> ImmutableList<E> immutableList(E... elems) { return ListBuilder.<E>immutableListBuilder().addAll(asList(elems)).build(); }
+    @SafeVarargs static <E> ImmutableList<E> immutableList(E... elems) { return immutableList(asList(elems)); }
+
+    static <E> ImmutableList<E> immutableList(Collection<? extends E> coll) { return ListBuilder.<E>immutableListBuilder().addAll(coll).build(); }
 
     static <E> SimpleListBuilder<E> simpleListBuilder() { return simpleListBuilder(LinkedList::new); }
 
@@ -38,28 +40,28 @@ public interface ListBuilder<E, L extends List<E>> {
 
     static <E> List<E> simpleList() { return new LinkedList<>(); }
 
-    @SafeVarargs static <E> List<E> simpleList(E... elems) { return ListBuilder.<E>simpleListBuilder().addAll(asList(elems)).build(); }
+    @SafeVarargs static <E> List<E> simpleList(E... elems) { return simpleList(asList(elems)); }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class ImmutableListBuilder<E> implements ListBuilder<E, ImmutableList<E>> {
+    static <E> List<E> simpleList(Collection<? extends E> coll) { return ListBuilder.<E>simpleListBuilder().addAll(coll).build(); }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableListBuilder<E> implements ListBuilder<E, ImmutableList<E>> {
         private final ImmutableList.Builder<E> builder = ImmutableList.builder();
 
         @Override public ListBuilder<E, ImmutableList<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, ImmutableList<E>> addAll(Collection<E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public ListBuilder<E, ImmutableList<E>> addAll(Collection<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return fieldValue(builder, "size"); }
 
         @Override public ImmutableList<E> build() { return builder.build(); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class SimpleListBuilder<E> implements ListBuilder<E, List<E>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleListBuilder<E> implements ListBuilder<E, List<E>> {
         private final List<E> builder;
 
         @Override public ListBuilder<E, List<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, List<E>> addAll(Collection<E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public ListBuilder<E, List<E>> addAll(Collection<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return builder.size(); }
 
