@@ -19,9 +19,7 @@ public interface MapResult extends Map<String, Object> {
 
     static MapResult immutableResult(String k1, Object v1) { return immutableResultBuilder().put(k1, v1).result(); }
 
-    static MapResult immutableResult(String k1, Object v1, String k2, Object v2) {
-        return immutableResultBuilder().put(k1, v1).put(k2, v2).result();
-    }
+    static MapResult immutableResult(String k1, Object v1, String k2, Object v2) { return immutableResultBuilder().put(k1, v1).put(k2, v2).result(); }
 
     static MapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
         return immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).result();
