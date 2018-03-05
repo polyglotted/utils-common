@@ -1,6 +1,5 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableList;
 import io.polyglotted.common.util.StrUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -9,6 +8,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -68,9 +68,9 @@ public class StrUtilTest extends StrUtil {
 
     public static Object[][] stringOfInputs() {
         return new Object[][]{
-            {ImmutableList.of(), ""},
-            {ImmutableList.of("a"), "a"},
-            {ImmutableList.of("a", "b"), "a, b"},
+            {immutableList(), ""},
+            {immutableList("a"), "a"},
+            {immutableList("a", "b"), "a, b"},
         };
     }
 

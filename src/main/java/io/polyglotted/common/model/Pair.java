@@ -1,6 +1,5 @@
 package io.polyglotted.common.model;
 
-import com.google.common.collect.ImmutableList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,8 @@ import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Objects;
+
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 
 @Getter
 @Accessors(fluent = true)
@@ -19,7 +20,7 @@ public final class Pair<A, B> {
 
     public static <A, B> Pair<A, B> pair(A a, B b) { return new Pair<>(a, b); }
 
-    public <T> List<T> asList() { return ImmutableList.of((T) _a, (T) _b); }
+    public <T> List<T> asList() { return immutableList((T) _a, (T) _b); }
 
     @Override
     public boolean equals(Object o) {

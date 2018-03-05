@@ -1,14 +1,18 @@
 package io.polyglotted.common.util;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
+import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
 import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import lombok.SneakyThrows;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +22,9 @@ import static com.google.common.collect.Lists.transform;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
 import static io.polyglotted.common.util.NullUtil.nonNullFn;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.isStatic;
+import static java.lang.reflect.Modifier.isTransient;
+import static java.lang.reflect.Modifier.isVolatile;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class ReflectionUtil {
@@ -113,7 +119,7 @@ public abstract class ReflectionUtil {
     }
 
     public static List<Field> declaredFields(Class<?> clazz) {
-        ImmutableList.Builder<Field> result = ImmutableList.builder();
+        ImmutableListBuilder<Field> result = ListBuilder.immutableListBuilder();
         while (clazz != null && !Object.class.equals(clazz)) {
             for (Field field : clazz.getDeclaredFields()) { result.add(field); }
             clazz = clazz.getSuperclass();

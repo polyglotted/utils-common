@@ -1,6 +1,5 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.MapRetriever;
 import junitparams.JUnitParamsRunner;
@@ -12,8 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static org.hamcrest.core.Is.is;
@@ -83,7 +84,7 @@ public class MapRetrieverTest extends MapRetriever {
         return immutableMap("z", 10, "y", 2.4, "xv", true, "s2", simple(102, "bill"), "list", varList());
     }
 
-    private static ImmutableList<Object> varList() { return ImmutableList.of("hello", 25, simple(103, "dave")); }
+    private static List<Object> varList() { return immutableList("hello", 25, simple(103, "dave")); }
 
     private static ImmutableMap<String, Double> stringDoubleMap() { return immutableMap("z", 1.2, "y", 2.4); }
 

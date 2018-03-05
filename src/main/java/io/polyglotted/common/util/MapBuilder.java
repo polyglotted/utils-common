@@ -115,6 +115,6 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
         @Override public Map<K, V> build() { return builder; }
 
-        @Override public MapResult result() { return simpleResult((Map<String, Object>) builder); }
+        @Override public MapResult result() { return builder instanceof MapResult ? (MapResult) builder : simpleResult((Map<String, Object>) builder); }
     }
 }

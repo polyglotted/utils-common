@@ -55,7 +55,7 @@ public interface MapResult extends Map<String, Object> {
         return simpleResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5).result();
     }
 
-    static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(); }
+    static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(SimpleMapResult::new); }
 
     static MapResult simpleResult(Map<String, Object> map) { return new SimpleMapResult(map); }
 
