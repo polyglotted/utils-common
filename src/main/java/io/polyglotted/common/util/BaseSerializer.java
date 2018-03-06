@@ -25,22 +25,33 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.ADJUST_DATES
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.DeserializationFeature.READ_ENUMS_USING_TO_STRING;
+import static com.fasterxml.jackson.databind.MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS;
 import static com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY;
 import static com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS;
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static io.polyglotted.common.model.Serializers.baseModule;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BaseSerializer {
-    private static final ObjectMapper MAPPER = buildMapper();
+    //COMPATIBLE WITH SPRING-BOOT
+    private static final ObjectMapper MAPPER = configureMapper(
+        new ObjectMapper().registerModule(new GuavaModule()).registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule()));
 
-    private static ObjectMapper buildMapper() {
-        return new ObjectMapper()
-            .registerModule(baseModule()).registerModule(new GuavaModule()).registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule())
-            .configure(READ_ENUMS_USING_TO_STRING, true).configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(FAIL_ON_NULL_FOR_PRIMITIVES, true).configure(ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-            .configure(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true).configure(ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
-            .configure(ORDER_MAP_ENTRIES_BY_KEYS, true).configure(SORT_PROPERTIES_ALPHABETICALLY, true)
-            .setSerializationInclusion(NON_NULL).setVisibility(new VisibilityChecker.Std(NONE, NONE, NONE, ANY, ANY));
+    public static ObjectMapper configureMapper(ObjectMapper objectMapper) {
+        return objectMapper
+            .registerModule(baseModule())
+            .configure(ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+            .configure(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+            .configure(ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+            .configure(ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
+            .configure(FAIL_ON_NULL_FOR_PRIMITIVES, true)
+            .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .configure(READ_ENUMS_USING_TO_STRING, true)
+            .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
+            .configure(WRITE_DATES_AS_TIMESTAMPS, true)
+            .setSerializationInclusion(NON_NULL)
+            .setVisibility(new VisibilityChecker.Std(NONE, NONE, NONE, ANY, ANY));
     }
 
     @SneakyThrows public static byte[] serializeBytes(Object object) { return serializeBytes(MAPPER, object); }
