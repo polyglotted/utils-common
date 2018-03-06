@@ -33,9 +33,9 @@ public interface MapResult extends Map<String, Object> {
         return immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5).result();
     }
 
-    static ImmutableMapBuilder<String, Object> immutableResultBuilder() { return MapBuilder.immutableMapBuilder(); }
+    static MapResult immutableResult(Map<String, Object> map) { return immutableResultBuilder().putAll(map).result(); }
 
-    static MapResult immutableResult(ImmutableMap<String, Object> map) { return new ImmutableMapResult(map); }
+    static ImmutableMapBuilder<String, Object> immutableResultBuilder() { return MapBuilder.immutableMapBuilder(); }
 
     static MapResult simpleResult() { return new SimpleMapResult(); }
 
@@ -55,13 +55,13 @@ public interface MapResult extends Map<String, Object> {
         return simpleResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5).result();
     }
 
-    static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(SimpleMapResult::new); }
+    static MapResult simpleResult(Map<String, Object> map) { return simpleResultBuilder().putAll(map).result(); }
 
-    static MapResult simpleResult(Map<String, Object> map) { return new SimpleMapResult(map); }
+    static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(SimpleMapResult::new); }
 
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor class SimpleMapResult extends LinkedHashMap<String, Object> implements MapResult {
-        SimpleMapResult(Map<? extends String, ?> m) { super(m); }
+        public SimpleMapResult(Map<String, Object> m) { super(m); }
 
         @Override public String toString() { return super.toString(); }
     }

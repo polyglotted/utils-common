@@ -8,6 +8,11 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
+import static io.polyglotted.common.model.MapResult.immutableResult;
+import static io.polyglotted.common.model.MapResult.simpleResult;
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
+import static io.polyglotted.common.util.MapBuilder.simpleMap;
+import static java.time.LocalDate.now;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -15,8 +20,20 @@ import static org.junit.Assert.assertThat;
 public class MapResultTest {
     public static Object[][] resultInputs() {
         return new Object[][]{
-            {MapResult.simpleResult()},
-            {MapResult.immutableResult()},
+            {simpleResult()},
+            {simpleResult("a", 1)},
+            {simpleResult("a", 1, "b", true)},
+            {simpleResult("a", 1, "b", true, "c", 2.0)},
+            {simpleResult("a", 1, "b", true, "c", 2.0, "d", now())},
+            {simpleResult("a", 1, "b", true, "c", 2.0, "d", now(), "e", "x")},
+            {simpleResult(simpleMap("a", 1))},
+            {immutableResult()},
+            {immutableResult("a", 1)},
+            {immutableResult("a", 1, "b", true)},
+            {immutableResult("a", 1, "b", true, "c", 2.0)},
+            {immutableResult("a", 1, "b", true, "c", 2.0, "d", now())},
+            {immutableResult("a", 1, "b", true, "c", 2.0, "d", now(), "e", "x")},
+            {immutableResult(immutableMap("a", 1))},
         };
     }
 
