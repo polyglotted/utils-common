@@ -1,5 +1,6 @@
 package io.polyglotted.common.util;
 
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
 import lombok.SneakyThrows;
 
@@ -30,8 +31,13 @@ public abstract class ResourceUtil {
         return result;
     }
 
-    @SneakyThrows
-    public static String readResource(Class<?> clazz, String resource) { return Resources.toString(urlResource(clazz, resource), UTF_8); }
+    public static byte[] readResourceBytes(Class<?> clazz, String resource) { return readResourceBytes(urlStream(clazz, resource)); }
+
+    @SneakyThrows public static byte[] readResourceBytes(InputStream stream) { return ByteStreams.toByteArray(stream); }
+
+    public static String readResource(Class<?> clazz, String resource) { return readResource(urlResource(clazz, resource)); }
+
+    @SneakyThrows public static String readResource(URL url) { return Resources.toString(url, UTF_8); }
 
     public static List<String> readResourceList(Class<?> clazz, String resource) { return readResourceList(urlResource(clazz, resource)); }
 
