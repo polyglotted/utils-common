@@ -93,11 +93,6 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     }
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}") {
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
-    }
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${jacksonVersion}") {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"

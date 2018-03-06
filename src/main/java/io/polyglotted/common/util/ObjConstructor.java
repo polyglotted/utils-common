@@ -22,16 +22,7 @@ import static io.polyglotted.common.util.ReflectionUtil.isAssignable;
 import static io.polyglotted.common.util.Sanitizer.isSanitizable;
 import static io.polyglotted.common.util.Sanitizer.sanitize;
 
-@SuppressWarnings("unused")
 public abstract class ObjConstructor {
-
-    @SuppressWarnings("unchecked") public static <T> T constructSimple(Map<String, Object> map, T builder) {
-        for (Field field : builder.getClass().getDeclaredFields()) {
-            Object value = map.get(field.getName());
-            if (value != null) { fieldValue(builder, field, sanitize(field.getType(), value)); }
-        }
-        return builder;
-    }
 
     @SuppressWarnings("unchecked") public static <T> T construct(Map<String, Object> map, T builder) {
         for (Field field : builder.getClass().getDeclaredFields()) {
