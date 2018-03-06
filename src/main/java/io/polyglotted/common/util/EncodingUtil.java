@@ -4,6 +4,7 @@ import io.polyglotted.common.model.Pair;
 import lombok.SneakyThrows;
 
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Base64;
 
@@ -18,7 +19,9 @@ public abstract class EncodingUtil {
 
     public static byte[] decodeBase64(String value) { return Base64.getDecoder().decode(value); }
 
-    @SneakyThrows public static String safeUrl(String path) { return URLEncoder.encode(path, "utf-8"); }
+    @SneakyThrows public static String urlEncode(String path) { return URLEncoder.encode(path, "utf-8"); }
+
+    @SneakyThrows public static String urlDecode(String path) { return URLDecoder.decode(path, "utf-8"); }
 
     public static String uriEncode(String uri, String path) { return safeSuffix(URI.create(uri).normalize().getPath(), path); }
 

@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static io.polyglotted.common.model.Pair.pair;
-import static java.net.URLEncoder.encode;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -21,12 +20,15 @@ public class EncodingUtilTest extends EncodingUtil {
 
     @SneakyThrows public static Object[][] urlEncodeInputs() {
         return new Object[][]{
-            {"foo-bar-baz", "foo-bar-baz"},
-            {"steve@gmail.com", "steve@gmail.com"},
-            {encode("steve+test/5@gmail.com", "utf-8"), "steve+test/5@gmail.com"},
-            {encode("foo±§!@#$%^&*()_+-={}[];'\\:|,./<>?\"", "utf-8"), "foo±§!@#$%^&*()_+-={}[];'\\:|,./<>?\""},
+            {urlEncode("foo-bar-baz"), "foo-bar-baz"},
+            {urlEncode("steve@gmail.com"), "steve@gmail.com"},
+            {urlEncode("steve+test/5@gmail.com"), "steve+test/5@gmail.com"},
+            {urlEncode("foo±§!@#$%^&*()_+-={}[];'\\:|,./<>?\""), "foo±§!@#$%^&*()_+-={}[];'\\:|,./<>?\""},
         };
     }
+
+    @Test @Parameters(method = "urlEncodeInputs")
+    public void encodeDecodeUrl(String input, String expected) throws Exception { assertThat(urlDecode(input), is(expected)); }
 
     @Test @Parameters(method = "urlEncodeInputs")
     public void testDecodeUrl(String input, String expected) throws Exception { assertThat(uriEncode(input, ""), is(expected)); }
