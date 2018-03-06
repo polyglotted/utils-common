@@ -83,7 +83,7 @@ public class BaseSerializerTest extends BaseSerializer {
 
     public static Object[][] jsonInputs() throws Exception {
         return new Object[][]{
-            {"{\"fullStr\":\"foo\",\"date\":\"2016-02-15T04:30Z\"}", new Simplified().fullStr("foo").date(1455510600000L)},
+            {"{\"fullStr\":null,\"date\":\"2016-02-15T04:30Z\"}", new Simplified().date(1455510600000L)},
             {"{\"dateLongs\":[\"2016-02-15T04:30Z\"]}", new CollClass().dateLongs(ImmutableList.of(1455510600000L))},
             {"{\"primMap\":{\"qux\":\"2016-02-15T04:30Z\"}}", new CollClass().primMap(ImmutableMap.of("qux", "2016-02-15T04:30Z"))},
         };
@@ -95,5 +95,12 @@ public class BaseSerializerTest extends BaseSerializer {
         assertThat(json, actual, is(expected));
         Object actual2 = construct(deserialize(json), create(expected.getClass()));
         assertThat(json, actual2, is(expected));
+    }
+
+    @Test
+    public void serializeEmptyStringToNull() throws Exception {
+        Simplified expected = new Simplified().fullStr("");
+        String json = serialize(expected);
+        assertThat(json, deserialize(json, Simplified.class), is(new Simplified()));
     }
 }
