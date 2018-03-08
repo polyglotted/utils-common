@@ -1,5 +1,6 @@
 package io.polyglotted.common.util;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
@@ -34,8 +35,9 @@ import static io.polyglotted.common.model.Serializers.baseModule;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BaseSerializer {
     //COMPATIBLE WITH SPRING-BOOT
-    private static final ObjectMapper MAPPER = configureMapper(
+    public static final ObjectMapper MAPPER = configureMapper(
         new ObjectMapper().registerModule(new GuavaModule()).registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule()));
+    public static final JsonFactory FACTORY = new JsonFactory(MAPPER);
 
     public static ObjectMapper configureMapper(ObjectMapper objectMapper) {
         return objectMapper
