@@ -7,18 +7,21 @@ import com.google.common.net.InetAddresses;
 import io.polyglotted.common.model.GeoPoint;
 import io.polyglotted.common.model.GeoShape;
 import io.polyglotted.common.model.GeoType;
+import io.polyglotted.common.model.HasMeta;
 import io.polyglotted.common.model.MapResult;
-import io.polyglotted.common.test.ObjectInputs.CollClass;
-import io.polyglotted.common.test.ObjectInputs.RefClass;
-import io.polyglotted.common.test.ObjectInputs.SimpleClass;
-import io.polyglotted.common.test.ObjectInputs.Simplified;
+import io.polyglotted.common.model.SortedMapResult;
 import io.polyglotted.common.util.BaseSerializer;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -26,10 +29,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static io.polyglotted.common.test.ObjectInputs.MyConst.BAZ;
+import static io.polyglotted.common.model.MapResult.simpleResult;
+import static io.polyglotted.common.model.SortedMapResult.treeResult;
+import static io.polyglotted.common.test.BaseSerializerTest.MyConst.BAZ;
 import static io.polyglotted.common.util.ObjConstructor.construct;
 import static io.polyglotted.common.util.ReflectionUtil.create;
 import static io.polyglotted.common.util.UuidUtil.uuidFrom;
@@ -102,5 +111,88 @@ public class BaseSerializerTest extends BaseSerializer {
         Simplified expected = new Simplified().fullStr("");
         String json = serialize(expected);
         assertThat(json, deserialize(json, Simplified.class), is(new Simplified()));
+    }
+
+    @Test
+    public void serializeMetaSuccess() throws Exception {
+        SimpleMeta expected = new SimpleMeta().id("foo").tops(simpleResult("bar", 1, "baz", true))
+            .withMeta("&foo", "Fooz").withMeta("&bar", 25).withMeta("&baz", true);
+        String json = serializeMeta(expected);
+        assertThat(json, deserialize(json, SimpleMeta.class), is(expected));
+
+        MapResult actual = deserialize(json);
+        assertThat(json, serialize(actual), is(json));
+    }
+
+    @Accessors(fluent = true, chain = true)
+    @Setter @EqualsAndHashCode
+    static class SimpleMeta implements HasMeta<SimpleMeta> {
+        private String id;
+        private MapResult tops;
+        @Getter private transient final SortedMapResult _meta = treeResult();
+    }
+
+    @SuppressWarnings("unused") enum MyConst {FOO, BAR, BAZ}
+
+    @Accessors(fluent = true, chain = true)
+    @Setter @EqualsAndHashCode
+    static class SimpleClass {
+        private String aString;
+        private InetAddress anIp;
+        private URL aUrl;
+        private URI aUri;
+        private java.util.UUID aUuid;
+        private boolean aBoolean;
+        private GeoPoint aGeoPoint;
+        private GeoShape aGeoShape;
+        private byte[] aBinary;
+        private ByteBuffer aBuffer;
+        private LocalDate aDate;
+        private LocalTime aTime;
+        private OffsetTime bTime;
+        private ZonedDateTime aDateTime;
+        private OffsetDateTime bDateTime;
+        private LocalDateTime cDateTime;
+        private Date dDateTime;
+        private byte aByte;
+        private short aShort;
+        private int anInt;
+        private long aLong;
+        private float aFloat;
+        private double aDouble;
+    }
+
+    @Accessors(fluent = true, chain = true)
+    @Setter @EqualsAndHashCode
+    static class Simplified {
+        private String fullStr;
+        private String email;
+        private BigInteger bigInt;
+        private long date;
+        private Object prim;
+        private byte[] content;
+    }
+
+    @Accessors(fluent = true, chain = true)
+    @Setter @EqualsAndHashCode
+    static class CollClass {
+        private List<Boolean> booleanList;
+        private List<Double> doubleList;
+        private Set<Long> longSet;
+        private Set<Date> dateSet;
+        private List<LocalDate> localDates;
+        private List<Long> dateLongs;
+        private Set<Object> objectSet;
+        private Map<String, Integer> stringIntegerMap;
+        private Map<String, Object> primMap;
+    }
+
+    @Accessors(fluent = true, chain = true)
+    @Setter @EqualsAndHashCode
+    static class RefClass {
+        private Simplified simplified;
+        private List<SimpleClass> simples;
+        Set<Object> generics;
+        private Map<MyConst, SimpleClass> schemeMap;
     }
 }

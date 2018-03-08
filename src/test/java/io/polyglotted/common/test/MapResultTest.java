@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.MapResult.simpleResult;
+import static io.polyglotted.common.model.SortedMapResult.treeResult;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static java.time.LocalDate.now;
@@ -27,6 +28,13 @@ public class MapResultTest {
             {simpleResult("a", 1, "b", true, "c", 2.0, "d", now())},
             {simpleResult("a", 1, "b", true, "c", 2.0, "d", now(), "e", "x")},
             {simpleResult(simpleMap("a", 1))},
+            {treeResult()},
+            {treeResult("a", 1)},
+            {treeResult("a", 1, "b", true)},
+            {treeResult("a", 1, "b", true, "c", 2.0)},
+            {treeResult("a", 1, "b", true, "c", 2.0, "d", now())},
+            {treeResult("a", 1, "b", true, "c", 2.0, "d", now(), "e", "x")},
+            {treeResult(simpleMap("a", 1))},
             {immutableResult()},
             {immutableResult("a", 1)},
             {immutableResult("a", 1, "b", true)},

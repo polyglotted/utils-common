@@ -11,7 +11,6 @@ import lombok.experimental.Delegate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @SuppressWarnings({"unused", "deprecation"})
 public interface MapResult extends Map<String, Object> {
@@ -64,12 +63,13 @@ public interface MapResult extends Map<String, Object> {
     @NoArgsConstructor class SimpleMapResult extends LinkedHashMap<String, Object> implements MapResult {
         public SimpleMapResult(Map<String, Object> m) { super(m); }
 
-        @Override public String toString() { return super.toString(); }
-    }
+        @Override public Object put(String key, Object value) { if (value != null) { return super.put(key, value); } return null; }
 
-    @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor class TreeMapResult extends TreeMap<String, Object> implements MapResult {
-        public TreeMapResult(Map<String, Object> m) { super(m); }
+        @Override public Object putIfAbsent(String key, Object value) { if (value != null) { return super.putIfAbsent(key, value); } return null; }
+
+        @Override public void putAll(Map<? extends String, ?> map) {
+            for (Map.Entry<? extends String, ?> e : map.entrySet()) { put(e.getKey(), e.getValue()); }
+        }
 
         @Override public String toString() { return super.toString(); }
     }

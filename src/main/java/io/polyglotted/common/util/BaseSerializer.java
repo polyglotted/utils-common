@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.polyglotted.common.model.HasMeta;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import lombok.SneakyThrows;
@@ -14,6 +15,7 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 
@@ -87,6 +89,21 @@ public abstract class BaseSerializer {
     @SneakyThrows public static MapResult deserialize(String json) { return deserialize(MAPPER, json); }
 
     @SneakyThrows public static MapResult deserialize(ObjectMapper mapper, String json) { return deserialize(mapper, json, SimpleMapResult.class); }
+
+    @SneakyThrows public static <T extends HasMeta> String serializeMeta(T holder) {
+        StringWriter writer = new StringWriter();
+        try (JsonGenerator gen = FACTORY.createGenerator(writer)) {
+            gen.writeStartObject();
+            for (Map.Entry<String, Object> meta : holder._meta().entrySet()) {
+                gen.writeObjectField(meta.getKey(), meta.getValue());
+            }
+            if (holder.hasMeta()) { gen.writeRaw(","); }
+            String serialized = serialize(holder);
+            gen.writeRaw(serialized.substring(1, serialized.length() - 1));
+            gen.writeEndObject();
+        }
+        return writer.toString();
+    }
 
     public static void writeNotEmptyMap(JsonGenerator gen, String name, Map<?, ?> map) throws IOException {
         if (!map.isEmpty()) { gen.writeObjectField(name, map); }

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import io.polyglotted.common.util.Sanitizer;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import static io.polyglotted.common.util.DateFormatters.parseDateTime;
 public abstract class Serializers {
     public static SimpleModule baseModule() {
         SimpleModule module = new SimpleModule("BaseSerializer");
+        module.addAbstractTypeMapping(MapResult.class, SimpleMapResult.class);
         module.addSerializer(Double.TYPE, new DoubleSerializer());
         module.addSerializer(GeoPoint.class, new ToStringSerializer<>());
         module.addSerializer(InetAddress.class, new IpSerializer());
