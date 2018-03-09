@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -18,7 +17,7 @@ public interface ListBuilder<E, L extends List<E>> {
 
     @SuppressWarnings("UnusedReturnValue") ListBuilder<E, L> add(E elem);
 
-    ListBuilder<E, L> addAll(Collection<? extends E> elems);
+    ListBuilder<E, L> addAll(Iterable<? extends E> elems);
 
     int size();
 
@@ -32,7 +31,7 @@ public interface ListBuilder<E, L extends List<E>> {
 
     @SafeVarargs static <E> ImmutableList<E> immutableList(E... elems) { return immutableList(asList(elems)); }
 
-    static <E> ImmutableList<E> immutableList(Collection<? extends E> coll) { return ListBuilder.<E>immutableListBuilder().addAll(coll).build(); }
+    static <E> ImmutableList<E> immutableList(Iterable<? extends E> coll) { return ListBuilder.<E>immutableListBuilder().addAll(coll).build(); }
 
     static <E> SimpleListBuilder<E> simpleListBuilder() { return simpleListBuilder(LinkedList::new); }
 
@@ -42,14 +41,14 @@ public interface ListBuilder<E, L extends List<E>> {
 
     @SafeVarargs static <E> List<E> simpleList(E... elems) { return simpleList(asList(elems)); }
 
-    static <E> List<E> simpleList(Collection<? extends E> coll) { return ListBuilder.<E>simpleListBuilder().addAll(coll).build(); }
+    static <E> List<E> simpleList(Iterable<? extends E> coll) { return ListBuilder.<E>simpleListBuilder().addAll(coll).build(); }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableListBuilder<E> implements ListBuilder<E, ImmutableList<E>> {
         private final ImmutableList.Builder<E> builder = ImmutableList.builder();
 
         @Override public ListBuilder<E, ImmutableList<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, ImmutableList<E>> addAll(Collection<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public ListBuilder<E, ImmutableList<E>> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return fieldValue(builder, "size"); }
 
@@ -61,7 +60,7 @@ public interface ListBuilder<E, L extends List<E>> {
 
         @Override public ListBuilder<E, List<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, List<E>> addAll(Collection<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public ListBuilder<E, List<E>> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return builder.size(); }
 
