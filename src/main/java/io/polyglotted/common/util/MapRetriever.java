@@ -12,14 +12,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.of;
 import static io.polyglotted.common.model.Pair.pair;
+import static io.polyglotted.common.util.Assertions.checkBool;
 import static io.polyglotted.common.util.Assertions.checkContains;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
-import static io.polyglotted.common.util.ReflectionUtil.*;
+import static io.polyglotted.common.util.ReflectionUtil.declaredField;
+import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
+import static io.polyglotted.common.util.ReflectionUtil.isAssignable;
+import static io.polyglotted.common.util.ReflectionUtil.safeClass;
 import static io.polyglotted.common.util.StrUtil.safePrefix;
 import static io.polyglotted.common.util.StrUtil.safeSuffix;
 
@@ -33,7 +36,7 @@ public abstract class MapRetriever {
     protected static Pattern LIST_PATTERN = Pattern.compile("\\[(\\d+)\\]");
 
     public static <T> T deepRetrieve(Object map, String property) {
-        checkArgument(!property.startsWith("."), "property cannot begin with a dot");
+        checkBool(!property.startsWith("."), "property cannot begin with a dot");
         if (!property.contains(".")) return mapGetOrReflect(map, property);
 
         String[] parts = property.split("\\.");
@@ -48,7 +51,7 @@ public abstract class MapRetriever {
     public static <T> T mapGetOrReflect(Object object, String property) {
         if (object instanceof List) {
             Matcher matcher = LIST_PATTERN.matcher(property);
-            checkArgument(matcher.matches(), "property `" + property + "` not formatted as a [index]");
+            checkBool(matcher.matches(), "property `" + property + "` not formatted as a [index]");
             return (T) ((List) object).get(Integer.parseInt(matcher.group(1)));
         }
         if (object instanceof Map) return (T) ((Map) object).get(property);
@@ -57,7 +60,7 @@ public abstract class MapRetriever {
     }
 
     public static <T> List<T> deepCollect(Map<String, Object> map, String property, Class<? super T> clazz) {
-        checkArgument(!property.startsWith("."), "property cannot begin with a dot");
+        checkBool(!property.startsWith("."), "property cannot begin with a dot");
         if (!property.contains(".")) {
             Object val = map.get(property);
             return val == null ? of() : (val instanceof List ? (List<T>) val : of((T) val));

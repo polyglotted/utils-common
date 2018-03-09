@@ -6,7 +6,7 @@ import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static io.polyglotted.common.util.Assertions.checkBool;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
 import static io.polyglotted.common.util.ReflectionUtil.isEnum;
 
@@ -22,7 +22,7 @@ public abstract class EnumCache {
     }
 
     private static <E extends Enum> void putEnumValuesInMap(Class<E> enumClass) {
-        checkArgument(isEnum(enumClass));
+        checkBool(isEnum(enumClass), enumClass + " not an enum class");
         ImmutableMapBuilder<String, Object> values = immutableMapBuilder();
         for (E value : enumClass.getEnumConstants()) {
             values.put(value.name(), value);

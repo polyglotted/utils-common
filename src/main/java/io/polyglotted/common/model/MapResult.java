@@ -12,28 +12,32 @@ import lombok.experimental.Delegate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.google.common.collect.ImmutableMap.copyOf;
+
 @SuppressWarnings({"unused", "deprecation"})
 public interface MapResult extends Map<String, Object> {
 
-    static MapResult immutableResult() { return new ImmutableMapResult(ImmutableMap.of()); }
+    static ImmutableMapResult immutableResult() { return new ImmutableMapResult(ImmutableMap.of()); }
 
-    static MapResult immutableResult(String k1, Object v1) { return immutableResultBuilder().put(k1, v1).result(); }
+    static ImmutableMapResult immutableResult(String k1, Object v1) { return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).result(); }
 
-    static MapResult immutableResult(String k1, Object v1, String k2, Object v2) { return immutableResultBuilder().put(k1, v1).put(k2, v2).result(); }
-
-    static MapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
-        return immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).result();
+    static ImmutableMapResult immutableResult(String k1, Object v1, String k2, Object v2) {
+        return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).put(k2, v2).result();
     }
 
-    static MapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4) {
-        return immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).result();
+    static ImmutableMapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
+        return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).result();
     }
 
-    static MapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4, String k5, Object v5) {
-        return immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5).result();
+    static ImmutableMapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4) {
+        return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).result();
     }
 
-    static MapResult immutableResult(Map<String, Object> map) { return immutableResultBuilder().putAll(map).result(); }
+    static ImmutableMapResult immutableResult(String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4, String k5, Object v5) {
+        return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5).result();
+    }
+
+    static ImmutableMapResult immutableResult(Map<String, Object> map) { return (ImmutableMapResult) immutableResultBuilder().putAll(map).result(); }
 
     static ImmutableMapBuilder<String, Object> immutableResultBuilder() { return MapBuilder.immutableMapBuilder(); }
 
@@ -60,7 +64,7 @@ public interface MapResult extends Map<String, Object> {
     static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(SimpleMapResult::new); }
 
     @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor class SimpleMapResult extends LinkedHashMap<String, Object> implements MapResult {
+    @NoArgsConstructor class SimpleMapResult extends LinkedHashMap<String, Object> implements ImmutableResult {
         public SimpleMapResult(Map<String, Object> m) { super(m); }
 
         @Override public Object put(String key, Object value) { if (value != null) { return super.put(key, value); } return null; }
@@ -72,11 +76,19 @@ public interface MapResult extends Map<String, Object> {
         }
 
         @Override public String toString() { return super.toString(); }
+
+        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(copyOf(this)); }
     }
 
-    @EqualsAndHashCode @RequiredArgsConstructor class ImmutableMapResult implements MapResult {
+    @EqualsAndHashCode @RequiredArgsConstructor class ImmutableMapResult implements ImmutableResult {
         @Delegate(types = MapResult.class) private final ImmutableMap<String, Object> delegate;
 
         @Override public String toString() { return delegate.toString(); }
+
+        @Override public ImmutableMapResult immutable() { return this; }
+    }
+
+    interface ImmutableResult extends MapResult {
+        ImmutableMapResult immutable();
     }
 }

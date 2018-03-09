@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.polyglotted.common.util.Assertions.checkBool;
+import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class UuidUtil {
@@ -47,8 +47,7 @@ public abstract class UuidUtil {
     public static byte[] toBytes(UUID uuid) { return getBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits()); }
 
     private static long[] gatherLong(String id) {
-        checkArgument(checkNotNull(id, "Null string passed").length() == 36,
-            "UUID has to be represented by the standard 36-char representation");
+        checkBool(requireNonNull(id, "Null string passed").length() == 36, "UUID has to be represented by 36-char representation");
         if ((id.charAt(8) != '-') || (id.charAt(13) != '-')
             || (id.charAt(18) != '-') || (id.charAt(23) != '-')) {
             throw new NumberFormatException("UUID has to be represented by the standard 36-char representation");
@@ -57,7 +56,6 @@ public abstract class UuidUtil {
         long l2 = (((long) shortFromChars(id, 9)) << 16) | shortFromChars(id, 14);
         long l3 = ((long) (shortFromChars(id, 19) << 16) | shortFromChars(id, 24)) << 32;
         long l4 = ((long) intFromChars(id, 28) << 32) >>> 32;
-
         return new long[]{l1 + l2, l3 | l4};
     }
 

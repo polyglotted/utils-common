@@ -16,7 +16,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.transform;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
@@ -25,6 +24,7 @@ import static io.polyglotted.common.util.NullUtil.nonNullFn;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.lang.reflect.Modifier.isTransient;
 import static java.lang.reflect.Modifier.isVolatile;
+import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class ReflectionUtil {
@@ -61,7 +61,7 @@ public abstract class ReflectionUtil {
 
     public static Object asEnum(Class<?> clazz, String value) { return isEnum(clazz) ? fetchEnumValueFor(clazz, value) : value; }
 
-    public static boolean isEnum(Class<?> clazz) { return checkNotNull(clazz, "null enum class").isEnum() || Enum.class.isAssignableFrom(clazz); }
+    public static boolean isEnum(Class<?> clazz) { return requireNonNull(clazz, "null enum class").isEnum() || Enum.class.isAssignableFrom(clazz); }
 
     public static boolean isAssignable(Class<?> from, Class<?> to) { return to != null && from.isAssignableFrom(to); }
 

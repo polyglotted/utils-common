@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class ResourceUtil {
@@ -42,7 +42,7 @@ public abstract class ResourceUtil {
     public static List<String> readResourceList(Class<?> clazz, String resource) { return readResourceList(urlResource(clazz, resource)); }
 
     @SneakyThrows
-    public static List<String> readResourceList(URL resource) { return Resources.readLines(checkNotNull(resource), UTF_8); }
+    public static List<String> readResourceList(URL resource) { return Resources.readLines(requireNonNull(resource), UTF_8); }
 
     public static InputStream urlStream(Class<?> clazz, String resource) { return clazz.getClassLoader().getResourceAsStream(resource); }
 

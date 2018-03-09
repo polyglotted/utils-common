@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static io.polyglotted.common.util.Assertions.checkBool;
 
 @Getter
 @Accessors(fluent = true)
@@ -33,11 +33,11 @@ public final class GeoPoint {
 
     @JsonCreator public static GeoPoint geoPointFromString(String value) {
         Matcher matcher = GEO_JSON.matcher(value);
-        checkArgument(matcher.find(), "cannot find longitude");
+        checkBool(matcher.find(), "cannot find longitude");
         Double longitude = Double.parseDouble(matcher.group());
-        checkArgument(matcher.find(), "cannot find longitude");
+        checkBool(matcher.find(), "cannot find longitude");
         Double latitude = Double.parseDouble(matcher.group());
-        checkArgument(!matcher.find());
+        checkBool(!matcher.find(), "no match found");
 
         return new GeoPoint(latitude, longitude);
     }

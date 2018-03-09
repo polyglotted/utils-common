@@ -1,6 +1,7 @@
 package io.polyglotted.common.test;
 
 import io.polyglotted.common.model.MapResult;
+import io.polyglotted.common.model.MapResult.ImmutableResult;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -11,9 +12,11 @@ import java.util.Map;
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.model.SortedMapResult.treeResult;
+import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static java.time.LocalDate.now;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -46,10 +49,12 @@ public class MapResultTest {
     }
 
     @Test @Parameters(method = "resultInputs")
-    public void mapResultAll(MapResult expected) {
+    public void mapResultAll(ImmutableResult expected) {
         assertThat(inAndOut(expected), is(expected));
         assertThat(outOnly(expected), is(expected));
         assertThat(inOnly(expected), is(expected));
+        assertThat(expected.immutable(), is(immutableResult(expected)));
+        assertThat(serialize(expected), is(notNullValue()));
     }
 
     private static Map<String, Object> inAndOut(Map<String, Object> map) { return map; }

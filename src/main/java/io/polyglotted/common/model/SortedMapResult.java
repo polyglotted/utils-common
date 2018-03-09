@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static com.google.common.collect.ImmutableMap.copyOf;
+
 @SuppressWarnings("unused")
 public interface SortedMapResult extends MapResult, SortedMap<String, Object> {
     static SortedMapResult treeResult() { return new TreeMapResult(); }
@@ -36,9 +38,7 @@ public interface SortedMapResult extends MapResult, SortedMap<String, Object> {
     static SimpleMapBuilder<String, Object> treeResultBuilder() { return MapBuilder.simpleMapBuilder(TreeMapResult::new); }
 
     @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor class TreeMapResult extends TreeMap<String, Object> implements SortedMapResult {
-        public TreeMapResult(Map<String, Object> m) { super(m); }
-
+    @NoArgsConstructor class TreeMapResult extends TreeMap<String, Object> implements SortedMapResult, ImmutableResult {
         @Override public Object put(String key, Object value) { if (value != null) { return super.put(key, value); } return null; }
 
         @Override public Object putIfAbsent(String key, Object value) { if (value != null) { return super.putIfAbsent(key, value); } return null; }
@@ -48,5 +48,7 @@ public interface SortedMapResult extends MapResult, SortedMap<String, Object> {
         }
 
         @Override public String toString() { return super.toString(); }
+
+        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(copyOf(this)); }
     }
 }

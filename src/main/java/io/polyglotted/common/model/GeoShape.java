@@ -1,9 +1,13 @@
 package io.polyglotted.common.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 @ToString(includeFieldNames = false, doNotUseGetters = true)
 @EqualsAndHashCode
@@ -26,7 +30,7 @@ public final class GeoShape {
         private String radius;
 
         public GeoShape build() {
-            return new GeoShape(checkNotNull(type, "type is required"), checkNotNull(coordinates, "coordinates is required"), radius);
+            return new GeoShape(requireNonNull(type, "type is required"), requireNonNull(coordinates, "coordinates is required"), radius);
         }
     }
 }
