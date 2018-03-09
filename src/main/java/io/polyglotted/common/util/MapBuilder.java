@@ -3,6 +3,7 @@ package io.polyglotted.common.util;
 import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.ImmutableMapResult;
+import io.polyglotted.common.model.MapResult.ImmutableResult;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
     M build();
 
     MapResult result();
+
+    ImmutableResult immutable();
 
     static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder() { return immutableMapBuilder(ImmutableMap::builder); }
 
@@ -95,7 +98,9 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
         @Override public ImmutableMap<K, V> build() { return builder.build(); }
 
-        @Override public MapResult result() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
+        @Override public MapResult result() { return immutable(); }
+
+        @Override public ImmutableResult immutable() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V> implements MapBuilder<K, V, Map<K, V>> {
@@ -118,5 +123,7 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
         @Override public MapResult result() {
             return builder instanceof MapResult ? (MapResult) builder : new SimpleMapResult((Map<String, Object>) builder);
         }
+
+        @Override public ImmutableResult immutable() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
     }
 }

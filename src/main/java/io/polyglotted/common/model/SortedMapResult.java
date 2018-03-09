@@ -1,5 +1,6 @@
 package io.polyglotted.common.model;
 
+import io.polyglotted.common.model.MapResult.ImmutableResult;
 import io.polyglotted.common.util.MapBuilder;
 import io.polyglotted.common.util.MapBuilder.SimpleMapBuilder;
 import lombok.EqualsAndHashCode;
@@ -12,7 +13,7 @@ import java.util.TreeMap;
 import static com.google.common.collect.ImmutableMap.copyOf;
 
 @SuppressWarnings("unused")
-public interface SortedMapResult extends MapResult, SortedMap<String, Object> {
+public interface SortedMapResult extends ImmutableResult, SortedMap<String, Object> {
     static SortedMapResult treeResult() { return new TreeMapResult(); }
 
     static SortedMapResult treeResult(String k1, Object v1) { return (SortedMapResult) treeResultBuilder().put(k1, v1).result(); }
@@ -38,7 +39,7 @@ public interface SortedMapResult extends MapResult, SortedMap<String, Object> {
     static SimpleMapBuilder<String, Object> treeResultBuilder() { return MapBuilder.simpleMapBuilder(TreeMapResult::new); }
 
     @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor class TreeMapResult extends TreeMap<String, Object> implements SortedMapResult, ImmutableResult {
+    @NoArgsConstructor class TreeMapResult extends TreeMap<String, Object> implements SortedMapResult {
         @Override public Object put(String key, Object value) { if (value != null) { return super.put(key, value); } return null; }
 
         @Override public Object putIfAbsent(String key, Object value) { if (value != null) { return super.putIfAbsent(key, value); } return null; }
