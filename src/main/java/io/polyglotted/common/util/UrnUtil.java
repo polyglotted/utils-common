@@ -11,14 +11,17 @@ import static io.polyglotted.common.util.StrUtil.notNullOrEmpty;
 import static io.polyglotted.common.util.StrUtil.safePrefix;
 import static io.polyglotted.common.util.StrUtil.safeSuffix;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class UrnUtil {
     private static final String COLON = ":";
     private static final Joiner COLON_JOINER = Joiner.on(COLON).skipNulls();
     private static final Splitter COLON_SPLITTER = Splitter.on(COLON);
 
-    public static String urnOf(String a, String b) { return notNullOrEmpty(a) ? (notNullOrEmpty(b) ? a + COLON + b : a) : (notNullOrEmpty(b) ? b : ""); }
+    public static String urnOf(String a, String b) {
+        return notNullOrEmpty(a) ? (notNullOrEmpty(b) ? a + COLON + b : a) : (notNullOrEmpty(b) ? b : "");
+    }
 
-    public static String safeUrnOf(String... parts) { return COLON_JOINER.join(parts); }
+    public static String safeUrnOf(Object... parts) { return COLON_JOINER.join(parts); }
 
     public static Pair<String, String> urnSplit(String urn) { return pair(safePrefix(urn, COLON), safeSuffix(urn, COLON)); }
 
