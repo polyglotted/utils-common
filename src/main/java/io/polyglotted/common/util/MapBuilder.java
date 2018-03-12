@@ -84,13 +84,13 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableMapBuilder<K, V> implements MapBuilder<K, V, ImmutableMap<K, V>> {
         private final ImmutableMap.Builder<K, V> builder;
 
-        @Override public MapBuilder<K, V, ImmutableMap<K, V>> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
+        @Override public ImmutableMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
-        @Override public MapBuilder<K, V, ImmutableMap<K, V>> putList(K key, List<?> values) {
+        @Override public ImmutableMapBuilder<K, V> putList(K key, List<?> values) {
             if (values != null && !values.isEmpty()) builder.put(key, (V) values); return this;
         }
 
-        @Override public MapBuilder<K, V, ImmutableMap<K, V>> putAll(Map<K, V> map) {
+        @Override public ImmutableMapBuilder<K, V> putAll(Map<K, V> map) {
             for (Map.Entry<K, V> e : map.entrySet()) { put(e.getKey(), e.getValue()); } return this;
         }
 
@@ -106,13 +106,13 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V> implements MapBuilder<K, V, Map<K, V>> {
         private final Map<K, V> builder;
 
-        @Override public MapBuilder<K, V, Map<K, V>> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
+        @Override public SimpleMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
-        @Override public MapBuilder<K, V, Map<K, V>> putList(K key, List<?> values) {
+        @Override public SimpleMapBuilder<K, V> putList(K key, List<?> values) {
             if (values != null && !values.isEmpty()) builder.put(key, (V) values); return this;
         }
 
-        @Override public MapBuilder<K, V, Map<K, V>> putAll(Map<K, V> map) {
+        @Override public SimpleMapBuilder<K, V> putAll(Map<K, V> map) {
             for (Map.Entry<K, V> e : map.entrySet()) { put(e.getKey(), e.getValue()); } return this;
         }
 
