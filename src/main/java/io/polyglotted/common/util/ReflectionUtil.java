@@ -141,7 +141,7 @@ public abstract class ReflectionUtil {
     @SneakyThrows @SuppressWarnings("unchecked")
     public static <T> T safeInvoke(Class<?> clazz, Object object, String methodName, Class<?>[] paramClasses, Object... params) {
         try {
-            Method method = clazz.getMethod(methodName, paramClasses);
+            Method method = clazz.getDeclaredMethod(methodName, paramClasses);
             method.setAccessible(true);
             return (T) method.invoke(object, params);
 
