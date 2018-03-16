@@ -39,8 +39,6 @@ import java.util.Set;
 import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.model.SortedMapResult.treeResult;
 import static io.polyglotted.common.test.BaseSerializerTest.MyConst.BAZ;
-import static io.polyglotted.common.util.ObjConstructor.construct;
-import static io.polyglotted.common.util.ReflectionUtil.create;
 import static io.polyglotted.common.util.UuidUtil.uuidFrom;
 import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,9 +81,6 @@ public class BaseSerializerTest extends BaseSerializer {
     @Test @Parameters(method = "objInputs")
     public void serializeAndConstruct(Object expected) throws Exception {
         byte[] bytes = serializeBytes(expected);
-        Object actual = construct(deserialize(bytes), create(expected.getClass()));
-        assertThat(serialize(actual), actual, is(expected));
-
         MapResult mapResult = deserialize(bytes);
         assertThat(serialize(mapResult), bytes, is(serializeBytes(mapResult)));
     }
@@ -102,8 +97,6 @@ public class BaseSerializerTest extends BaseSerializer {
     public void serializeStrAsDateLong(String json, Object expected) throws Exception {
         Object actual = deserialize(json, expected.getClass());
         assertThat(json, actual, is(expected));
-        Object actual2 = construct(deserialize(json), create(expected.getClass()));
-        assertThat(json, actual2, is(expected));
     }
 
     @Test

@@ -72,15 +72,10 @@ public class ReflectionUtilTest extends ReflectionUtil {
     }
 
     @Test public void testInvoke() throws Exception {
-        assertNull(safeInvoke(null, null));
         safeInvoke(new InvokeHelper(), "handleNoResult", (Object) "hello".getBytes());
         assertEquals(safeInvoke(new InvokeHelper(), "handleEmpty"), "hello");
         assertEquals(safeInvoke(new InvokeHelper(), "handle", (Object) "hello".getBytes()), "hello");
-    }
-
-    @Test(expected = NoSuchMethodException.class)
-    public void testInvokeFail() throws Exception {
-        safeInvoke(new InvokeHelper(), "handleNotFound");
+        assertNull(safeInvoke(new InvokeHelper(), "handleNotFound"));
     }
 
     @Data

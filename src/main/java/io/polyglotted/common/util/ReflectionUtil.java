@@ -8,6 +8,7 @@ import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
 import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import lombok.SneakyThrows;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -138,14 +139,23 @@ public abstract class ReflectionUtil {
         return safeInvoke(object.getClass(), object, methodName, paramClasses, params);
     }
 
-    @SneakyThrows @SuppressWarnings("unchecked")
     public static <T> T safeInvoke(Class<?> clazz, Object object, String methodName, Class<?>[] paramClasses, Object... params) {
+        return safeInvoke(declaredMethod(clazz, methodName, paramClasses), object, params);
+    }
+
+    @SneakyThrows @SuppressWarnings("unchecked")
+    public static <T> T safeInvoke(Method method, Object object, Object... params) {
+        try {
+            return method == null ? null : (T) method.invoke(object, params);
+        } catch (Exception e) { throw e.getCause() != null ? e.getCause() : e; }
+    }
+
+    public static Method declaredMethod(Class<?> clazz, String methodName, Class<?>[] paramClasses) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, paramClasses);
             method.setAccessible(true);
-            return (T) method.invoke(object, params);
-
-        } catch (Exception e) { throw e.getCause() != null ? e.getCause() : e; }
+            return method;
+        } catch (NoSuchMethodException noSuch) { return null; }
     }
 
     public static Class<?> getCollTypeArg(Field field) { return getTypeArg(getFieldTypeArgs(field)[0]); }
@@ -157,4 +167,8 @@ public abstract class ReflectionUtil {
     public static Type[] getFieldTypeArgs(Field field) { return ((ParameterizedType) field.getGenericType()).getActualTypeArguments(); }
 
     public static Class<?> getTypeArg(Type typeArg) { return (typeArg instanceof Class<?>) ? (Class<?>) typeArg : Object.class; }
+
+    public static <T extends Annotation> T annotation(Field field, Class<T> clazz) {
+        return field.isAnnotationPresent(clazz) ? field.getAnnotation(clazz) : null;
+    }
 }

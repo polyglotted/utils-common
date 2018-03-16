@@ -19,7 +19,7 @@ public class UuidUtilTest extends UuidUtil {
     }
 
     @Test
-    public void testGenUuid() { assertThat(genUuidStr("from-me"), is("f57f7027-33c9-5173-a00f-8ae3cdd93ff4")); }
+    public void testGenUuid() { assertThat(genUuidStr("from-me"), is("5cab63e3-de2f-81fc-16ba-5e5992818e67")); }
 
     @Test
     public void testToBytes() {

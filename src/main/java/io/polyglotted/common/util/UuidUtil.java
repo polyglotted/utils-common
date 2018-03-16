@@ -1,6 +1,8 @@
 //adapted from https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/deser/std/UUIDDeserializer.java
 package io.polyglotted.common.util;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public abstract class UuidUtil {
 
     public static String genUuidStr(String name) { return generateUuid(name.getBytes(UTF_8)).toString().toLowerCase(); }
 
-    public static UUID generateUuid(byte[] nameBytes) { return uuidFrom(DigestUtil.sha1Digest(nameBytes)); }
+    public static UUID generateUuid(byte[] nameBytes) { return uuidFrom(DigestUtils.sha1(nameBytes)); }
 
     public static UUID uuidFrom(String uuid) {
         long[] bits = gatherLong(uuid);

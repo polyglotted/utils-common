@@ -4,12 +4,10 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import static java.util.Objects.requireNonNull;
 
-@ToString(includeFieldNames = false, doNotUseGetters = true)
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class GeoShape {
@@ -21,15 +19,14 @@ public final class GeoShape {
 
     public static Builder shapeBuilder() { return new Builder(); }
 
-    @Setter
-    @Accessors(fluent = true, chain = true)
+    @Setter @Accessors(fluent = true, chain = true)
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder {
+    public static class Builder implements io.polyglotted.common.model.Builder<GeoShape> {
         private GeoType type;
         private String coordinates;
         private String radius;
 
-        public GeoShape build() {
+        @Override public GeoShape build() {
             return new GeoShape(requireNonNull(type, "type is required"), requireNonNull(coordinates, "coordinates is required"), radius);
         }
     }
