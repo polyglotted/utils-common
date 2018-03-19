@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.MapBuilder;
 import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import io.polyglotted.common.util.MapBuilder.SimpleMapBuilder;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 
@@ -118,9 +118,12 @@ public interface MapResult extends Map<String, Object> {
 
     static SimpleMapBuilder<String, Object> simpleResultBuilder() { return MapBuilder.simpleMapBuilder(SimpleMapResult::new); }
 
-    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor class SimpleMapResult extends LinkedHashMap<String, Object> implements ImmutableResult {
         public SimpleMapResult(Map<String, Object> m) { super(m); }
+
+        @Override public boolean equals(Object object) { return super.equals(object); }
+
+        @Override public int hashCode() { return super.hashCode(); }
 
         @Override public Object put(String key, Object value) { if (value != null) { return super.put(key, value); } return null; }
 
@@ -135,8 +138,12 @@ public interface MapResult extends Map<String, Object> {
         @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(copyOf(this)); }
     }
 
-    @EqualsAndHashCode @RequiredArgsConstructor class ImmutableMapResult implements ImmutableResult {
-        @Delegate(types = MapInclude.class) private final ImmutableMap<String, Object> delegate;
+    @RequiredArgsConstructor class ImmutableMapResult implements ImmutableResult {
+        @Delegate(types = MapInclude.class) @NonNull private final ImmutableMap<String, Object> delegate;
+
+        @Override public boolean equals(Object object) { return delegate.equals(object); }
+
+        @Override public int hashCode() { return delegate.hashCode(); }
 
         @Override public String toString() { return delegate.toString(); }
 

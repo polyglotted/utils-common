@@ -57,6 +57,11 @@ public class MapResultTest {
         assertThat(serialize(expected), is(notNullValue()));
     }
 
+    @Test
+    public void mapResultEquals() {
+        assertThat(immutableResult("a", "b", "c", 1), is(simpleResult("a", "b", "c", 1)));
+    }
+
     private static Map<String, Object> inAndOut(Map<String, Object> map) { return map; }
 
     private static Map<String, Object> outOnly(MapResult map) { return map; }

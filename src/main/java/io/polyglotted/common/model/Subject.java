@@ -1,8 +1,6 @@
 package io.polyglotted.common.model;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import io.polyglotted.common.model.MapResult.ImmutableResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +23,14 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @RequiredArgsConstructor @EqualsAndHashCode
 public final class Subject {
     public final String username;
-    public final ImmutableList<String> roles;
-    public final ImmutableResult metadata;
+    public final List<String> roles;
+    public final MapResult metadata;
     public final boolean enabled;
     @Nullable public final String fullName;
     @Nullable public final String email;
+
+    /* ignore - for serialisation */
+    private Subject() { this(null, immutableList(), immutableResult(), true, null, null); }
 
     public static Builder subjectBuilder() { return new Builder(); }
 

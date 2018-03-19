@@ -16,6 +16,9 @@ public class AuthToken {
     public final String tokenType;
     public final String refreshToken;
 
+    /* ignore - for serialisation */
+    private AuthToken() { this(null, null, null, null); }
+
     public static Builder tokenBuilder() { return new Builder(); }
 
     @Setter @Accessors(fluent = true, chain = true)
