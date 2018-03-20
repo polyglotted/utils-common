@@ -27,13 +27,21 @@ import static org.apache.http.HttpStatus.SC_OK;
 @Slf4j
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class HttpUtil {
-    public static HttpRequestBuilder buildGet(String uri, String path, String auth) { return new HttpRequestBuilder(GET, uri, path).withAuth(auth); }
+    public static HttpRequestBuilder buildGet(String uri) { return buildGet(uri, null); }
 
-    public static HttpRequestBuilder buildPost(String uri, String path, String auth) { return new HttpRequestBuilder(POST, uri, path).withAuth(auth); }
+    public static HttpRequestBuilder buildGet(String uri, String path) { return new HttpRequestBuilder(GET, uri, path); }
 
-    public static HttpRequestBuilder buildPut(String uri, String path, String auth) { return new HttpRequestBuilder(PUT, uri, path).withAuth(auth); }
+    public static HttpRequestBuilder buildPost(String uri) { return buildPost(uri, null); }
 
-    public static HttpRequestBuilder buildDelete(String uri, String path, String auth) { return new HttpRequestBuilder(DELETE, uri, path).withAuth(auth); }
+    public static HttpRequestBuilder buildPost(String uri, String path) { return new HttpRequestBuilder(POST, uri, path); }
+
+    public static HttpRequestBuilder buildPut(String uri) { return buildPut(uri, null); }
+
+    public static HttpRequestBuilder buildPut(String uri, String path) { return new HttpRequestBuilder(PUT, uri, path); }
+
+    public static HttpRequestBuilder buildDelete(String uri) { return buildDelete(uri, null); }
+
+    public static HttpRequestBuilder buildDelete(String uri, String path) { return new HttpRequestBuilder(DELETE, uri, path); }
 
     public static MapResult execute(HttpClient client, HttpRequestBuilder builder) { return execute(client, builder.request()); }
 

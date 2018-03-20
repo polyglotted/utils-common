@@ -1,6 +1,5 @@
 package io.polyglotted.common.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.NonNull;
@@ -27,6 +26,7 @@ import java.util.Map;
 import static io.polyglotted.common.util.BaseSerializer.serializeBytes;
 import static io.polyglotted.common.util.StrUtil.notNullOrEmpty;
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -39,6 +39,12 @@ public class HttpRequestBuilder {
     private final Map<String, String> headers = new LinkedHashMap<>();
     private final Multimap<String, String> params = ArrayListMultimap.create();
     private HttpEntity httpEntity;
+
+    public HttpRequestBuilder withBasicAuth(String user, String passwd) {
+        return withAuth("Basic " + encodeBase64URLSafeString((user + ":" + passwd).getBytes()));
+    }
+
+    public HttpRequestBuilder withBearerAuth(String token) { return withAuth("Bearer " + token); }
 
     public HttpRequestBuilder withAuth(String authHeader) { if (authHeader != null) { withHeader(AUTHORIZATION, authHeader); } return this; }
 
@@ -69,7 +75,7 @@ public class HttpRequestBuilder {
         return request;
     }
 
-    @VisibleForTesting @SneakyThrows public URI buildUri() {
+    @SneakyThrows private URI buildUri() {
         URIBuilder uriBuilder = new URIBuilder(requireNonNull(baseUri, "baseUri is null"));
         if (notNullOrEmpty(path)) { uriBuilder.setPath(path); }
         for (Map.Entry<String, String> entry : params.entries()) { uriBuilder.addParameter(entry.getKey(), entry.getValue()); }

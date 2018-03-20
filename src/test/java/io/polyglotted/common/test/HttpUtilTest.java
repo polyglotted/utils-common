@@ -2,19 +2,47 @@ package io.polyglotted.common.test;
 
 import io.polyglotted.common.util.HttpRequestBuilder;
 import io.polyglotted.common.util.HttpUtil;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.net.URI;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(JUnitParamsRunner.class)
 public class HttpUtilTest extends HttpUtil {
-    @Test
-    public void buildUriSuccess() throws Exception {
+
+    public static Object[][] reqBuilderInputs() throws Exception {
         URI expectedUri = new URI("https://dev-584811.oktapreview.com/oauth2/v1/userinfo");
-        HttpRequestBuilder expected = buildGet(expectedUri.toString(), null, "Basic a=u");
-        HttpRequestBuilder actual = buildGet("https://dev-584811.oktapreview.com", "oauth2/v1/userinfo", "Basic a=u");
-        assertThat(actual.buildUri(), is(expected.buildUri()));
+        return new Object[][]{
+            {
+                buildGet(expectedUri.toString()).withBasicAuth("a:", "u"),
+                buildGet("https://dev-584811.oktapreview.com", "oauth2/v1/userinfo")
+            },
+            {
+                buildPost(expectedUri.toString()).withBearerAuth("aByweruiadfta74adfyu"),
+                buildPost("https://dev-584811.oktapreview.com", "oauth2/v1/userinfo")
+            },
+            {
+                buildPut(expectedUri.toString()).withJson("{}"),
+                buildPut("https://dev-584811.oktapreview.com", "oauth2/v1/userinfo")
+            },
+            {
+                buildDelete(expectedUri.toString()).withBasicAuth("a:", "u"),
+                buildDelete("https://dev-584811.oktapreview.com", "oauth2/v1/userinfo")
+            },
+        };
+    }
+
+    @Test @Parameters(method = "reqBuilderInputs")
+    public void buildUriSuccess(HttpRequestBuilder expected, HttpRequestBuilder actual) throws Exception {
+        HttpRequestBase expectedBase = expected.request();
+        HttpRequestBase actualBase = actual.request();
+        assertThat(actualBase.getMethod(), is(expectedBase.getMethod()));
+        assertThat(actualBase.getRequestLine().getUri(), is(expectedBase.getRequestLine().getUri()));
     }
 }
