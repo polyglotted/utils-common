@@ -19,6 +19,8 @@ public class AuthToken {
     /* ignore - for serialisation */
     private AuthToken() { this(null, null, null, null); }
 
+    public static AuthToken buildWith(MapResult result) { return io.polyglotted.common.model.Builder.buildWith(result, Builder.class); }
+
     public static Builder tokenBuilder() { return new Builder(); }
 
     @Setter @Accessors(fluent = true, chain = true)

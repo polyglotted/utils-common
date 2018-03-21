@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -17,6 +18,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
@@ -94,7 +96,7 @@ public class HttpRequestBuilder {
             @Override HttpPut create(URI uri) { return new HttpPut(uri); }
         },
         DELETE {
-            @Override HttpDelete create(URI uri) { return new HttpDelete(uri); }
+            @Override HttpDeleteWithBody create(URI uri) { return new HttpDeleteWithBody(uri); }
         };
 
         abstract <H extends HttpRequestBase> H create(URI uri);
@@ -103,5 +105,12 @@ public class HttpRequestBuilder {
     @SuppressWarnings({"WeakerAccess"})
     public static abstract class HttpRequestParams {
         public abstract HttpRequestBuilder update(HttpRequestBuilder builder);
+    }
+
+    @NotThreadSafe
+    public static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+        public String getMethod() { return HttpDelete.METHOD_NAME; }
+
+        HttpDeleteWithBody(final URI uri) { setURI(uri); }
     }
 }

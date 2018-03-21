@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
@@ -20,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 @SuppressWarnings("unused")
-@RequiredArgsConstructor @EqualsAndHashCode
+@RequiredArgsConstructor @EqualsAndHashCode @ToString
 public final class Subject {
     public final String username;
     public final List<String> roles;
@@ -32,6 +33,8 @@ public final class Subject {
     /* ignore - for serialisation */
     private Subject() { this(null, immutableList(), immutableResult(), true, null, null); }
 
+    public static Subject buildWith(MapResult result) { return io.polyglotted.common.model.Builder.buildWith(result, Builder.class); }
+
     public static Builder subjectBuilder() { return new Builder(); }
 
     @Setter @Accessors(fluent = true, chain = true)
@@ -41,8 +44,8 @@ public final class Subject {
         private final List<String> roles = new ArrayList<>();
         private final Map<String, Object> metadata = new HashMap<>();
         private boolean enabled = true;
-        @Nullable private String fullName;
-        @Nullable private String email;
+        @Name("full_name") private String fullName;
+        private String email;
 
         public Builder usernameMd5(Object... parts) { return username(md5Hex(safeUrnOf(parts))); }
 
