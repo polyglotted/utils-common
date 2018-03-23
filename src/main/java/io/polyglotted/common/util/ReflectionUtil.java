@@ -14,8 +14,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.transform;
@@ -170,5 +172,13 @@ public abstract class ReflectionUtil {
 
     public static <T extends Annotation> T annotation(Field field, Class<T> clazz) {
         return field.isAnnotationPresent(clazz) ? field.getAnnotation(clazz) : null;
+    }
+
+    public static Class<?> detectValueClass(Object value, Supplier<Field> supplier) {
+        if (value instanceof Collection) return Iterable.class;
+        else if (value instanceof Map) return Map.class;
+
+        Field field = supplier.get();
+        return field == null ? Void.class : (isEnum(field.getType()) ? String.class : field.getType());
     }
 }

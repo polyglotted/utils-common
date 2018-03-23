@@ -20,13 +20,15 @@ public abstract class CollUtil {
 
     public static <T> Collection<T> asColl(Object value, Collection<T> defaulted) { return nonNull((Collection<T>) value, defaulted); }
 
-    public static <F, T> Collection<T> transformColl(Collection<F> coll, Function<? super F, T> fn) { return Collections2.transform(coll, fn); }
-
     public static <E> Collection<E> filterColl(Collection<E> coll, Predicate<? super E> predicate) { return Collections2.filter(coll, predicate); }
+
+    public static <F, T> Collection<T> transformColl(Collection<F> coll, Function<? super F, T> fn) { return Collections2.transform(coll, fn); }
 
     public static <F, T> List<T> transformList(List<F> list, Function<? super F, ? extends T> fn) { return Lists.transform(list, fn); }
 
     public static <E> Iterable<E> filter(Iterable<E> list, Predicate<? super E> predicate) { return Iterables.filter(list, predicate); }
+
+    public static <F, T> Iterable<T> transform(Iterable<F> list, final Function<? super F, ? extends T> fn) { return Iterables.transform(list, fn); }
 
     public static <E> E firstOf(Iterable<E> list) { return Iterables.getFirst(list, null); }
 }

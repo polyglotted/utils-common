@@ -33,7 +33,7 @@ public final class Subject {
     /* ignore - for serialisation */
     private Subject() { this(null, immutableList(), immutableResult(), true, null, null); }
 
-    public static Subject buildWith(MapResult result) { return io.polyglotted.common.model.Builder.buildWith(result, Builder.class); }
+    public static Subject buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 
     public static Builder subjectBuilder() { return new Builder(); }
 

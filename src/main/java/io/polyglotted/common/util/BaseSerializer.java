@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
@@ -33,6 +34,7 @@ import static com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHA
 import static com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static io.polyglotted.common.model.Serializers.baseModule;
+import static io.polyglotted.common.util.MapRetriever.MAP_LIST_CLASS;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BaseSerializer {
@@ -81,6 +83,10 @@ public abstract class BaseSerializer {
     @SneakyThrows public static <T> T deserialize(Reader reader, Class<T> clazz) { return deserialize(MAPPER, reader, clazz); }
 
     @SneakyThrows public static <T> T deserialize(ObjectMapper mapper, Reader reader, Class<T> clazz) { return mapper.readValue(reader, clazz); }
+
+    public static List<Map<String, Object>> deserializeToList(byte[] bytes) { return deserializeToList(MAPPER, bytes); }
+
+    public static List<Map<String, Object>> deserializeToList(ObjectMapper mapper, byte[] bytes) { return deserialize(mapper, bytes, MAP_LIST_CLASS); }
 
     @SneakyThrows public static MapResult deserialize(byte[] bytes) { return deserialize(MAPPER, bytes); }
 

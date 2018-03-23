@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Map;
+
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
@@ -19,7 +21,7 @@ public class AuthToken {
     /* ignore - for serialisation */
     private AuthToken() { this(null, null, null, null); }
 
-    public static AuthToken buildWith(MapResult result) { return io.polyglotted.common.model.Builder.buildWith(result, Builder.class); }
+    public static AuthToken buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 
     public static Builder tokenBuilder() { return new Builder(); }
 
@@ -31,8 +33,6 @@ public class AuthToken {
         @Name("type") private String tokenType;
         @Name("refresh_token") private String refreshToken;
 
-        @Override public AuthToken build() {
-            return new AuthToken(requireNonNull(accessToken, "accessToken"), expiresIn, tokenType, refreshToken);
-        }
+        @Override public AuthToken build() { return new AuthToken(requireNonNull(accessToken, "accessToken"), expiresIn, tokenType, refreshToken); }
     }
 }
