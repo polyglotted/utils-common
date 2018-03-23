@@ -24,8 +24,10 @@ public interface Builder<T> {
         String value();
     }
 
-    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> T buildWith(MapResult mapResult, Class<C> clazz) {
-        Builder<T> builder = (Builder<T>) create(clazz);
+    static <T, C extends Builder<T>> T buildWith(MapResult mapResult, Class<C> clazz) { return builder(mapResult, clazz).build(); }
+
+    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> C builder(MapResult mapResult, Class<C> clazz) {
+        C builder = (C) create(clazz);
         for (Field field : clazz.getDeclaredFields()) {
             Object value = mapResult.get(field.getName());
             if (value == null) { value = mapResult.get(nonNullFn(annotation(field, Builder.Name.class), Builder.Name::value, "_$")); }
@@ -36,6 +38,6 @@ public interface Builder<T> {
                 safeInvoke(declaredMethod(clazz, field.getName(), new Class[]{valueClass}), builder, value);
             }
         }
-        return builder.build();
+        return builder;
     }
 }

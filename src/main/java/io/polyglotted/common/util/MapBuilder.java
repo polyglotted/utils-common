@@ -1,6 +1,8 @@
 package io.polyglotted.common.util;
 
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.ImmutableMapResult;
 import io.polyglotted.common.model.MapResult.ImmutableResult;
@@ -30,6 +32,14 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
     MapResult result();
 
     ImmutableResult immutable();
+
+    static <K, V, M extends Map<K, V>> ImmutableBiMap<K, V> immutableBiMap(MapBuilder<K, V, M> builder) { return immutableBiMap(builder.build()); }
+
+    static <K, V> ImmutableBiMap<K, V> immutableBiMap(Map<K, V> map) { return ImmutableBiMap.copyOf(map); }
+
+    static <K, V, M extends Map<K, V>> ImmutableSortedMap<K, V> immutableSortedMap(MapBuilder<K, V, M> bl) { return immutableSortedMap(bl.build()); }
+
+    static <K, V> ImmutableSortedMap<K, V> immutableSortedMap(Map<K, V> map) { return ImmutableSortedMap.copyOf(map); }
 
     static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder() { return immutableMapBuilder(ImmutableMap::builder); }
 

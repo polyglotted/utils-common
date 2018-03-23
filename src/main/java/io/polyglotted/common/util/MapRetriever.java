@@ -2,6 +2,7 @@ package io.polyglotted.common.util;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
+import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
 import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
 
@@ -13,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.ImmutableList.of;
+import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.Pair.pair;
 import static io.polyglotted.common.util.Assertions.checkBool;
 import static io.polyglotted.common.util.Assertions.checkContains;
@@ -116,6 +118,12 @@ public abstract class MapRetriever {
     public static List<Map<String, Object>> mapListVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, of()); }
 
     public static <T> List<T> listVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, of()); }
+
+    public static MapResult resultVal(Map<String, Object> map, String prop) {
+        Object result = map.get(prop);
+        return (result instanceof MapResult) ? (MapResult) result :
+            (result instanceof Map ? immutableResult(MAP_CLASS.cast(result)) : immutableResult());
+    }
 
     public static Map<String, Object> mapVal(Map<String, Object> map, String prop) { return asValue(map, prop, MAP_CLASS, ImmutableMap.of()); }
 

@@ -11,8 +11,10 @@ import static io.polyglotted.common.util.BaseSerializer.deserialize;
 import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.simpleList;
+import static io.polyglotted.common.util.MapBuilder.immutableBiMap;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
+import static io.polyglotted.common.util.MapBuilder.immutableSortedMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMapBuilder;
 import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
@@ -37,6 +39,8 @@ public class MapBuilderTest {
             {immutableMap("a", 1, "b", true, "c", 2.0, "d", "2018-03-06")},
             {immutableMap("a", 1, "b", true, "c", 2.0, "d", "2018-03-06", "e", "x")},
             {immutableMap(simpleMap("a", 1))},
+            {immutableBiMap(immutableMapBuilder().put("a", 1))},
+            {immutableSortedMap(immutableMapBuilder().put("a", 1))},
         };
     }
 

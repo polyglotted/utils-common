@@ -7,7 +7,14 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class Assertions {
+
+    public static void checkBool(boolean expression) { checkBool(expression, "failed boolean check"); }
+
     public static void checkBool(boolean expression, String message) { if (!expression) { throw new IllegalArgumentException(message); } }
+
+    public static void checkEq(Object actual, Object required, String item) {
+        checkBool(actual.equals(required), "expected " + item + " equal to " + required + " but got " + actual);
+    }
 
     public static int checkEq(int actual, int required, String item) {
         checkBool(actual == required, "expected " + item + " equal to " + required + " but got " + actual);

@@ -8,10 +8,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class CommaUtil {
     private static final Splitter COMMA_SPLITTER = Splitter.on(",").trimResults().omitEmptyStrings();
+    private static final MapSplitter EQUALS_SPLITTER = COMMA_SPLITTER.withKeyValueSeparator("=");
     private static final Joiner COMMA_JOINER = Joiner.on(",").skipNulls();
+
+    public static Map<String, String> commaEqSplit(String value) { return EQUALS_SPLITTER.split(value); }
 
     public static Map<String, String> mapSplit(String value, String separator) { return mapSplitter(separator).split(value); }
 
