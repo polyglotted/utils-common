@@ -3,7 +3,7 @@ package io.polyglotted.common.util;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.polyglotted.common.util.StrUtil.nullOrEmpty;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class Assertions {
@@ -17,23 +17,19 @@ public abstract class Assertions {
     }
 
     public static int checkEq(int actual, int required, String item) {
-        checkBool(actual == required, "expected " + item + " equal to " + required + " but got " + actual);
-        return actual;
+        checkBool(actual == required, "expected " + item + " equal to " + required + " but got " + actual); return actual;
     }
 
     public static int checkGt(int actual, int required, String item) {
-        checkBool(actual > required, "expected " + item + " greater than " + required + " but got " + actual);
-        return actual;
+        checkBool(actual > required, "expected " + item + " greater than " + required + " but got " + actual); return actual;
     }
 
     public static int checkGte(int actual, int required, String item) {
-        checkBool(actual >= required, "expected " + item + " greater than equal to " + required + " but got " + actual);
-        return actual;
+        checkBool(actual >= required, "expected " + item + " greater than equal to " + required + " but got " + actual); return actual;
     }
 
     public static int checkLte(int actual, int required, String item) {
-        checkBool(actual <= required, "expected " + item + " less than equal to " + required + " but got " + actual);
-        return actual;
+        checkBool(actual <= required, "expected " + item + " less than equal to " + required + " but got " + actual); return actual;
     }
 
     public static boolean checkBetween(long actual, long lower, long upper, boolean includeLower, boolean includeUpper) {
@@ -42,8 +38,7 @@ public abstract class Assertions {
     }
 
     public static String checkNotNullOrEmpty(String actual, String item) {
-        checkBool(!isNullOrEmpty(actual), "expected " + item + " not to be empty or null");
-        return actual;
+        checkBool(!nullOrEmpty(actual), "expected " + item + " not to be empty or null"); return actual;
     }
 
     public static <K, V> K checkContains(Map<K, V> map, K key) { checkBool(map.containsKey(key), key + " is missing in the map"); return key; }

@@ -1,6 +1,5 @@
 package io.polyglotted.common.util;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
@@ -13,12 +12,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.collect.ImmutableList.of;
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.Pair.pair;
 import static io.polyglotted.common.util.Assertions.checkBool;
 import static io.polyglotted.common.util.Assertions.checkContains;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.ReflectionUtil.declaredField;
@@ -65,7 +64,7 @@ public abstract class MapRetriever {
         checkBool(!property.startsWith("."), "property cannot begin with a dot");
         if (!property.contains(".")) {
             Object val = map.get(property);
-            return val == null ? of() : (val instanceof List ? (List<T>) val : of((T) val));
+            return val == null ? immutableList() : (val instanceof List ? (List<T>) val : immutableList((T) val));
         }
         ImmutableListBuilder<T> result = immutableListBuilder();
         walkProps(map, safePrefix(property, "."), safeSuffix(property, "."), result, clazz);
@@ -115,9 +114,9 @@ public abstract class MapRetriever {
         return (String) map.getOrDefault(required ? reqdProp(map, prop) : prop, defVal);
     }
 
-    public static List<Map<String, Object>> mapListVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, of()); }
+    public static List<Map<String, Object>> mapListVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, immutableList()); }
 
-    public static <T> List<T> listVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, of()); }
+    public static <T> List<T> listVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, immutableList()); }
 
     public static MapResult resultVal(Map<String, Object> map, String prop) {
         Object result = map.get(prop);
@@ -125,7 +124,7 @@ public abstract class MapRetriever {
             (result instanceof Map ? immutableResult(MAP_CLASS.cast(result)) : immutableResult());
     }
 
-    public static Map<String, Object> mapVal(Map<String, Object> map, String prop) { return asValue(map, prop, MAP_CLASS, ImmutableMap.of()); }
+    public static Map<String, Object> mapVal(Map<String, Object> map, String prop) { return asValue(map, prop, MAP_CLASS, immutableMap()); }
 
     public static <T> T asNullable(Map<String, Object> map, String prop, Class<T> clazz) { return clazz.cast(map.getOrDefault(prop, null)); }
 

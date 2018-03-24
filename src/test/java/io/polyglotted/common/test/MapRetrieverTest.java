@@ -1,6 +1,5 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.MapRetriever;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -86,9 +85,9 @@ public class MapRetrieverTest extends MapRetriever {
 
     private static List<Object> varList() { return immutableList("hello", 25, simple(103, "dave")); }
 
-    private static ImmutableMap<String, Double> stringDoubleMap() { return immutableMap("z", 1.2, "y", 2.4); }
+    private static Map<String, Double> stringDoubleMap() { return immutableMap("z", 1.2, "y", 2.4); }
 
-    private static ImmutableMap<String, SimpleClass> nativeStringInnerMap() { return immutableMap("a3", simple(103, "dave")); }
+    private static Map<String, SimpleClass> nativeStringInnerMap() { return immutableMap("a3", simple(103, "dave")); }
 
     private static SimpleClass simple(int id, String name) { return new SimpleClass(id, name); }
 

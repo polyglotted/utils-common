@@ -1,6 +1,5 @@
 package io.polyglotted.common.test;
 
-import com.google.common.net.InetAddresses;
 import io.polyglotted.common.util.ConversionUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -9,7 +8,12 @@ import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -63,7 +67,7 @@ public class ConversionUtilTest extends ConversionUtil {
 
     @Test
     public void testAsInetAddress() {
-        InetAddress result = InetAddresses.forString("127.0.0.1");
+        InetAddress result = InetAddress.getLoopbackAddress();
         assertThat(asInetAddress(result), is(result));
         assertThat(asInetAddress("127.0.0.1"), is(result));
     }

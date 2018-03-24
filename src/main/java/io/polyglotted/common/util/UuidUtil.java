@@ -8,8 +8,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static io.polyglotted.common.util.Assertions.checkBool;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})

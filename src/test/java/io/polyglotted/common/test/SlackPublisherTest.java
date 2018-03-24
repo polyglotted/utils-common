@@ -5,7 +5,7 @@ import io.polyglotted.common.util.SlackPublisher.SlackConfig;
 import io.polyglotted.common.util.ThreadUtil;
 import org.junit.Test;
 
-import static com.google.common.collect.ImmutableList.of;
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
 
@@ -21,7 +21,7 @@ public class SlackPublisherTest {
                 .put("author_name", "Shankar Vasudevan")
                 .put("title", "Task Summary")
                 .put("text", "")
-                .put("fields", of(immutableMap("title", "Foo", "value", "/foo/feeds/do/everything/in/url", "short", false),
+                .put("fields", immutableList(immutableMap("title", "Foo", "value", "/foo/feeds/do/everything/in/url", "short", false),
                     immutableMap("title", "Bar", "value", "bar", "short", true), immutableMap("title", "Baz", "value", "baz", "short", true)))
                 .put("footer", "SteelEye Trade Sink")
                 .put("footer_icon", "https://pinafore.steeleye.co/asset/favicon/c866deefad2715b7942ce6324702af6f/favicon-16x16.png")

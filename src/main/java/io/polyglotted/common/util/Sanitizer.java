@@ -1,6 +1,5 @@
 package io.polyglotted.common.util;
 
-import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.model.GeoPoint;
 
 import java.math.BigInteger;
@@ -9,8 +8,14 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -19,7 +24,7 @@ import static io.polyglotted.common.util.ReflectionUtil.isEnum;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class Sanitizer {
-    private static final ImmutableMap<Class<?>, Function<Object, Object>> FUNCTIONS_MAP = ImmutableMap.<Class<?>, Function<Object, Object>>builder()
+    private static final Map<Class<?>, Function<Object, Object>> FUNCTIONS_MAP = MapBuilder.<Class<?>, Function<Object, Object>>immutableMapBuilder()
         .put(Boolean.class, ConversionUtil::asBool)
         .put(Boolean.TYPE, ConversionUtil::asBool)
         .put(Byte.class, ConversionUtil::asByte)

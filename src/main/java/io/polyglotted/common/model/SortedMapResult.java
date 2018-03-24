@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static com.google.common.collect.ImmutableMap.copyOf;
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
 
 @SuppressWarnings("unused")
 public interface SortedMapResult extends ImmutableResult, SortedMap<String, Object> {
@@ -50,6 +50,6 @@ public interface SortedMapResult extends ImmutableResult, SortedMap<String, Obje
 
         @Override public String toString() { return super.toString(); }
 
-        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(copyOf(this)); }
+        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(immutableMap(this)); }
     }
 }

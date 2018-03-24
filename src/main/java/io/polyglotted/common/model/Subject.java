@@ -1,6 +1,7 @@
 package io.polyglotted.common.model;
 
-import com.google.common.collect.Iterables;
+import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
+import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +10,13 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.polyglotted.common.model.MapResult.immutableResult;
+import static io.polyglotted.common.model.MapResult.immutableResultBuilder;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
+import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.UrnUtil.safeUrnOf;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -41,8 +42,8 @@ public final class Subject {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder implements io.polyglotted.common.model.Builder<Subject> {
         private String username;
-        private final List<String> roles = new ArrayList<>();
-        private final Map<String, Object> metadata = new HashMap<>();
+        private final ImmutableListBuilder<String> roles = immutableListBuilder();
+        private final ImmutableMapBuilder<String, Object> metadata = immutableResultBuilder();
         private boolean enabled = true;
         @Name("full_name") private String fullName;
         private String email;
@@ -51,14 +52,14 @@ public final class Subject {
 
         public Builder role(String role) { this.roles.add(role); return this; }
 
-        public Builder roles(Iterable<String> roles) { Iterables.addAll(this.roles, roles); return this; }
+        public Builder roles(Iterable<String> roles) { this.roles.addAll(roles); return this; }
 
         public Builder metadata(String key, Object value) { this.metadata.put(key, value); return this; }
 
         public Builder metadata(Map<String, Object> meta) { this.metadata.putAll(meta); return this; }
 
         @Override public Subject build() {
-            return new Subject(requireNonNull(username, "username"), immutableList(roles), immutableResult(metadata), enabled, fullName, email);
+            return new Subject(requireNonNull(username, "username"), roles.build(), metadata.immutable(), enabled, fullName, email);
         }
     }
 }

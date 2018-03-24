@@ -1,6 +1,5 @@
 package io.polyglotted.common.util;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
@@ -19,19 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Lists.transform;
+import static io.polyglotted.common.util.CollUtil.transformList;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
 import static io.polyglotted.common.util.NullUtil.nonNullFn;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.lang.reflect.Modifier.isTransient;
 import static java.lang.reflect.Modifier.isVolatile;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class ReflectionUtil {
-    private static final Map<Class<?>, Object> JAVA_DEFAULTS = ImmutableMap.<Class<?>, Object>builder()
+    private static final Map<Class<?>, Object> JAVA_DEFAULTS = MapBuilder.<Class<?>, Object>immutableMapBuilder()
         .put(Boolean.TYPE, false).put(Character.TYPE, Character.MIN_VALUE).put(Byte.TYPE, Byte.valueOf("0")).put(Short.TYPE, Short.valueOf("0"))
         .put(Integer.TYPE, 0).put(Long.TYPE, Long.valueOf("0")).put(Float.TYPE, Float.valueOf("0.0")).put(Double.TYPE, 0.0).build();
 
@@ -137,7 +136,7 @@ public abstract class ReflectionUtil {
 
     public static <T> T safeInvoke(Object object, String methodName, Object... params) {
         if (object == null) return null;
-        Class<?>[] paramClasses = transform(copyOf(params), Object::getClass).toArray(new Class[0]);
+        Class<?>[] paramClasses = transformList(asList(params), Object::getClass).toArray(new Class[0]);
         return safeInvoke(object.getClass(), object, methodName, paramClasses, params);
     }
 

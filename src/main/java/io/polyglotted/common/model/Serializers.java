@@ -23,8 +23,8 @@ import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.polyglotted.common.util.DateFormatters.parseDateTime;
+import static io.polyglotted.common.util.StrUtil.nullOrEmpty;
 
 public abstract class Serializers {
     public static SimpleModule baseModule() {
@@ -65,7 +65,7 @@ public abstract class Serializers {
         @Override
         public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             String result = StringDeserializer.instance.deserialize(p, ctxt);
-            return isNullOrEmpty(result) ? null : result;
+            return nullOrEmpty(result) ? null : result;
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class Serializers {
         @Override @SuppressWarnings("unchecked")
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             String result = StringDeserializer.instance.deserialize(p, ctxt);
-            return isNullOrEmpty(result) ? null : (T) Sanitizer.sanitize(_valueClass, result);
+            return nullOrEmpty(result) ? null : (T) Sanitizer.sanitize(_valueClass, result);
         }
     }
 }

@@ -1,6 +1,5 @@
 package io.polyglotted.common.util;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import io.polyglotted.common.model.MapResult;
 import lombok.SneakyThrows;
@@ -12,7 +11,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.Assertions.checkBetween;
 import static io.polyglotted.common.util.BaseSerializer.deserialize;
@@ -21,6 +19,7 @@ import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.GET;
 import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.POST;
 import static io.polyglotted.common.util.HttpRequestBuilder.HttpReqType.PUT;
 import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.http.HttpStatus.SC_MULTIPLE_CHOICES;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -61,7 +60,7 @@ public abstract class HttpUtil {
 
     @SneakyThrows public static <H extends HttpRequestBase> String executePlain(HttpClient client, H post) {
         try {
-            return CharStreams.toString(new InputStreamReader(executeRaw(client, post).getEntity().getContent(), Charsets.UTF_8));
+            return CharStreams.toString(new InputStreamReader(executeRaw(client, post).getEntity().getContent(), UTF_8));
         } finally { post.releaseConnection(); }
     }
 

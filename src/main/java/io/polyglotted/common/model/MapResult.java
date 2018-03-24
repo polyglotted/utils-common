@@ -14,9 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.ImmutableMap.copyOf;
-import static com.google.common.collect.Iterables.getFirst;
 import static io.polyglotted.common.util.Assertions.checkContains;
+import static io.polyglotted.common.util.CollUtil.firstOf;
+import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "unchecked", "deprecation", "ConstantConditions"})
@@ -24,11 +24,11 @@ public interface MapResult extends Map<String, Object> {
 
     default <T> T first() { return requireNonNull(first(null)); }
 
-    @SuppressWarnings("unchecked") default <T> T first(T def) { return (T) getFirst(values(), def); }
+    @SuppressWarnings("unchecked") default <T> T first(T def) { return (T) firstOf(values(), def); }
 
     default Entry<String, Object> firstEntry() { return requireNonNull(firstEntry(null)); }
 
-    default Entry<String, Object> firstEntry(Entry<String, Object> def) { return getFirst(entrySet(), def); }
+    default Entry<String, Object> firstEntry(Entry<String, Object> def) { return firstOf(entrySet(), def); }
 
     default String optStr(String prop) { return stringVal(prop, false, null); }
 
@@ -72,7 +72,7 @@ public interface MapResult extends Map<String, Object> {
 
     default <T> T removeIfExists(String prop, T defVl) { return containsKey(prop) ? (T) remove(prop) : defVl; }
 
-    static ImmutableMapResult immutableResult() { return new ImmutableMapResult(ImmutableMap.of()); }
+    static ImmutableMapResult immutableResult() { return new ImmutableMapResult(immutableMap()); }
 
     static ImmutableMapResult immutableResult(String k1, Object v1) { return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).result(); }
 
@@ -135,7 +135,7 @@ public interface MapResult extends Map<String, Object> {
 
         @Override public String toString() { return super.toString(); }
 
-        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(copyOf(this)); }
+        @Override public ImmutableMapResult immutable() { return new ImmutableMapResult(immutableMap(this)); }
     }
 
     @RequiredArgsConstructor class ImmutableMapResult implements ImmutableResult {

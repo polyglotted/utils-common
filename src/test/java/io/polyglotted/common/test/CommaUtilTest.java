@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.of;
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -19,9 +19,9 @@ public class CommaUtilTest extends CommaUtil {
     public static Object[][] commaInputs() {
         return new Object[][]{
             {null},
-            {of()},
-            {of("foo")},
-            {of("foo", "bar", "baz")},
+            {immutableList()},
+            {immutableList("foo")},
+            {immutableList("foo", "bar", "baz")},
         };
     }
 
@@ -32,7 +32,7 @@ public class CommaUtilTest extends CommaUtil {
     }
 
     @Test
-    public void splitEmpty() { assertThat(commaSplit(""), is(of())); }
+    public void splitEmpty() { assertThat(commaSplit(""), is(immutableList())); }
 
     @Test
     public void mapSplitSuccess() { assertThat(mapSplit("foo=bar, tux=qux", "="), is(immutableMap("foo", "bar", "tux", "qux"))); }

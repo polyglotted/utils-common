@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import io.polyglotted.common.model.Pair;
 
-import static com.google.common.collect.Iterables.getFirst;
 import static io.polyglotted.common.model.Pair.pair;
+import static io.polyglotted.common.util.CollUtil.firstOf;
 import static io.polyglotted.common.util.NullUtil.nonNull;
 import static io.polyglotted.common.util.StrUtil.notNullOrEmpty;
 import static io.polyglotted.common.util.StrUtil.safePrefix;
@@ -25,5 +25,5 @@ public abstract class UrnUtil {
 
     public static Pair<String, String> urnSplit(String urn) { return pair(safePrefix(urn, COLON), safeSuffix(urn, COLON)); }
 
-    public static String first(String urn) { return nonNull(urn, "").contains(COLON) ? getFirst(COLON_SPLITTER.split(urn), null) : ""; }
+    public static String first(String urn) { return nonNull(urn, "").contains(COLON) ? firstOf(COLON_SPLITTER.split(urn)) : ""; }
 }

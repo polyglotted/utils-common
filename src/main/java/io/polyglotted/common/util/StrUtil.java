@@ -12,11 +12,13 @@ public abstract class StrUtil {
 
     public static boolean nullOrEmpty(String string) { return string == null || string.isEmpty(); }
 
-    public static String emptyToNull(String string) { return nullOrEmpty(string) ? null : string; }
+    public static String emptyAsNull(String string) { return nullOrEmpty(string) ? null : string; }
 
-    public static String nonNullStr(String nullable) { return requireNonNull(emptyToNull(nullable), "required String is null"); }
+    public static String nullAsEmpty(String string) { return nullOrEmpty(string) ? "" : string; }
 
-    public static String nonNullStr(String nullable, String checked) { return emptyToNull(nullable) != null ? nullable : checked; }
+    public static String nonNullStr(String nullable) { return requireNonNull(emptyAsNull(nullable), "required String is null"); }
+
+    public static String nonNullStr(String nullable, String checked) { return emptyAsNull(nullable) != null ? nullable : checked; }
 
     public static String safePrefix(String word, String delimiter) { return safePrefix(word, delimiter, ""); }
 
@@ -35,4 +37,6 @@ public abstract class StrUtil {
     }
 
     public static String stringOf(List<String> strings) { String result = String.valueOf(strings); return result.substring(1, result.length() - 1); }
+
+    public static String[] toStrArray(Iterable<String> strings) { return CollUtil.toArray(strings, String.class); }
 }
