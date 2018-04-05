@@ -39,7 +39,7 @@ ext {
     log4jVersion = '2.11.0'
     lombokVersion = '1.16.20'
     slf4jVersion = '1.7.25'
-    snakeyamlVersion = '1.20'
+    snakeyamlVersion = '1.19' //lock-down-spring
     stax2Version = '4.1'
     woodstoxVersion = '5.1.0'
 }
