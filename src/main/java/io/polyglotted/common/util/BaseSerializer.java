@@ -99,16 +99,20 @@ public abstract class BaseSerializer {
     @SneakyThrows public static <T extends HasMeta> String serializeMeta(T holder) {
         StringWriter writer = new StringWriter();
         try (JsonGenerator gen = FACTORY.createGenerator(writer)) {
-            gen.writeStartObject();
-            for (Map.Entry<String, Object> meta : holder._meta().entrySet()) {
-                gen.writeObjectField(meta.getKey(), meta.getValue());
-            }
-            if (holder.hasMeta()) { gen.writeRaw(","); }
-            String serialized = serialize(holder);
-            gen.writeRaw(serialized.substring(1, serialized.length() - 1));
-            gen.writeEndObject();
+            writeMeta(gen, holder);
         }
         return writer.toString();
+    }
+
+    @SneakyThrows public static <T extends HasMeta> void writeMeta(JsonGenerator gen, T holder) {
+        gen.writeStartObject();
+        for (Map.Entry<String, Object> meta : holder._meta().entrySet()) {
+            gen.writeObjectField(meta.getKey(), meta.getValue());
+        }
+        if (holder.hasMeta()) { gen.writeRaw(","); }
+        String serialized = serialize(holder);
+        gen.writeRaw(serialized.substring(1, serialized.length() - 1));
+        gen.writeEndObject();
     }
 
     public static void writeNotEmptyMap(JsonGenerator gen, String name, Map<?, ?> map) throws IOException {

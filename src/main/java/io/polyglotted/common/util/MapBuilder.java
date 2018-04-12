@@ -37,9 +37,13 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
     static <K, V> ImmutableBiMap<K, V> immutableBiMap(Map<K, V> map) { return ImmutableBiMap.copyOf(map); }
 
+    static <K, V> ImmutableBiMap<K, V> immutableBiMap() { return ImmutableBiMap.of(); }
+
     static <K, V, M extends Map<K, V>> ImmutableSortedMap<K, V> immutableSortedMap(MapBuilder<K, V, M> bl) { return immutableSortedMap(bl.build()); }
 
     static <K, V> ImmutableSortedMap<K, V> immutableSortedMap(Map<K, V> map) { return ImmutableSortedMap.copyOf(map); }
+
+    static <K, V> ImmutableSortedMap<K, V> immutableSortedMap() { return ImmutableSortedMap.of(); }
 
     static <K, V> ImmutableMapBuilder<K, V> immutableMapBuilder() { return immutableMapBuilder(ImmutableMap::builder); }
 
