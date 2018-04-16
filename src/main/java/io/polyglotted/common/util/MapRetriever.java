@@ -16,6 +16,7 @@ import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.Pair.pair;
 import static io.polyglotted.common.util.Assertions.checkBool;
 import static io.polyglotted.common.util.Assertions.checkContains;
+import static io.polyglotted.common.util.CollUtil.toArray;
 import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
@@ -113,6 +114,10 @@ public abstract class MapRetriever {
     public static String stringVal(Map<String, Object> map, String prop, boolean required, String defVal) {
         return (String) map.getOrDefault(required ? reqdProp(map, prop) : prop, defVal);
     }
+
+    public static String[] strArrayVal(Map<String, Object> map, String prop) { return toArray(listVal(map, prop), String.class); }
+
+    public static <T> T[] arrayVal(Map<String, Object> map, String prop, Class<? extends T> clazz) { return toArray(listVal(map, prop), clazz); }
 
     public static List<Map<String, Object>> mapListVal(Map<String, Object> map, String prop) { return asValue(map, prop, List.class, immutableList()); }
 
