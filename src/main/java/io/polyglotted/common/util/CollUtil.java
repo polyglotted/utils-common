@@ -38,6 +38,8 @@ public abstract class CollUtil {
 
     public static <F, T> List<T> transformList(List<F> list, Function<? super F, ? extends T> fn) { return Lists.transform(list, fn); }
 
+    public static <T> FluentIterable<T> fluent(Iterable<T> list) { return FluentIterable.from(list); }
+
     public static <F, T> FluentIterable<T> transform(Iterable<F> list, final Function<? super F, ? extends T> fn) {
         return (FluentIterable<T>) Iterables.transform(list, fn);
     }
