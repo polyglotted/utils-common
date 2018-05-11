@@ -1,33 +1,34 @@
 package io.polyglotted.common.util;
 
 import io.polyglotted.common.model.MapResult;
+import io.polyglotted.common.util.HttpClientFactory.HttpConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static io.polyglotted.common.util.BaseSerializer.serialize;
+import static io.polyglotted.common.util.HttpClientFactory.httpClient;
 import static java.util.Collections.singletonList;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
-@Slf4j
+@SuppressWarnings("WeakerAccess") @Slf4j
 public class SlackPublisher implements AutoCloseable {
-    private final CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(RequestConfig.custom()
-        .setConnectTimeout(3000).setSocketTimeout(3000).build()).build();
+    private final CloseableHttpClient client;
     private final SlackConfig slackConfig;
     private final Pattern pattern;
 
-    public SlackPublisher(SlackConfig slackConfig) {
-        this.slackConfig = slackConfig; this.pattern = Pattern.compile(slackConfig.filter);
+    public SlackPublisher(SlackConfig slackConfig) { this(slackConfig, new HttpConfig()); }
+
+    public SlackPublisher(SlackConfig slackConfig, HttpConfig httpConfig) {
+        this.client = httpClient(httpConfig); this.slackConfig = slackConfig; this.pattern = Pattern.compile(slackConfig.filter);
     }
 
     @Override public void close() throws IOException { client.close(); }
