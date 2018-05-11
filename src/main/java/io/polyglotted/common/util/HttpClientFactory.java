@@ -14,7 +14,7 @@ import javax.net.ssl.SSLContext;
 
 import static io.polyglotted.common.util.InsecureSslFactory.insecureSslContext;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class HttpClientFactory {
 
     public static CloseableHttpClient httpClient(HttpConfig config) {
@@ -26,14 +26,16 @@ public abstract class HttpClientFactory {
     public static class HttpConfig {
         int connectTimeout = 3000;
         int socketTimeout = 10000;
-        boolean disableHostVerification = false;
         boolean insecure = false;
-        String sslHost = null;
-        int sslPort = 443;
+        String scheme = "http";
+        String host = "localhost";
+        int port = 443;
 
-        HostnameVerifier hostnameVerifier() { return disableHostVerification ? new NoopHostnameVerifier() : null; }
+        public String url() { return scheme + "://" + host + ":" + port; }
 
-        SSLContext insecureContext() { return insecure ? insecureSslContext(sslHost, sslPort) : null; }
+        HostnameVerifier hostnameVerifier() { return insecure ? new NoopHostnameVerifier() : null; }
+
+        SSLContext insecureContext() { return insecure ? insecureSslContext(host, port) : null; }
 
         RequestConfig requestConfig() { return RequestConfig.custom().setConnectTimeout(connectTimeout).setSocketTimeout(socketTimeout).build(); }
     }

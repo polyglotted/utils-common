@@ -24,7 +24,7 @@ import static javax.net.ssl.TrustManagerFactory.getDefaultAlgorithm;
 @SuppressWarnings("WeakerAccess") @Slf4j
 public abstract class InsecureSslFactory {
 
-    @SneakyThrows static SSLContext insecureSslContext(String host, int port) {
+    @SneakyThrows public static SSLContext insecureSslContext(String host, int port) {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null, new char[0]);
 
