@@ -1,7 +1,6 @@
 package io.polyglotted.common.util;
 
 import io.polyglotted.common.model.MapResult;
-import io.polyglotted.common.util.HttpClientFactory.HttpConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static io.polyglotted.common.util.BaseSerializer.serialize;
-import static io.polyglotted.common.util.HttpClientFactory.httpClient;
+import static io.polyglotted.common.util.HttpConfig.httpClient;
 import static java.util.Collections.singletonList;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
