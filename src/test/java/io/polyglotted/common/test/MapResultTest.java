@@ -12,7 +12,6 @@ import java.util.Map;
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.model.SortedMapResult.treeResult;
-import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static java.time.LocalDate.now;
@@ -54,7 +53,7 @@ public class MapResultTest {
         assertThat(outOnly(expected), is(expected));
         assertThat(inOnly(expected), is(expected));
         assertThat(expected.immutable(), is(immutableResult(expected)));
-        assertThat(serialize(expected), is(notNullValue()));
+        assertThat(expected.toJson(), is(notNullValue()));
     }
 
     @Test

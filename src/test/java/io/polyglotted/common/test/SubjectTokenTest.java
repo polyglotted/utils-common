@@ -8,6 +8,7 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static io.polyglotted.common.model.AuthToken.authToken;
 import static io.polyglotted.common.model.AuthToken.tokenBuilder;
 import static io.polyglotted.common.model.Builder.buildWith;
 import static io.polyglotted.common.model.Subject.subjectBuilder;
@@ -24,6 +25,8 @@ public class SubjectTokenTest {
                 subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").metadata("mfaEnabled", false)},
             {"{\"username\":\"rdeniro\",\"roles\":[\"admin\",\"kibana4\"],\"full_name\":\"Jack Nicholson\"}",
                 subjectBuilder().username("rdeniro").roles(immutableList("admin", "kibana4")).fullName("Jack Nicholson")},
+            {"{\"username\":\"rdeniro\",\"password\":\"fooBar\",\"roles\":[\"admin\",\"kibana4\"],\"full_name\":\"Jack Nicholson\"}",
+                subjectBuilder().username("rdeniro").roles(immutableList("admin", "kibana4")).fullName("Jack Nicholson").password("fooBar")},
             {"{\"accessToken\":\"y7nvAiCrpP8HRJkxgdb3s3T4XX8Dvx18C5FmT\",\"expiresIn\":1200,\"refreshToken\":\"fooBarBaz\",\"tokenType\":\"Bearer\"}",
                 tokenBuilder().accessToken("y7nvAiCrpP8HRJkxgdb3s3T4XX8Dvx18C5FmT").expiresIn(1200).tokenType("Bearer").refreshToken("fooBarBaz")},
             {"{\"access_token\":\"y7nvAiCrpP8HRJkxgdb3s3T4XX8Dvx18C5FmT\",\"expires_in\":1200,\"refresh_token\":\"fooBarBaz\",\"type\":\"Bearer\"}",
@@ -41,8 +44,8 @@ public class SubjectTokenTest {
         return new Object[][] {
             {"{\"enabled\":true,\"metadata\":{\"mfaEnabled\":false},\"roles\":[\"my_role1\"],\"username\":\"8e07e12f432dce131fc2005e29de5264\"}",
                 subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").metadata("mfaEnabled", false).build(), Subject.class},
-            {"{\"accessToken\":\"y7nvAiCrpP8HRJkxg\",\"expiresIn\":1200,\"refreshToken\":\"fooBarBaz\",\"tokenType\":\"Bearer\"}",
-                tokenBuilder().accessToken("y7nvAiCrpP8HRJkxg").expiresIn(1200).tokenType("Bearer").refreshToken("fooBarBaz").build(), AuthToken.class},
+            {"{\"accessToken\":\"y7nvAiCrpP8HRJkxg\",\"expiresIn\":0,\"tokenType\":\"Bearer\"}",
+                authToken("y7nvAiCrpP8HRJkxg"), AuthToken.class},
         };
     }
 
