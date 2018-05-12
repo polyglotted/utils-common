@@ -21,7 +21,7 @@ public class HttpConfig {
     int connectTimeout = 3000;
     int socketTimeout = 10000;
     boolean insecure = false;
-    String scheme = "http";
+    String scheme = "https";
     String host = "localhost";
     int port = 443;
 
