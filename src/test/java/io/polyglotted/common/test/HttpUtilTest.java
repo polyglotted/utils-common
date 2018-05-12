@@ -1,5 +1,6 @@
 package io.polyglotted.common.test;
 
+import io.polyglotted.common.util.HttpConfig;
 import io.polyglotted.common.util.HttpRequestBuilder;
 import io.polyglotted.common.util.HttpUtil;
 import junitparams.JUnitParamsRunner;
@@ -44,5 +45,20 @@ public class HttpUtilTest extends HttpUtil {
         HttpRequestBase actualBase = actual.request();
         assertThat(actualBase.getMethod(), is(expectedBase.getMethod()));
         assertThat(actualBase.getRequestLine().getUri(), is(expectedBase.getRequestLine().getUri()));
+    }
+
+    public static Object[][] httpConfigInputs() {
+        return new Object[][]{
+            { new HttpConfig(), "https://localhost" },
+            { new HttpConfig().setScheme("http"), "http://localhost" },
+            { new HttpConfig().setPort(9200), "https://localhost:9200" },
+            { new HttpConfig().setScheme("http").setPort(80), "http://localhost" },
+            { new HttpConfig().setScheme("http").setPort(9200), "http://localhost:9200" },
+        };
+    }
+
+    @Test @Parameters(method = "httpConfigInputs")
+    public void httpConfigTest(HttpConfig config, String expected) throws Exception {
+        assertThat(config.url(), is(expected));
     }
 }

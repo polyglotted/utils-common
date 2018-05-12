@@ -25,7 +25,7 @@ public class HttpConfig {
     String host = "localhost";
     int port = 443;
 
-    public String url() { return scheme + "://" + host + ":" + port; }
+    public String url() { return scheme + "://" + host + ((port == 80 || port == 443) ? "" : (":" + port)); }
 
     private HostnameVerifier hostnameVerifier() { return insecure ? new NoopHostnameVerifier() : null; }
 
