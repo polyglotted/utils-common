@@ -21,7 +21,7 @@ import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "unchecked", "deprecation", "ConstantConditions"})
-public interface MapResult extends Map<String, Object> {
+public interface MapResult extends Map<String, Object>, Jsoner {
 
     default <T> T first() { return requireNonNull(first(null)); }
 

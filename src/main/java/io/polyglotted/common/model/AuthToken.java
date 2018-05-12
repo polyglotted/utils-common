@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor @EqualsAndHashCode
-public class AuthToken {
+public final class AuthToken implements Jsoner {
     public final String accessToken;
     public final Integer expiresIn;
     public final String tokenType;

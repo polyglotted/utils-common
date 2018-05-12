@@ -25,7 +25,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 @SuppressWarnings("unused") @Accessors(fluent = true, chain = true)
 @RequiredArgsConstructor @EqualsAndHashCode @ToString
-public final class Subject {
+public final class Subject implements Jsoner {
     public final String username;
     public final List<String> roles;
     public final MapResult metadata;
