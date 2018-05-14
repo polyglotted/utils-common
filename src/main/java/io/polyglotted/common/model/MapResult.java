@@ -75,7 +75,7 @@ public interface MapResult extends Map<String, Object>, Jsoner {
 
     default String toJson() { return serialize(this); }
 
-    static ImmutableMapResult immutableResult() { return new ImmutableMapResult(immutableMap()); }
+    static ImmutableMapResult immutableResult() { return ImmutableMapResult.EMPTY; }
 
     static ImmutableMapResult immutableResult(String k1, Object v1) { return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).result(); }
 
@@ -142,6 +142,7 @@ public interface MapResult extends Map<String, Object>, Jsoner {
     }
 
     @RequiredArgsConstructor class ImmutableMapResult implements ImmutableResult {
+        private static final ImmutableMapResult EMPTY = new ImmutableMapResult(immutableMap());
         @Delegate(types = MapInclude.class) @NonNull private final ImmutableMap<String, Object> delegate;
 
         @Override public boolean equals(Object object) { return delegate.equals(object); }

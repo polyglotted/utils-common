@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class NullUtil {
 
-    public static <T> T nonNull(T nullable, Supplier<T> function) { return nullable != null ? nullable : function.get(); }
+    public static <T> T nonNull(T nullable, Supplier<T> supplier) { return nullable != null ? nullable : supplier.get(); }
 
     public static <T> T nonNull(T nullable, T defValue) { return nullable != null ? nullable : defValue; }
 
@@ -15,4 +15,8 @@ public abstract class NullUtil {
     @SafeVarargs public static <T> T nonNullIn(T... list) { for (T t : list) { if (t != null) return t; } return null; }
 
     public static <K, V> V nonNullFn(K nullable, Function<K, V> function, V defVal) { return nullable != null ? function.apply(nullable) : defVal; }
+
+    public static <K, V> V nonNullFn(K nullable, Function<K, V> function, Supplier<V> supplier) {
+        return nullable != null ? function.apply(nullable) : supplier.get();
+    }
 }

@@ -43,5 +43,9 @@ public abstract class Assertions {
 
     public static <K, V> K checkContains(Map<K, V> map, K key) { checkBool(map.containsKey(key), key + " is missing in the map"); return key; }
 
+    public static <K, V> K checkNotContains(Map<K, V> map, K key) { checkBool(!map.containsKey(key), key + " not allowed in the map"); return key; }
+
     public static <E> E checkContains(Collection<E> coll, E item, String message) { checkBool(coll.contains(item), message); return item; }
+
+    public static <E> E checkNotContains(Collection<E> coll, E item, String message) { checkBool(!coll.contains(item), message); return item; }
 }
