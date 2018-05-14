@@ -18,11 +18,11 @@ import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 import static java.util.Arrays.asList;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public interface ListBuilder<E, L extends Collection<E>> {
+public interface ListBuilder<E, L extends Collection<E>, LB extends ListBuilder<E, L, LB>> {
 
-    @SuppressWarnings("UnusedReturnValue") ListBuilder<E, L> add(E elem);
+    @SuppressWarnings("UnusedReturnValue") LB add(E elem);
 
-    ListBuilder<E, L> addAll(Iterable<? extends E> elems);
+    LB addAll(Iterable<? extends E> elems);
 
     int size();
 
@@ -54,49 +54,54 @@ public interface ListBuilder<E, L extends Collection<E>> {
 
     @SafeVarargs static <E> Set<E> immutableSet(E... elems) { return immutableSet(asList(elems)); }
 
-    static <E> Set<E> immutableSet(SimpleSetBuilder<E> builder) { return immutableSet(builder.build()); }
+    static <E> ImmutableSet<E> immutableSet(SimpleSetBuilder<E> builder) { return immutableSet(builder.build()); }
 
-    static <E> Set<E> immutableSet(Iterable<E> iterable) { return ImmutableSet.copyOf(iterable); }
+    static <E> ImmutableSet<E> immutableSet(Iterable<E> iterable) { return ImmutableSet.copyOf(iterable); }
 
-    @SafeVarargs static <E> Set<E> immutableSortedSet(E... elems) { return immutableSortedSet(asList(elems)); }
+    @SafeVarargs static <E> ImmutableSortedSet<E> immutableSortedSet(E... elems) { return immutableSortedSet(asList(elems)); }
 
-    static <E> Set<E> immutableSortedSet(SimpleSetBuilder<E> builder) { return immutableSortedSet(builder.build()); }
+    static <E> ImmutableSortedSet<E> immutableSortedSet(SimpleSetBuilder<E> builder) { return immutableSortedSet(builder.build()); }
 
-    static <E> Set<E> immutableSortedSet(Iterable<E> iterable) { return ImmutableSortedSet.copyOf(iterable); }
+    static <E> ImmutableSortedSet<E> immutableSortedSet(Iterable<E> iterable) { return ImmutableSortedSet.copyOf(iterable); }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableListBuilder<E> implements ListBuilder<E, ImmutableList<E>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableListBuilder<E>
+        implements ListBuilder<E, ImmutableList<E>, ImmutableListBuilder<E>> {
         private final ImmutableList.Builder<E> builder = ImmutableList.builder();
 
-        @Override public ListBuilder<E, ImmutableList<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
+        @Override public ImmutableListBuilder<E> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, ImmutableList<E>> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public ImmutableListBuilder<E> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return fieldValue(builder, "size"); }
 
         @Override public ImmutableList<E> build() { return builder.build(); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleListBuilder<E> implements ListBuilder<E, List<E>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleListBuilder<E> implements ListBuilder<E, List<E>, SimpleListBuilder<E>> {
         private final List<E> builder;
 
-        @Override public ListBuilder<E, List<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
+        @Override public SimpleListBuilder<E> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, List<E>> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public SimpleListBuilder<E> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return builder.size(); }
 
         @Override public List<E> build() { return builder; }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleSetBuilder<E> implements ListBuilder<E, Set<E>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleSetBuilder<E> implements ListBuilder<E, Set<E>, SimpleSetBuilder<E>> {
         private final Set<E> builder;
 
-        @Override public ListBuilder<E, Set<E>> add(E elem) { if (elem != null) builder.add(elem); return this; }
+        @Override public SimpleSetBuilder<E> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
-        @Override public ListBuilder<E, Set<E>> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+        @Override public SimpleSetBuilder<E> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
 
         @Override public int size() { return builder.size(); }
 
         @Override public Set<E> build() { return builder; }
+
+        public ImmutableSet<E> immutable() { return ListBuilder.immutableSet(builder); }
+
+        public ImmutableSortedSet<E> immutableSorted() { return ListBuilder.immutableSortedSet(builder); }
     }
 }
