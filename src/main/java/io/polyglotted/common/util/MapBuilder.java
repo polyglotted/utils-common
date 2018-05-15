@@ -8,7 +8,9 @@ import io.polyglotted.common.model.MapResult.ImmutableMapResult;
 import io.polyglotted.common.model.MapResult.ImmutableResult;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -122,9 +124,9 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
         @Override public ImmutableResult immutable() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V>
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) @Accessors(fluent = true) class SimpleMapBuilder<K, V>
         implements MapBuilder<K, V, Map<K, V>, SimpleMapBuilder<K, V>> {
-        private final Map<K, V> builder;
+        @Getter private final Map<K, V> builder;
 
         @Override public SimpleMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
@@ -145,7 +147,5 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
         }
 
         @Override public ImmutableResult immutable() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
-
-        public boolean containsKey(K key) { return builder.containsKey(key); }
     }
 }
