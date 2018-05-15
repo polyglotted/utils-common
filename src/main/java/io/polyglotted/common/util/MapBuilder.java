@@ -18,12 +18,12 @@ import java.util.function.Supplier;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 
 @SuppressWarnings({"unchecked", "unused", "WeakerAccess"})
-public interface MapBuilder<K, V, M extends Map<K, V>> {
-    MapBuilder<K, V, M> put(K key, V value);
+public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> {
+    MB put(K key, V value);
 
-    MapBuilder<K, V, M> putList(K key, List<?> values);
+    MB putList(K key, List<?> values);
 
-    MapBuilder<K, V, M> putAll(Map<K, V> map);
+    MB putAll(Map<K, V> map);
 
     int size();
 
@@ -33,13 +33,17 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
     ImmutableResult immutable();
 
-    static <K, V, M extends Map<K, V>> ImmutableBiMap<K, V> immutableBiMap(MapBuilder<K, V, M> builder) { return immutableBiMap(builder.build()); }
+    static <K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> ImmutableBiMap<K, V> immutableBiMap(MapBuilder<K, V, M, MB> builder) {
+        return immutableBiMap(builder.build());
+    }
 
     static <K, V> ImmutableBiMap<K, V> immutableBiMap(Map<K, V> map) { return ImmutableBiMap.copyOf(map); }
 
     static <K, V> ImmutableBiMap<K, V> immutableBiMap() { return ImmutableBiMap.of(); }
 
-    static <K, V, M extends Map<K, V>> ImmutableSortedMap<K, V> immutableSortedMap(MapBuilder<K, V, M> bl) { return immutableSortedMap(bl.build()); }
+    static <K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> ImmutableSortedMap<K, V> immutableSortedMap(MapBuilder<K, V, M, MB> bl) {
+        return immutableSortedMap(bl.build());
+    }
 
     static <K, V> ImmutableSortedMap<K, V> immutableSortedMap(Map<K, V> map) { return ImmutableSortedMap.copyOf(map); }
 
@@ -95,7 +99,8 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
 
     static <K, V> Map<K, V> simpleMap(Map<K, V> map) { return MapBuilder.<K, V>simpleMapBuilder().putAll(map).build(); }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableMapBuilder<K, V> implements MapBuilder<K, V, ImmutableMap<K, V>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class ImmutableMapBuilder<K, V>
+        implements MapBuilder<K, V, ImmutableMap<K, V>, ImmutableMapBuilder<K, V>> {
         private final ImmutableMap.Builder<K, V> builder;
 
         @Override public ImmutableMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
@@ -117,7 +122,8 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
         @Override public ImmutableResult immutable() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V> implements MapBuilder<K, V, Map<K, V>> {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleMapBuilder<K, V>
+        implements MapBuilder<K, V, Map<K, V>, SimpleMapBuilder<K, V>> {
         private final Map<K, V> builder;
 
         @Override public SimpleMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
@@ -139,5 +145,7 @@ public interface MapBuilder<K, V, M extends Map<K, V>> {
         }
 
         @Override public ImmutableResult immutable() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
+
+        public boolean containsKey(K key) { return builder.containsKey(key); }
     }
 }
