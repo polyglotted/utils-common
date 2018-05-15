@@ -12,8 +12,10 @@ public abstract class Assertions {
 
     public static void checkBool(boolean expression, String message) { if (!expression) { throw new IllegalArgumentException(message); } }
 
-    public static void checkEq(Object actual, Object required, String item) {
-        checkBool(actual.equals(required), "expected " + item + " equal to " + required + " but got " + actual);
+    public static boolean isEq(Object actual, Object required, String item) { checkEq(actual, required, item); return true; }
+
+    public static <T> T checkEq(T actual, T required, String item) {
+        checkBool(actual.equals(required), "expected " + item + " equal to " + required + " but got " + actual); return actual;
     }
 
     public static int checkEq(int actual, int required, String item) {
