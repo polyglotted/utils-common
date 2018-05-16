@@ -54,7 +54,9 @@ public abstract class MapRetriever {
         if (object instanceof List) {
             Matcher matcher = LIST_PATTERN.matcher(property);
             checkBool(matcher.matches(), "property `" + property + "` not formatted as a [index]");
-            return (T) ((List) object).get(Integer.parseInt(matcher.group(1)));
+            List list = (List) object;
+            int index = Integer.parseInt(matcher.group(1));
+            return index < list.size() ? (T) list.get(index) : null;
         }
         if (object instanceof Map) return (T) ((Map) object).get(property);
         Field field = declaredField(object.getClass(), property);

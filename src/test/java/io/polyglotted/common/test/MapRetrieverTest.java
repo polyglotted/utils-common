@@ -1,5 +1,7 @@
 package io.polyglotted.common.test;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.MapRetriever;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -16,6 +18,7 @@ import java.util.Map;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -77,6 +80,15 @@ public class MapRetrieverTest extends MapRetriever {
         assertThat(LIST_PATTERN.matcher("[2a]").matches(), is(false));
         assertThat(LIST_PATTERN.matcher("[2]").matches(), is(true));
         assertThat(LIST_PATTERN.matcher("[23456]").matches(), is(true));
+    }
+
+    @Test
+    public void deepListFetch() {
+        Map<String, Object> item1 = ImmutableMap.of("f", ImmutableMap.of("v", ImmutableList.of(ImmutableMap.of("k", "found"))));
+        assertThat(deepRetrieve(item1, "f.v.[0].k"), is("found"));
+
+        item1 = ImmutableMap.of("f", ImmutableMap.of("v", ImmutableList.of()));
+        assertThat(deepRetrieve(item1, "f.v.[0].k"), is(nullValue()));
     }
 
     private static Map<String, Object> varMap() {
