@@ -11,13 +11,18 @@ import lombok.experimental.Delegate;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static io.polyglotted.common.util.Assertions.checkContains;
 import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.CollUtil.firstOf;
+import static io.polyglotted.common.util.CollUtil.toArray;
+import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
+import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
+import static io.polyglotted.common.util.UrnUtil.urnOf;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "unchecked", "deprecation", "ConstantConditions"})
@@ -30,6 +35,22 @@ public interface MapResult extends Map<String, Object>, Jsoner {
     default Entry<String, Object> firstEntry() { return requireNonNull(firstEntry(null)); }
 
     default Entry<String, Object> firstEntry(Entry<String, Object> def) { return firstOf(entrySet(), def); }
+
+    default String model() { return reqdValue("&model"); }
+
+    default String reqdId() { return reqdValue("&id"); }
+
+    default String reqdKey() { return reqdValue("&key"); }
+
+    default String id() { return optValue("&id"); }
+
+    default String parent() { return optValue("&parent"); }
+
+    default long timestamp() { return longStrVal("&timestamp", -3); }
+
+    default Long tstamp() { return longStrVal("&timestamp"); }
+
+    default String keyString() { return urnOf(model(), id()); }
 
     default String optStr(String prop) { return stringVal(prop, false, null); }
 
@@ -56,6 +77,16 @@ public interface MapResult extends Map<String, Object>, Jsoner {
     default String stringVal(String prop, boolean required, String defVal) {
         return (String) getOrDefault(required ? reqdProp(prop) : prop, defVal);
     }
+
+    default String[] strArrayVal(String prop) { return toArray(listVal(prop), String.class); }
+
+    default <T> T[] arrayVal(String prop, Class<? extends T> clazz) { return toArray(listVal(prop), clazz); }
+
+    default List<Map<String, Object>> mapListVal(String prop) { return asValue(prop, List.class, immutableList()); }
+
+    default <T> List<T> listVal(String prop) { return asValue(prop, List.class, immutableList()); }
+
+    default Map<String, Object> mapVal(String prop) { return asValue(prop, MAP_CLASS, immutableMap()); }
 
     default <T> T optValue(String prop) { return (T) get(prop); }
 
