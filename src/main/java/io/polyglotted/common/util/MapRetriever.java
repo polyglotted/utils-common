@@ -2,7 +2,6 @@ package io.polyglotted.common.util;
 
 import com.google.common.reflect.TypeToken;
 import io.polyglotted.common.model.MapResult;
-import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import io.polyglotted.common.model.Pair;
 import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
 
@@ -36,8 +35,6 @@ public abstract class MapRetriever {
     public static final Class<Map<String, String>> STRMAP_CLASS = (Class<Map<String, String>>) new TypeToken<Map<String, String>>() {}.getRawType();
     public static final Class<List<Map<String, Object>>> MAP_LIST_CLASS = (Class<List<Map<String, Object>>>)
         new TypeToken<List<Map<String, Object>>>() {}.getRawType();
-    public static final Class<List<? super SimpleMapResult>> MAPRESULT_LIST_CLASS = (Class<List<? super SimpleMapResult>>)
-        new TypeToken<List<SimpleMapResult>>() {}.getRawType();
     public static final Class<List<String>> STRING_LIST_CLASS = (Class<List<String>>) new TypeToken<List<String>>() {}.getRawType();
     protected static Pattern LIST_PATTERN = Pattern.compile("\\[(\\d+)\\]");
 

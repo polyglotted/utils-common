@@ -35,7 +35,6 @@ import static com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTR
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static com.google.common.base.Charsets.UTF_8;
 import static io.polyglotted.common.model.Serializers.baseModule;
-import static io.polyglotted.common.util.MapRetriever.MAPRESULT_LIST_CLASS;
 import static io.polyglotted.common.util.MapRetriever.MAP_LIST_CLASS;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -89,18 +88,12 @@ public abstract class BaseSerializer {
     public static List<Map<String, Object>> deserializeToList(String string) { return deserializeToList(MAPPER, string); }
 
     public static List<Map<String, Object>> deserializeToList(ObjectMapper mapper, String string) {
-        return deserialize(mapper, string.getBytes(UTF_8), MAP_LIST_CLASS);
+        return deserializeToList(mapper, string.getBytes(UTF_8));
     }
 
     public static List<Map<String, Object>> deserializeToList(byte[] bytes) { return deserializeToList(MAPPER, bytes); }
 
     public static List<Map<String, Object>> deserializeToList(ObjectMapper mapper, byte[] bytes) { return deserialize(mapper, bytes, MAP_LIST_CLASS); }
-
-    public static List<MapResult> deserializeResultList(byte[] bytes) { return deserializeResultList(MAPPER, bytes); }
-
-    @SuppressWarnings("unchecked") public static List<MapResult> deserializeResultList(ObjectMapper mapper, byte[] bytes) {
-        return (List<MapResult>) deserialize(mapper, bytes, MAPRESULT_LIST_CLASS);
-    }
 
     @SneakyThrows public static MapResult deserialize(byte[] bytes) { return deserialize(MAPPER, bytes); }
 
