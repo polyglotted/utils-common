@@ -82,6 +82,10 @@ public abstract class ReflectionUtil {
         }
     }
 
+    public static void safeFieldValue(Object object, String fieldName, Object newValue) {
+        Field field = declaredField(object.getClass(), fieldName); if (field != null) { fieldValue(object, field, newValue); }
+    }
+
     public static <T> T fieldValue(T object, String fieldName, Object value) {
         return fieldValue(object, declaredField(object.getClass(), fieldName), value);
     }

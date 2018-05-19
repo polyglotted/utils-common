@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import io.polyglotted.common.util.MapBuilder;
 import io.polyglotted.common.util.MapBuilder.ImmutableMapBuilder;
 import io.polyglotted.common.util.MapBuilder.SimpleMapBuilder;
+import io.polyglotted.common.util.MapRetriever;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,12 @@ public interface MapResult extends Map<String, Object>, Jsoner {
     default Long tstamp() { return longStrVal("&timestamp"); }
 
     default String keyString() { return urnOf(model(), id()); }
+
+    default <T> T deepRetrieve(String property) { return MapRetriever.deepRetrieve(this, property); }
+
+    default <T> List<T> deepCollect(String property, Class<? super T> clazz) { return MapRetriever.deepCollect(this, property, clazz); }
+
+    default void deepReplace(String property, Object newValue) { MapRetriever.deepReplace(this, property, newValue); }
 
     default String optStr(String prop) { return stringVal(prop, false, null); }
 

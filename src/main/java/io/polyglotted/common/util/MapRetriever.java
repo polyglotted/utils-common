@@ -25,6 +25,7 @@ import static io.polyglotted.common.util.ReflectionUtil.declaredField;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 import static io.polyglotted.common.util.ReflectionUtil.isAssignable;
 import static io.polyglotted.common.util.ReflectionUtil.safeClass;
+import static io.polyglotted.common.util.ReflectionUtil.safeFieldValue;
 import static io.polyglotted.common.util.StrUtil.safePrefix;
 import static io.polyglotted.common.util.StrUtil.safeSuffix;
 
@@ -37,17 +38,32 @@ public abstract class MapRetriever {
     public static final Class<List<String>> STRING_LIST_CLASS = (Class<List<String>>) new TypeToken<List<String>>() {}.getRawType();
     protected static Pattern LIST_PATTERN = Pattern.compile("\\[(\\d+)\\]");
 
-    public static <T> T deepRetrieve(Object map, String property) {
-        checkBool(!property.startsWith("."), "property cannot begin with a dot");
-        if (!property.contains(".")) return mapGetOrReflect(map, property);
+    public static void deepReplace(Object map, String property, Object newValue) {
+        if (!property.contains(".")) { mapSetOrReflect(map, property, newValue); return; }
+        Pair<Object, String> lastChild = lastChild(map, property);
+        if (lastChild != null) { mapSetOrReflect(lastChild._a, lastChild._b, newValue); }
+    }
 
+    public static void mapSetOrReflect(Object object, String property, Object newValue) {
+        if (object instanceof Map) { ((Map) object).put(property, newValue); }
+        else { safeFieldValue(object, property, newValue); }
+    }
+
+    public static <T> T deepRetrieve(Object map, String property) {
+        if (!property.contains(".")) { return mapGetOrReflect(map, property); }
+        Pair<Object, String> lastChild = lastChild(map, property);
+        return lastChild == null ? null : (T) mapGetOrReflect(lastChild._a, lastChild._b);
+    }
+
+    private static Pair<Object, String> lastChild(Object map, String property) {
+        checkBool(!property.startsWith("."), "property cannot begin with a dot");
         String[] parts = property.split("\\.");
         Object child = map;
         for (int i = 0; i < parts.length - 1; i++) {
             child = mapGetOrReflect(child, parts[i]);
             if (child == null) return null;
         }
-        return (T) mapGetOrReflect(child, parts[parts.length - 1]);
+        return Pair.pair(child, parts[parts.length - 1]);
     }
 
     public static <T> T mapGetOrReflect(Object object, String property) {

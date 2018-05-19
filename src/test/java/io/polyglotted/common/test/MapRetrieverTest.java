@@ -1,7 +1,6 @@
 package io.polyglotted.common.test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.util.MapRetriever;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -15,7 +14,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import static io.polyglotted.common.model.MapResult.immutableResult;
+import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
+import static io.polyglotted.common.util.ListBuilder.simpleList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static org.hamcrest.Matchers.nullValue;
@@ -84,11 +86,18 @@ public class MapRetrieverTest extends MapRetriever {
 
     @Test
     public void deepListFetch() {
-        Map<String, Object> item1 = ImmutableMap.of("f", ImmutableMap.of("v", ImmutableList.of(ImmutableMap.of("k", "found"))));
-        assertThat(deepRetrieve(item1, "f.v.[0].k"), is("found"));
+        MapResult result = immutableResult("f", immutableMap("v", immutableList(immutableMap("k", "found"))));
+        assertThat(result.deepRetrieve("f.v.[0].k"), is("found"));
 
-        item1 = ImmutableMap.of("f", ImmutableMap.of("v", ImmutableList.of()));
-        assertThat(deepRetrieve(item1, "f.v.[0].k"), is(nullValue()));
+        result = immutableResult("f", immutableMap("v", immutableList()));
+        assertThat(result.deepRetrieve("f.v.[0].k"), is(nullValue()));
+    }
+
+    @Test
+    public void deepListSet() {
+        MapResult result = simpleResult("f", simpleMap("v", simpleList(simpleMap("k", "found"))));
+        result.deepReplace("f.v.[0].k", "changed");
+        assertThat(result, is(simpleResult("f", simpleMap("v", simpleList(simpleMap("k", "changed"))))));
     }
 
     private static Map<String, Object> varMap() {
