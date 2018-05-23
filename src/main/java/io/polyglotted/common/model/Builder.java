@@ -24,9 +24,11 @@ public interface Builder<T> {
         String value();
     }
 
-    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> T buildWith(Map<String, Object> mapResult, Class<C> clazz) {
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> mapResult, Class<C> clazz) { return buildWith(mapResult, clazz, false); }
+
+    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> T buildWith(Map<String, Object> mapResult, Class<C> clazz, boolean inclMeta) {
         T built = builder(mapResult, clazz).build();
-        return (built instanceof HasMeta) ? (T) ((HasMeta) built).withMetas(mapResult) : built;
+        return (inclMeta && built instanceof HasMeta) ? (T) ((HasMeta) built).withMetas(mapResult) : built;
     }
 
     @SuppressWarnings("unchecked") static <T, C extends Builder<T>> C builder(Map<String, Object> mapResult, Class<C> clazz) {
