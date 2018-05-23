@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -38,6 +40,8 @@ public interface ListBuilder<E, L extends Collection<E>, LB extends ListBuilder<
 
     static <E> ImmutableList<E> immutableList(Iterable<? extends E> coll) { return ListBuilder.<E>immutableListBuilder().addAll(coll).build(); }
 
+    static <E> SimpleListBuilder<E> simpleListBuilder(Collection<E> coll) { return ListBuilder.<E>simpleListBuilder().addAll(coll); }
+
     static <E> SimpleListBuilder<E> simpleListBuilder() { return simpleListBuilder(LinkedList::new); }
 
     static <E> SimpleListBuilder<E> simpleListBuilder(Supplier<List<E>> supplier) { return new SimpleListBuilder<>(supplier.get()); }
@@ -47,6 +51,8 @@ public interface ListBuilder<E, L extends Collection<E>, LB extends ListBuilder<
     @SafeVarargs static <E> List<E> simpleList(E... elems) { return simpleList(asList(elems)); }
 
     static <E> List<E> simpleList(Iterable<? extends E> coll) { return ListBuilder.<E>simpleListBuilder().addAll(coll).build(); }
+
+    static <E> SimpleSetBuilder<E> simpleSetBuilder(Collection<E> coll) { return ListBuilder.<E>simpleSetBuilder().addAll(coll); }
 
     static <E> SimpleSetBuilder<E> simpleSetBuilder() { return simpleSetBuilder(TreeSet::new); }
 
@@ -77,24 +83,34 @@ public interface ListBuilder<E, L extends Collection<E>, LB extends ListBuilder<
         @Override public ImmutableList<E> build() { return builder.build(); }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleListBuilder<E> implements ListBuilder<E, List<E>, SimpleListBuilder<E>> {
-        private final List<E> builder;
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) @Accessors(fluent = true) class SimpleListBuilder<E>
+        implements ListBuilder<E, List<E>, SimpleListBuilder<E>> {
+        @Getter private final List<E> builder;
 
         @Override public SimpleListBuilder<E> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
+        public SimpleListBuilder<E> remove(E elem) { builder.remove(elem); return this; }
+
         @Override public SimpleListBuilder<E> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+
+        public SimpleListBuilder<E> removeAll(Collection<? extends E> elems) { builder.removeAll(elems); return this; }
 
         @Override public int size() { return builder.size(); }
 
         @Override public List<E> build() { return builder; }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) class SimpleSetBuilder<E> implements ListBuilder<E, Set<E>, SimpleSetBuilder<E>> {
-        private final Set<E> builder;
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE) @Accessors(fluent = true) class SimpleSetBuilder<E>
+        implements ListBuilder<E, Set<E>, SimpleSetBuilder<E>> {
+        @Getter private final Set<E> builder;
 
         @Override public SimpleSetBuilder<E> add(E elem) { if (elem != null) builder.add(elem); return this; }
 
+        public SimpleSetBuilder<E> remove(E elem) { builder.remove(elem); return this; }
+
         @Override public SimpleSetBuilder<E> addAll(Iterable<? extends E> elems) { for (E elem : elems) { add(elem); } return this; }
+
+        public SimpleSetBuilder<E> removeAll(Collection<? extends E> elems) { builder.removeAll(elems); return this; }
 
         @Override public int size() { return builder.size(); }
 
