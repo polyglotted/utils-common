@@ -7,6 +7,7 @@ import io.polyglotted.common.util.ListBuilder.ImmutableListBuilder;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -37,6 +38,24 @@ public abstract class MapRetriever {
         new TypeToken<List<Map<String, Object>>>() {}.getRawType();
     public static final Class<List<String>> STRING_LIST_CLASS = (Class<List<String>>) new TypeToken<List<String>>() {}.getRawType();
     protected static Pattern LIST_PATTERN = Pattern.compile("\\[(\\d+)\\]");
+
+    public static Map<String, Object> deepSet(Map<String, Object> map, String property, Object newValue) {
+        if (!property.contains(".")) { map.put(property, newValue); return map; }
+        checkBool(!property.startsWith("."), "property cannot begin with a dot");
+
+        try {
+            String[] parts = property.split("\\.");
+            Map<String, Object> child = map;
+            for (int i = 0; i < parts.length - 1; i++) {
+                Map<String, Object> child2 = MAP_CLASS.cast(child.get(parts[i]));
+                if (child2 == null) {
+                    child2 = new LinkedHashMap<>(); child.put(parts[i], child2);
+                }
+                child = child2;
+            }
+            child.put(parts[parts.length - 1], newValue); return map;
+        } catch (Exception ex) { throw new IllegalArgumentException("failed to deepSet " + property + " - " + ex.getMessage()); }
+    }
 
     public static void deepReplace(Object map, String property, Object newValue) {
         if (!property.contains(".")) { mapSetOrReflect(map, property, newValue); return; }

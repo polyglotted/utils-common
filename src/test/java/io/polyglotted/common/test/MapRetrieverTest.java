@@ -20,12 +20,28 @@ import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.simpleList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JUnitParamsRunner.class)
 public class MapRetrieverTest extends MapRetriever {
+
+    public static Object[][] deepInputs() {
+        return new Object[][]{
+            {simpleResult("a", "b"), "a", true, simpleResult("a", true)},
+            {simpleResult("a", "b"), "c", true, simpleResult("a", "b", "c", true)},
+            {simpleResult("a", "b", "c", simpleMap("m", 5)), "c.d.e", true, simpleResult("a", "b", "c", simpleMap("m", 5, "d", simpleMap("e", true)))},
+        };
+    }
+
+    @Test @Parameters(method = "deepInputs")
+    public void deepSetSuccess(MapResult input, String key, Object value, MapResult expected) {
+        assertThat(input.deepSet(key, value), is(expected));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void deepSetFail() throws Exception { deepSet(simpleMap("a", "b", "c", simpleMap("d", 5)), "c.d.e", true); }
 
     public static Object[][] longStrValInputs() {
         return new Object[][]{

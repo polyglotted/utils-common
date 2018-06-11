@@ -57,7 +57,9 @@ public interface MapResult extends Map<String, Object>, Jsoner {
 
     default <T> List<T> deepCollect(String property, Class<? super T> clazz) { return MapRetriever.deepCollect(this, property, clazz); }
 
-    default void deepReplace(String property, Object newValue) { MapRetriever.deepReplace(this, property, newValue); }
+    default MapResult deepReplace(String property, Object newValue) { MapRetriever.deepReplace(this, property, newValue); return this; }
+
+    default MapResult deepSet(String property, Object newValue) { MapRetriever.deepSet(this, property, newValue); return this; }
 
     default String optStr(String prop) { return stringVal(prop, false, null); }
 
