@@ -39,7 +39,7 @@ public class HttpConfig {
             .setSSLContext(config.determineContext()).setSSLHostnameVerifier(config.hostnameVerifier()).build();
     }
 
-    private HostnameVerifier hostnameVerifier() { return insecure ? new NoopHostnameVerifier() : null; }
+    private HostnameVerifier hostnameVerifier() { return notNullOrEmpty(trustStore) || insecure ? new NoopHostnameVerifier() : null; }
 
     private SSLContext determineContext() {
         return notNullOrEmpty(trustStore) ? internalContext(trustStore) : (insecure ? insecureSslContext(host, port) : null);
