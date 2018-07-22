@@ -122,14 +122,15 @@ public class BaseSerializerTest extends BaseSerializer {
         SimpleMeta expected = new SimpleMeta().id("foo").tops(simpleResult("bar", 1, "baz", true))
             .withMeta("&foo", "Fooz").withMeta("&bar", 25).withMeta("&baz", true);
         String json = serializeMeta(expected);
-        assertThat(json, deserialize(json, SimpleMeta.class), is(expected));
+        SimpleMeta actual1 = deserialize(json, SimpleMeta.class);
+        assertThat(json, actual1, is(expected));
 
-        MapResult actual = deserialize(json);
-        assertThat(json, serialize(actual), is(json));
+        MapResult actual2 = deserialize(json);
+        assertThat(json, serialize(actual2), is(json));
     }
 
     @Accessors(fluent = true, chain = true)
-    @Setter @EqualsAndHashCode
+    @Setter @EqualsAndHashCode(exclude = "_meta")
     static class SimpleMeta implements HasMeta<SimpleMeta> {
         private String id;
         private MapResult tops;

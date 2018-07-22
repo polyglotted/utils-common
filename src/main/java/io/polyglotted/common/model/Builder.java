@@ -13,6 +13,7 @@ import static io.polyglotted.common.util.ReflectionUtil.declaredField;
 import static io.polyglotted.common.util.ReflectionUtil.declaredMethod;
 import static io.polyglotted.common.util.ReflectionUtil.detectValueClass;
 import static io.polyglotted.common.util.ReflectionUtil.safeInvoke;
+import static io.polyglotted.common.util.Sanitizer.sanitize;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -40,7 +41,7 @@ public interface Builder<T> {
             if (value != null) {
                 Class<?> valueClass = detectValueClass(value, () -> declaredField(clazz, field.getName()));
                 try {
-                    safeInvoke(declaredMethod(clazz, field.getName(), new Class[]{valueClass}), builder, value);
+                    safeInvoke(declaredMethod(clazz, field.getName(), new Class[]{valueClass}), builder, sanitize(valueClass, value));
                 } catch (Exception ex) { throw new RuntimeException("failed invoke " + field.getName(), ex); }
             }
         }
