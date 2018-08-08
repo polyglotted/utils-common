@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class EnumCacheTest extends EnumCache {
     @Test
-    public void testFetchEnumFor() throws Exception {
+    public void testFetchEnumFor() {
         assertThat(isEnum(MyEnum.class), is(true));
         assertThat(asEnum(MyEnum.class, "foo"), is(MyEnum.FOO));
         assertThat(fetchEnumFor(MyEnum.class, "foo"), is(MyEnum.FOO));

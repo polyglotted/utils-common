@@ -30,7 +30,7 @@ public class RegexUtilTest extends RegexUtil {
     }
 
     @Test @Parameters(method = "geoJsonInputs")
-    public void isValidGeoJsonSuccess(String json, boolean expected) throws Exception {
+    public void isValidGeoJsonSuccess(String json, boolean expected) {
         assertThat(isValidGeoJson(json), is(expected));
     }
 
@@ -42,7 +42,7 @@ public class RegexUtilTest extends RegexUtil {
     }
 
     @Test @Parameters(method = "uuidInputs")
-    public void isValidUuidSuccess(String uuid, boolean expected) throws Exception {
+    public void isValidUuidSuccess(String uuid, boolean expected) {
         assertThat(uuid, isValidUuid(uuid), is(expected));
     }
 
@@ -58,7 +58,7 @@ public class RegexUtilTest extends RegexUtil {
     }
 
     @Test @Parameters(method = "emailInputs")
-    public void isValidEmailSuccess(String email, boolean expected) throws Exception {
+    public void isValidEmailSuccess(String email, boolean expected) {
         assertThat(email, isValidEmail(email), is(expected));
     }
 
@@ -76,7 +76,7 @@ public class RegexUtilTest extends RegexUtil {
     }
 
     @Test @Parameters(method = "ipInputs")
-    public void isValidIpSuccess(String ip, boolean expected) throws Exception {
+    public void isValidIpSuccess(String ip, boolean expected) {
         assertThat(ip, isValidIp(ip), is(expected));
     }
 
@@ -92,7 +92,7 @@ public class RegexUtilTest extends RegexUtil {
     }
 
     @Test @Parameters(method = "urlInputs")
-    public void isValidUrlSuccess(String url, boolean expected) throws Exception {
+    public void isValidUrlSuccess(String url, boolean expected) {
         assertThat(url, isValidUrl(url), is(expected));
     }
 }

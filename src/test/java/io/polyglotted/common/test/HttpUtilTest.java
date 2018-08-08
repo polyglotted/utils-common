@@ -40,7 +40,7 @@ public class HttpUtilTest extends HttpUtil {
     }
 
     @Test @Parameters(method = "reqBuilderInputs")
-    public void buildUriSuccess(HttpRequestBuilder expected, HttpRequestBuilder actual) throws Exception {
+    public void buildUriSuccess(HttpRequestBuilder expected, HttpRequestBuilder actual) {
         HttpRequestBase expectedBase = expected.request();
         HttpRequestBase actualBase = actual.request();
         assertThat(actualBase.getMethod(), is(expectedBase.getMethod()));
@@ -58,7 +58,7 @@ public class HttpUtilTest extends HttpUtil {
     }
 
     @Test @Parameters(method = "httpConfigInputs")
-    public void httpConfigTest(HttpConfig config, String expected) throws Exception {
+    public void httpConfigTest(HttpConfig config, String expected) {
         assertThat(config.url(), is(expected));
     }
 }

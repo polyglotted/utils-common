@@ -41,7 +41,7 @@ public class MapRetrieverTest extends MapRetriever {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deepSetFail() throws Exception { deepSet(simpleMap("a", "b", "c", simpleMap("d", 5)), "c.d.e", true); }
+    public void deepSetFail() { deepSet(simpleMap("a", "b", "c", simpleMap("d", 5)), "c.d.e", true); }
 
     public static Object[][] longStrValInputs() {
         return new Object[][]{

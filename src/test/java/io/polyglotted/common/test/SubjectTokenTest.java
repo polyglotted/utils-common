@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(JUnitParamsRunner.class)
 public class SubjectTokenTest {
-    public static Object[][] jsonInputs() throws Exception {
+    public static Object[][] jsonInputs() {
         return new Object[][] {
             {"{\"enabled\":true,\"metadata\":{\"mfaEnabled\":false},\"roles\":[\"my_role1\"],\"username\":\"8e07e12f432dce131fc2005e29de5264\"}",
                 subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").metadata("mfaEnabled", false)},
@@ -35,12 +35,12 @@ public class SubjectTokenTest {
     }
 
     @Test @Parameters(method = "jsonInputs") @SuppressWarnings("unchecked")
-    public void serializeWithBuilder(String json, Builder<Object> builder) throws Exception {
+    public void serializeWithBuilder(String json, Builder<Object> builder) {
         Object actual = buildWith(deserialize(json), builder.getClass());
         assertThat(json, actual, is(builder.build()));
     }
 
-    public static Object[][] jsonInputs2() throws Exception {
+    public static Object[][] jsonInputs2() {
         return new Object[][] {
             {"{\"enabled\":true,\"metadata\":{\"mfaEnabled\":false},\"roles\":[\"my_role1\"],\"username\":\"8e07e12f432dce131fc2005e29de5264\"}",
                 subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").metadata("mfaEnabled", false).build(), Subject.class},
@@ -50,7 +50,7 @@ public class SubjectTokenTest {
     }
 
     @Test @Parameters(method = "jsonInputs2")
-    public void serializeDirect(String json, Object expected, Class<?> clazz) throws Exception {
+    public void serializeDirect(String json, Object expected, Class<?> clazz) {
         assertThat(json, deserialize(json, clazz), is(expected));
     }
 }

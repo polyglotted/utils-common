@@ -80,7 +80,7 @@ public class BaseSerializerTest extends BaseSerializer {
     }
 
     @Test @Parameters(method = "objInputs")
-    public void serializeNative(Object expected) throws Exception {
+    public void serializeNative(Object expected) {
         String json = serialize(expected);
         Object actual = deserialize(json, expected.getClass());
         assertThat(serialize(actual), actual, is(expected));
@@ -90,13 +90,13 @@ public class BaseSerializerTest extends BaseSerializer {
     }
 
     @Test @Parameters(method = "objInputs")
-    public void serializeAndConstruct(Object expected) throws Exception {
+    public void serializeAndConstruct(Object expected) {
         byte[] bytes = serializeBytes(expected);
         MapResult mapResult = deserialize(bytes);
         assertThat(serialize(mapResult), bytes, is(serializeBytes(mapResult)));
     }
 
-    public static Object[][] jsonInputs() throws Exception {
+    public static Object[][] jsonInputs() {
         return new Object[][]{
             {"{\"fullStr\":null,\"date\":\"2016-02-15T04:30Z\"}", new Simplified().date(1455510600000L)},
             {"{\"dateLongs\":[\"2016-02-15T04:30Z\"]}", new CollClass().dateLongs(immutableList(1455510600000L))},
@@ -105,20 +105,20 @@ public class BaseSerializerTest extends BaseSerializer {
     }
 
     @Test @Parameters(method = "jsonInputs")
-    public void serializeStrAsDateLong(String json, Object expected) throws Exception {
+    public void serializeStrAsDateLong(String json, Object expected) {
         Object actual = deserialize(json, expected.getClass());
         assertThat(json, actual, is(expected));
     }
 
     @Test
-    public void serializeEmptyStringToNull() throws Exception {
+    public void serializeEmptyStringToNull() {
         Simplified expected = new Simplified().fullStr("");
         String json = serialize(expected);
         assertThat(json, deserialize(json, Simplified.class), is(new Simplified()));
     }
 
     @Test
-    public void serializeMetaSuccess() throws Exception {
+    public void serializeMetaSuccess() {
         SimpleMeta expected = new SimpleMeta().id("foo").tops(simpleResult("bar", 1, "baz", true))
             .withMeta("&foo", "Fooz").withMeta("&bar", 25).withMeta("&baz", true);
         String json = serializeMeta(expected);

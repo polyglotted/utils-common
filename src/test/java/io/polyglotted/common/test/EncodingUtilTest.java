@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 public class EncodingUtilTest extends EncodingUtil {
 
     @Test
-    public void testEncodeDecode() throws Exception { assertThat(decodeBase64(encodeBase64("foo".getBytes())), is("foo".getBytes())); }
+    public void testEncodeDecode() { assertThat(decodeBase64(encodeBase64("foo".getBytes())), is("foo".getBytes())); }
 
     @SneakyThrows public static Object[][] urlEncodeInputs() {
         return new Object[][]{
@@ -28,10 +28,10 @@ public class EncodingUtilTest extends EncodingUtil {
     }
 
     @Test @Parameters(method = "urlEncodeInputs")
-    public void encodeDecodeUrl(String input, String expected) throws Exception { assertThat(urlDecode(input), is(expected)); }
+    public void encodeDecodeUrl(String input, String expected) { assertThat(urlDecode(input), is(expected)); }
 
     @Test @Parameters(method = "urlEncodeInputs")
-    public void testDecodeUrl(String input, String expected) throws Exception { assertThat(uriEncode(input, ""), is(expected)); }
+    public void testDecodeUrl(String input, String expected) { assertThat(uriEncode(input, ""), is(expected)); }
 
     @SneakyThrows public static Object[][] uriSuffixInputs() {
         return new Object[][]{

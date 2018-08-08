@@ -10,22 +10,22 @@ import static org.hamcrest.Matchers.is;
 
 public class ResourceUtilTest extends ResourceUtil {
     @Test
-    public void readResourceAsMap() throws Exception {
+    public void readResourceAsMap() {
         assertThat(readResourceAsMap(ResourceUtilTest.class, "files/sample.txt"), is(immutableMap("hello", "world", "foo", "bar")));
     }
 
     @Test
-    public void readResourceBytes() throws Exception {
+    public void readResourceBytes() {
         assertThat(readResourceBytes(ResourceUtilTest.class, "files/sample.txt"), is("hello=world\nfoo=bar".getBytes()));
     }
 
     @Test
-    public void readResource() throws Exception {
+    public void readResource() {
         assertThat(readResource(ResourceUtilTest.class, "files/sample.txt"), is("hello=world\nfoo=bar"));
     }
 
     @Test
-    public void readResourceList() throws Exception {
+    public void readResourceList() {
         assertThat(readResourceList(ResourceUtilTest.class, "files/sample.txt"), is(immutableList("hello=world", "foo=bar")));
     }
 }

@@ -50,14 +50,14 @@ public class ThreadUtilTest extends ThreadUtil {
     }
 
     @Test
-    public void testShutdownNoTerminate() throws Exception {
+    public void testShutdownNoTerminate() {
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         waitedFuture(executorService);
         stopThreadPool(executorService, 50, TimeUnit.MILLISECONDS);
     }
 
     @Test
-    public void testShutdownWithInterrupt() throws Exception {
+    public void testShutdownWithInterrupt() {
         Thread thread = new Thread(() -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
             waitedFuture(executorService);
