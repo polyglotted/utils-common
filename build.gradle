@@ -47,6 +47,9 @@ ext {
 dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
+    compile("org.slf4j:jcl-over-slf4j:${slf4jVersion}") {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
     compile("org.slf4j:jul-to-slf4j:${slf4jVersion}") {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
