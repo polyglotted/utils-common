@@ -3,8 +3,16 @@ package io.polyglotted.common.util;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class NullUtil {
+
+    public static String sysVar(String key) { return requireNonNull(sysVarOrNull(key)); }
+
+    public static String sysVarOrNull(String key) { return sysVar(key, null); }
+
+    public static String sysVar(String key, String defVal) { return nonNull(System.getenv(key), System.getProperty(key, defVal)); }
 
     public static <T> T nonNull(T nullable, Supplier<T> supplier) { return nullable != null ? nullable : supplier.get(); }
 
