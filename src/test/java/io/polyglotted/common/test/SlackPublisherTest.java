@@ -8,11 +8,12 @@ import org.junit.Test;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.immutableMapBuilder;
+import static io.polyglotted.common.util.NullUtil.sysVar;
 
 public class SlackPublisherTest {
     @Test
     public void publish() throws Exception {
-        SlackConfig slackConfig = new SlackConfig().setEnabled(true).setChannel("releases").setHookUrl(System.getProperty("slack.hook.url"));
+        SlackConfig slackConfig = new SlackConfig().setEnabled(true).setChannel("releases").setHookUrl(sysVar("slack.hook.url"));
         try (SlackPublisher publisher = new SlackPublisher(slackConfig)) {
             publisher.publish("test", immutableMapBuilder()
                 .put("fallback", "test success")
