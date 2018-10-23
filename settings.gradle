@@ -1,1 +1,2 @@
 rootProject.name = 'utils-common'
+enableFeaturePreview('STABLE_PUBLISHING')

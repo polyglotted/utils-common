@@ -17,6 +17,7 @@ import static io.polyglotted.common.util.Sanitizer.sanitize;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+@SuppressWarnings("unchecked")
 public interface Builder<T> {
     T build();
 
@@ -25,17 +26,25 @@ public interface Builder<T> {
         String value();
     }
 
-    static <T, C extends Builder<T>> T buildWith(Map<String, Object> mapResult, Class<C> clazz) { return buildWith(mapResult, clazz, false); }
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, Class<C> clazz) { return buildWith(result, clazz, false); }
 
-    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> T buildWith(Map<String, Object> mapResult, Class<C> clazz, boolean inclMeta) {
-        T built = buildWith(mapResult, clazz, (C) create(clazz)).build();
-        return (inclMeta && built instanceof HasMeta) ? (T) ((HasMeta) built).withMetas(mapResult) : built;
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, Class<C> clazz, boolean inclMeta) {
+        return buildWith(result, (C) create(clazz), inclMeta);
     }
 
-    @SuppressWarnings("unchecked") static <T, C extends Builder<T>> C buildWith(Map<String, Object> mapResult, Class<C> clazz, C builder) {
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, C builder) { return buildWith(result, builder, false); }
+
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, C builder, boolean inclMeta) {
+        T built = builder(result, (Class<C>) builder.getClass(), builder).build();
+        return (inclMeta && built instanceof HasMeta) ? (T) ((HasMeta) built).withMetas(result) : built;
+    }
+
+    static <T, C extends Builder<T>> C builder(Map<String, Object> result, Class<C> clazz) { return builder(result, clazz, (C) create(clazz)); }
+
+    static <T, C extends Builder<T>> C builder(Map<String, Object> result, Class<C> clazz, C builder) {
         for (Field field : clazz.getDeclaredFields()) {
-            Object value = mapResult.get(field.getName());
-            if (value == null) { value = mapResult.get(nonNullFn(annotation(field, Builder.Name.class), Builder.Name::value, "_$")); }
+            Object value = result.get(field.getName());
+            if (value == null) { value = result.get(nonNullFn(annotation(field, Builder.Name.class), Builder.Name::value, "_$")); }
 
             if (value != null) {
                 Class<?> valueClass = detectValueClass(value, () -> declaredField(clazz, field.getName()));
