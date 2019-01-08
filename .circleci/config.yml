@@ -40,7 +40,7 @@ jobs:
           command: |
             ./gradlew -PprojVersion=latet buildZip
             pwd
-            ls -lA
+            ls -lR build
             aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-latest.zip s3://artifacts.abaci.co/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
             aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description "Utils Common" --license-info "Apache-2.0"  --content S3Bucket=artifacts.abaci.co,S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-latest.zip --compatible-runtimes java8
       - run:
