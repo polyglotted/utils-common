@@ -2,8 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
-    working_directory: ~/utils-common
+      - image: circleci/openjdk:8u181
+    working_directory: ~/${CIRCLE_PROJECT_REPONAME}
     environment:
       GRADLE_OPTS: -Xmx3200m
       artifact_dir: "artifacts"
@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Setup GPG and Gradle Props
           command: |
-            sudo apt-get install gettext gnupg2 -y
+            sudo apt-get install gettext gnupg2 awscli -y
             curl ${GPG_OUT} -o private.key && gpg2 --allow-secret-key-import --import private.key
             gpg2 --export-secret-key ${GPG_KEYID} > secring.gpg
             envsubst < "gradle.properties.tpl" > "gradle.properties"
@@ -38,11 +38,17 @@ jobs:
       - run:
           name: Upload Code Coverage
           command: 'bash <(curl -s https://codecov.io/bash) -t 75db8c6b-3439-45de-9d6f-f3da60f59e9d'
+      - run:
+          name: Publish Lambda Layer
+          command: |
+            ./gradlew -PprojVersion=latet buildZip
+            aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-latest.zip s3://artifacts.abaci.co/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
+            aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description "Utils Common" --license-info "Apache-2.0"  --content S3Bucket=artifacts.abaci.co,S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-latest.zip --compatible-runtimes java8
 
   deploy:
     docker:
-      - image: circleci/openjdk:8-jdk
-    working_directory: ~/utils-common
+      - image: circleci/openjdk:8u181
+    working_directory: ~/${CIRCLE_PROJECT_REPONAME}
     environment:
       GRADLE_OPTS: -Xmx3200m
       artifact_dir: "artifacts"
@@ -51,7 +57,7 @@ jobs:
       - run:
           name: Setup GPG and Gradle Props
           command: |
-            sudo apt-get install gettext gnupg2 -y
+            sudo apt-get install gettext gnupg2 awscli -y
             curl ${GPG_OUT} -o private.key && gpg2 --allow-secret-key-import --import private.key
             gpg2 --export-secret-key ${GPG_KEYID} > secring.gpg
             envsubst < "gradle.properties.tpl" > "gradle.properties"
