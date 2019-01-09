@@ -40,7 +40,7 @@ jobs:
           name: Publish Lambda Layer
           command: |
             ./gradlew -PprojVersion=latest buildZip
-            pip install awscli
+            sudo pip install awscli
             aws --version
             aws configure set default.s3.signature_version s3v4
             aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-latest.zip s3://artifacts.abaci.co/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
