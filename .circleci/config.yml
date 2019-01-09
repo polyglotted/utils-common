@@ -12,7 +12,8 @@ jobs:
       - run:
           name: Setup GPG and Gradle Props
           command: |
-            sudo apt-get install gettext gnupg2 -y
+            sudo apt-get update
+            sudo apt-get install gettext gnupg2 python-pip -y
             curl ${GPG_OUT} -o private.key && gpg2 --allow-secret-key-import --import private.key
             gpg2 --export-secret-key ${GPG_KEYID} > secring.gpg
             envsubst < "gradle.properties.tpl" > "gradle.properties"
@@ -39,9 +40,7 @@ jobs:
           name: Publish Lambda Layer
           command: |
             ./gradlew -PprojVersion=latest buildZip
-            sudo apt-get update
-            sudo apt-get install python-pip
-            pip install awscli --upgrade
+            pip install awscli
             aws --version
             aws configure set default.s3.signature_version s3v4
             aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-latest.zip s3://artifacts.abaci.co/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
