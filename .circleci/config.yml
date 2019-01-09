@@ -43,7 +43,8 @@ jobs:
             sudo pip install awscli
             aws configure set default.s3.signature_version s3v4
             aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-latest.zip s3://artifacts.abaci.co/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
-            layer_ver = $(aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description "Utils Common" --license-info "Apache-2.0"  --content S3Bucket=artifacts.abaci.co,S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-latest.zip --compatible-runtimes java8 | jq -r '.LayerVersionArn')
+            export layer_ver=$(aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description "Utils Common" --license-info "Apache-2.0"  --content S3Bucket=artifacts.abaci.co,S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-latest.zip --compatible-runtimes java8 | jq -r '.LayerVersionArn')
+            echo ${layer_ver}
             aws lambda add-layer-version-permission --layer-name ${CIRCLE_PROJECT_REPONAME} --statement-id public-access --version-number ${layer_ver} --principal '*' --action lambda:GetLayerVersion
       - run:
           name: Upload Code Coverage
