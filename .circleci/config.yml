@@ -23,7 +23,7 @@ jobs:
           - v1-dependencies-
       - run:
           name: Gradle Check
-          command: ./gradlew --warning-mode=none -PprojVersion=latest check
+          command: ./gradlew -PprojVersion=latest check
       - save_cache:
           paths:
             - ~/.gradle
@@ -46,12 +46,12 @@ jobs:
     working_directory: ~/utils-common
     environment:
       GRADLE_OPTS: -Xmx3200m
-      artifact_dir: "artifacts"
     steps:
       - checkout
       - run:
           name: Setup GPG and Gradle Props
           command: |
+            sudo apt-get update
             sudo apt-get install gettext gnupg2 python-pip -y
             curl ${GPG_OUT} -o private.key && gpg2 --allow-secret-key-import --import private.key
             gpg2 --export-secret-key ${GPG_KEYID} > secring.gpg
