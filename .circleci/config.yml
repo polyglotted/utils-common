@@ -68,7 +68,7 @@ jobs:
             ./gradlew -PprojVersion=${CIRCLE_TAG:1} buildZip
             aws configure set default.s3.signature_version s3v4
             aws s3 cp build/distributions/${CIRCLE_PROJECT_REPONAME}-${CIRCLE_TAG:1}.zip s3://${LAMBDA_BUCKET}/lambda/layers/${CIRCLE_PROJECT_REPONAME}/
-            export layer_ver=$(aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description ${PROJECT_DESC} --license-info "Apache-2.0"  --content S3Bucket=${LAMBDA_BUCKET},S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-${CIRCLE_TAG:1}.zip --compatible-runtimes java8 | jq -r '.Version')
+            export layer_ver=$(aws lambda publish-layer-version --layer-name ${CIRCLE_PROJECT_REPONAME} --description "${PROJECT_DESC}" --license-info "Apache-2.0"  --content S3Bucket=${LAMBDA_BUCKET},S3Key=lambda/layers/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}-${CIRCLE_TAG:1}.zip --compatible-runtimes java8 | jq -r '.Version')
             aws lambda add-layer-version-permission --layer-name ${CIRCLE_PROJECT_REPONAME} --statement-id public-access --version-number ${layer_ver} --principal '*' --action lambda:GetLayerVersion
 
 workflows:
