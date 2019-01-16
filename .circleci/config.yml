@@ -61,7 +61,7 @@ jobs:
       - run:
           name: Gradle Deploy
           command: |
-            ./gradlew --warning-mode=none -PprojVersion=${CIRCLE_TAG:1} publish
+            ./gradlew --warning-mode=none -PprojVersion=${CIRCLE_TAG:1} uploadArchives
       - run:
           name: Publish Lambda Layer
           command: |

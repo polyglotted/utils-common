@@ -3,7 +3,6 @@ apply plugin: 'idea'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'maven-publish'
 
 group = 'io.polyglotted'
 version = project.projVersion
@@ -190,50 +189,50 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
+artifacts {
+    archives javadocJar, sourcesJar
+}
 signing {
     sign configurations.archives
 }
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'utils-common'
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            pom {
-                name = 'utils-common'
-                description = 'Polyglotted Common Utils'
-                url = 'https://github.com/polyglotted/utils-common'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+            }
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            pom.project {
+                name 'utils-common'
+                packaging 'jar'
+                description 'Polyglotted Common Utils'
+
+                url 'https://github.com/polyglotted/utils-common'
                 scm {
-                    connection = 'scm:git:git@github.com:polyglotted/utils-common.git'
-                    developerConnection = 'scm:git:git@github.com:polyglotted/utils-common.git'
-                    url = 'https://github.com/polyglotted/utils-common'
+                    connection 'scm:git:git@github.com:polyglotted/utils-common.git'
+                    developerConnection 'scm:git:git@github.com:polyglotted/utils-common.git'
+                    url 'https://github.com/polyglotted/utils-common'
                 }
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
                 developers {
                     developer {
-                        id = 'vshank77'
-                        name = 'Shankar Vasduevan'
-                        email = 'shankar [at] polyglotted [dot] io'
+                        id 'vshank77'
+                        name 'Shankar Vasduevan'
+                        email 'shankar [at] polyglotted [dot] io'
                     }
                 }
             }
-        }
-    }
-    repositories {
-        maven {
-            credentials {
-                username project.ossrhUsername
-                password project.ossrhPassword
-            }
-            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }
