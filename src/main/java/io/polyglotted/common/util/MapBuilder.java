@@ -128,6 +128,14 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
         implements MapBuilder<K, V, Map<K, V>, SimpleMapBuilder<K, V>> {
         @Getter private final Map<K, V> builder;
 
+        public boolean containsKey(K key) { return builder.containsKey(key); }
+
+        public V get(K key) { return builder.get(key); }
+
+        public V getOrDefault(K key, V defaultValue) { return builder.getOrDefault(key, defaultValue); }
+
+        public V remove(K key) { return builder.remove(key); }
+
         @Override public SimpleMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
         @Override public SimpleMapBuilder<K, V> putList(K key, List<?> values) {
