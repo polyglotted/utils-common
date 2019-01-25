@@ -2,12 +2,12 @@ package io.polyglotted.common.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import io.polyglotted.common.model.HasMeta;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
 import lombok.SneakyThrows;
@@ -15,7 +15,6 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import static com.fasterxml.jackson.databind.MapperFeature.ACCEPT_CASE_INSENSITI
 import static com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY;
 import static com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static com.google.common.base.Charsets.UTF_8;
 import static io.polyglotted.common.model.Serializers.baseModule;
 import static io.polyglotted.common.util.MapRetriever.MAP_LIST_CLASS;
 
@@ -61,66 +59,37 @@ public abstract class BaseSerializer {
             .setVisibility(new VisibilityChecker.Std(NONE, NONE, NONE, ANY, ANY));
     }
 
-    @SneakyThrows public static byte[] serializeBytes(Object object) { return serializeBytes(MAPPER, object); }
+    @SneakyThrows public static byte[] serializeBytes(Object object) { return MAPPER.writeValueAsBytes(object); }
 
-    @SneakyThrows public static byte[] serializeBytes(ObjectMapper mapper, Object object) { return mapper.writeValueAsBytes(object); }
+    @SneakyThrows public static String serialize(Object object) { return MAPPER.writeValueAsString(object); }
 
-    @SneakyThrows public static String serialize(Object object) { return serialize(MAPPER, object); }
+    @SneakyThrows public static <T> T deserialize(String json, Class<T> clazz) { return MAPPER.readValue(json, clazz); }
 
-    @SneakyThrows public static String serialize(ObjectMapper mapper, Object object) { return mapper.writeValueAsString(object); }
+    @SneakyThrows public static <T> T deserialize(String json, TypeReference<T> ref) { return MAPPER.readValue(json, ref); }
 
-    @SneakyThrows public static <T> T deserialize(String json, Class<T> clazz) { return deserialize(MAPPER, json, clazz); }
+    @SneakyThrows public static <T> T deserialize(byte[] bytes, Class<T> clazz) { return MAPPER.readValue(bytes, clazz); }
 
-    @SneakyThrows public static <T> T deserialize(ObjectMapper mapper, String json, Class<T> clazz) { return mapper.readValue(json, clazz); }
+    @SneakyThrows public static <T> T deserialize(byte[] bytes, TypeReference<T> ref) { return MAPPER.readValue(bytes, ref); }
 
-    @SneakyThrows public static <T> T deserialize(byte[] bytes, Class<T> clazz) { return deserialize(MAPPER, bytes, clazz); }
+    @SneakyThrows public static <T> T deserialize(InputStream stream, Class<T> clazz) { return MAPPER.readValue(stream, clazz); }
 
-    @SneakyThrows public static <T> T deserialize(ObjectMapper mapper, byte[] bytes, Class<T> clazz) { return mapper.readValue(bytes, clazz); }
+    @SneakyThrows public static <T> T deserialize(InputStream stream, TypeReference<T> ref) { return MAPPER.readValue(stream, ref); }
 
-    @SneakyThrows public static <T> T deserialize(InputStream stream, Class<T> clazz) { return deserialize(MAPPER, stream, clazz); }
+    @SneakyThrows public static <T> T deserialize(Reader reader, Class<T> clazz) { return MAPPER.readValue(reader, clazz); }
 
-    @SneakyThrows public static <T> T deserialize(ObjectMapper mapper, InputStream stream, Class<T> clazz) { return mapper.readValue(stream, clazz); }
+    @SneakyThrows public static <T> T deserialize(Reader reader, TypeReference<T> ref) { return MAPPER.readValue(reader, ref); }
 
-    @SneakyThrows public static <T> T deserialize(Reader reader, Class<T> clazz) { return deserialize(MAPPER, reader, clazz); }
+    @SneakyThrows public static List<Map<String, Object>> deserializeToList(byte[] bytes) { return MAPPER.readValue(bytes, MAP_LIST_CLASS); }
 
-    @SneakyThrows public static <T> T deserialize(ObjectMapper mapper, Reader reader, Class<T> clazz) { return mapper.readValue(reader, clazz); }
+    @SneakyThrows public static List<Map<String, Object>> deserializeToList(String json) { return MAPPER.readValue(json, MAP_LIST_CLASS); }
 
-    public static List<Map<String, Object>> deserializeToList(String string) { return deserializeToList(MAPPER, string); }
+    @SneakyThrows public static List<Map<String, Object>> deserializeToList(InputStream stream) { return MAPPER.readValue(stream, MAP_LIST_CLASS); }
 
-    public static List<Map<String, Object>> deserializeToList(ObjectMapper mapper, String string) {
-        return deserializeToList(mapper, string.getBytes(UTF_8));
-    }
+    @SneakyThrows public static List<Map<String, Object>> deserializeToList(Reader reader) { return MAPPER.readValue(reader, MAP_LIST_CLASS); }
 
-    public static List<Map<String, Object>> deserializeToList(byte[] bytes) { return deserializeToList(MAPPER, bytes); }
+    @SneakyThrows public static MapResult deserialize(byte[] bytes) { return MAPPER.readValue(bytes, SimpleMapResult.class); }
 
-    public static List<Map<String, Object>> deserializeToList(ObjectMapper mapper, byte[] bytes) { return deserialize(mapper, bytes, MAP_LIST_CLASS); }
-
-    @SneakyThrows public static MapResult deserialize(byte[] bytes) { return deserialize(MAPPER, bytes); }
-
-    @SneakyThrows public static MapResult deserialize(ObjectMapper mapper, byte[] bytes) { return deserialize(mapper, bytes, SimpleMapResult.class); }
-
-    @SneakyThrows public static MapResult deserialize(String json) { return deserialize(MAPPER, json); }
-
-    @SneakyThrows public static MapResult deserialize(ObjectMapper mapper, String json) { return deserialize(mapper, json, SimpleMapResult.class); }
-
-    @SneakyThrows public static <T extends HasMeta> String serializeMeta(T holder) {
-        StringWriter writer = new StringWriter();
-        try (JsonGenerator gen = FACTORY.createGenerator(writer)) {
-            writeMeta(gen, holder);
-        }
-        return writer.toString();
-    }
-
-    @SneakyThrows public static <T extends HasMeta> void writeMeta(JsonGenerator gen, T holder) {
-        gen.writeStartObject();
-        for (Map.Entry<String, Object> meta : holder._meta().entrySet()) {
-            gen.writeObjectField(meta.getKey(), meta.getValue());
-        }
-        if (holder.hasMeta()) { gen.writeRaw(","); }
-        String serialized = serialize(holder);
-        gen.writeRaw(serialized.substring(1, serialized.length() - 1));
-        gen.writeEndObject();
-    }
+    @SneakyThrows public static MapResult deserialize(String json) { return MAPPER.readValue(json, SimpleMapResult.class); }
 
     public static void writeNotEmptyMap(JsonGenerator gen, String name, Map<?, ?> map) throws IOException {
         if (!map.isEmpty()) { gen.writeObjectField(name, map); }

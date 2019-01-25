@@ -3,14 +3,11 @@ package io.polyglotted.common.test;
 import io.polyglotted.common.model.GeoPoint;
 import io.polyglotted.common.model.GeoShape;
 import io.polyglotted.common.model.GeoType;
-import io.polyglotted.common.model.HasMeta;
 import io.polyglotted.common.model.MapResult;
-import io.polyglotted.common.model.SortedMapResult;
 import io.polyglotted.common.util.BaseSerializer;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.junit.Test;
@@ -33,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.polyglotted.common.model.AuthToken.tokenBuilder;
-import static io.polyglotted.common.model.MapResult.simpleResult;
-import static io.polyglotted.common.model.SortedMapResult.treeResult;
 import static io.polyglotted.common.model.Subject.subjectBuilder;
 import static io.polyglotted.common.test.BaseSerializerTest.MyConst.BAZ;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
@@ -115,26 +110,6 @@ public class BaseSerializerTest extends BaseSerializer {
         Simplified expected = new Simplified().fullStr("");
         String json = serialize(expected);
         assertThat(json, deserialize(json, Simplified.class), is(new Simplified()));
-    }
-
-    @Test
-    public void serializeMetaSuccess() {
-        SimpleMeta expected = new SimpleMeta().id("foo").tops(simpleResult("bar", 1, "baz", true))
-            .withMeta("&foo", "Fooz").withMeta("&bar", 25).withMeta("&baz", true);
-        String json = serializeMeta(expected);
-        SimpleMeta actual1 = deserialize(json, SimpleMeta.class);
-        assertThat(json, actual1, is(expected));
-
-        MapResult actual2 = deserialize(json);
-        assertThat(json, serialize(actual2), is(json));
-    }
-
-    @Accessors(fluent = true, chain = true)
-    @Setter @EqualsAndHashCode(exclude = "_meta")
-    static class SimpleMeta implements HasMeta<SimpleMeta> {
-        private String id;
-        private MapResult tops;
-        @Getter private transient final SortedMapResult _meta = treeResult();
     }
 
     @SuppressWarnings("unused") enum MyConst {FOO, BAR, BAZ}

@@ -26,17 +26,10 @@ public interface Builder<T> {
         String value();
     }
 
-    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, Class<C> clazz) { return buildWith(result, clazz, false); }
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, Class<C> clazz) { return buildWith(result, (C) create(clazz)); }
 
-    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, Class<C> clazz, boolean inclMeta) {
-        return buildWith(result, (C) create(clazz), inclMeta);
-    }
-
-    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, C builder) { return buildWith(result, builder, false); }
-
-    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, C builder, boolean inclMeta) {
-        T built = builder(result, (Class<C>) builder.getClass(), builder).build();
-        return (inclMeta && built instanceof HasMeta) ? (T) ((HasMeta) built).withMetas(result) : built;
+    static <T, C extends Builder<T>> T buildWith(Map<String, Object> result, C builder) {
+        return builder(result, (Class<C>) builder.getClass(), builder).build();
     }
 
     static <T, C extends Builder<T>> C builder(Map<String, Object> result, Class<C> clazz) { return builder(result, clazz, (C) create(clazz)); }
