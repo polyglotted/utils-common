@@ -58,6 +58,8 @@ public interface ListBuilder<E, L extends Collection<E>, LB extends ListBuilder<
 
     static <E> SimpleSetBuilder<E> simpleSetBuilder(Supplier<Set<E>> supplier) { return new SimpleSetBuilder<>(supplier.get()); }
 
+    static <E> ImmutableSet<E> immutableSet() { return ImmutableSet.of(); }
+
     @SafeVarargs static <E> Set<E> immutableSet(E... elems) { return immutableSet(asList(elems)); }
 
     static <E> ImmutableSet<E> immutableSet(SimpleSetBuilder<E> builder) { return immutableSet(builder.build()); }

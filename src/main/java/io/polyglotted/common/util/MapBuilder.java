@@ -31,9 +31,11 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
     M build();
 
+    ImmutableMap<K, V> immutable();
+
     MapResult result();
 
-    ImmutableResult immutable();
+    ImmutableResult immutableResult();
 
     static <K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> ImmutableBiMap<K, V> immutableBiMap(MapBuilder<K, V, M, MB> builder) {
         return immutableBiMap(builder.build());
@@ -119,9 +121,11 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
         @Override public ImmutableMap<K, V> build() { return builder.build(); }
 
-        @Override public MapResult result() { return immutable(); }
+        @Override public ImmutableMap<K, V> immutable() { return builder.build(); }
 
-        @Override public ImmutableResult immutable() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
+        @Override public MapResult result() { return immutableResult(); }
+
+        @Override public ImmutableResult immutableResult() { return new ImmutableMapResult((ImmutableMap<String, Object>) builder.build()); }
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE) @Accessors(fluent = true) class SimpleMapBuilder<K, V>
@@ -150,10 +154,12 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
         @Override public Map<K, V> build() { return builder; }
 
+        @Override public ImmutableMap<K, V> immutable() { return ImmutableMap.copyOf(builder); }
+
         @Override public MapResult result() {
             return builder instanceof MapResult ? (MapResult) builder : new SimpleMapResult((Map<String, Object>) builder);
         }
 
-        @Override public ImmutableResult immutable() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
+        @Override public ImmutableResult immutableResult() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
     }
 }

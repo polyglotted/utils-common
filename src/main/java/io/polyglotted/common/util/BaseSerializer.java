@@ -63,6 +63,8 @@ public abstract class BaseSerializer {
 
     @SneakyThrows public static String serialize(Object object) { return MAPPER.writeValueAsString(object); }
 
+    @SneakyThrows public static String prettyPrint(Object object) { return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object); }
+
     @SneakyThrows public static <T> T deserialize(String json, Class<T> clazz) { return MAPPER.readValue(json, clazz); }
 
     @SneakyThrows public static <T> T deserialize(String json, TypeReference<T> ref) { return MAPPER.readValue(json, ref); }

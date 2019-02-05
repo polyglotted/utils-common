@@ -15,7 +15,6 @@ import static io.polyglotted.common.model.SortedMapResult.treeResult;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMap;
 import static java.time.LocalDate.now;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -53,7 +52,6 @@ public class MapResultTest {
         assertThat(outOnly(expected), is(expected));
         assertThat(inOnly(expected), is(expected));
         assertThat(expected.immutable(), is(immutableResult(expected)));
-        assertThat(expected.toJson(), is(notNullValue()));
     }
 
     @Test

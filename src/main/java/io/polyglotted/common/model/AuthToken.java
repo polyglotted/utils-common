@@ -8,12 +8,11 @@ import lombok.experimental.Accessors;
 
 import java.util.Map;
 
-import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor @EqualsAndHashCode
-public final class AuthToken implements Jsoner {
+public final class AuthToken {
     public final String accessToken;
     public final Integer expiresIn;
     public final String tokenType;
@@ -21,8 +20,6 @@ public final class AuthToken implements Jsoner {
 
     /* ignore - for serialisation */
     private AuthToken() { this(null, null, null, null); }
-
-    public String toJson() { return serialize(this); }
 
     public static AuthToken buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 

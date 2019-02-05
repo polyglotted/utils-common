@@ -16,7 +16,6 @@ import java.util.Map;
 
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.MapResult.immutableResultBuilder;
-import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.UrnUtil.safeUrnOf;
@@ -25,7 +24,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 @SuppressWarnings("unused") @Accessors(fluent = true, chain = true)
 @RequiredArgsConstructor @EqualsAndHashCode @ToString
-public final class Subject implements Jsoner {
+public final class Subject {
     public final String username;
     public final List<String> roles;
     public final MapResult metadata;
@@ -36,8 +35,6 @@ public final class Subject implements Jsoner {
 
     /* ignore - for serialisation */
     private Subject() { this(null, immutableList(), immutableResult(), true, null, null); }
-
-    public String toJson() { return serialize(this); }
 
     public static Subject buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 
@@ -65,7 +62,8 @@ public final class Subject implements Jsoner {
         public Builder metadata(Map<String, Object> meta) { this.metadata.putAll(meta); return this; }
 
         @Override public Subject build() {
-            return new Subject(requireNonNull(username, "username"), roles.build(), metadata.immutable(), enabled, fullName, email).password(password);
+            return new Subject(requireNonNull(username, "username"), roles.build(),
+                metadata.immutableResult(), enabled, fullName, email).password(password);
         }
     }
 }

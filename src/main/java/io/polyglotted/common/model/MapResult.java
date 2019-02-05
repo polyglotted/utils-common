@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.polyglotted.common.util.Assertions.checkContains;
-import static io.polyglotted.common.util.BaseSerializer.serialize;
 import static io.polyglotted.common.util.CollUtil.firstOf;
 import static io.polyglotted.common.util.CollUtil.toArray;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
@@ -27,7 +26,7 @@ import static io.polyglotted.common.util.UrnUtil.urnOf;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "unchecked", "deprecation", "ConstantConditions"})
-public interface MapResult extends Map<String, Object>, Jsoner {
+public interface MapResult extends Map<String, Object> {
 
     default <T> T first() { return requireNonNull(first(null)); }
 
@@ -112,8 +111,6 @@ public interface MapResult extends Map<String, Object>, Jsoner {
     default <T> T removeIfExists(String prop) { return removeIfExists(prop, null); }
 
     default <T> T removeIfExists(String prop, T defVl) { return containsKey(prop) ? (T) remove(prop) : defVl; }
-
-    default String toJson() { return serialize(this); }
 
     static ImmutableMapResult immutableResult() { return ImmutableMapResult.EMPTY; }
 
