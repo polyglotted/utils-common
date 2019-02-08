@@ -59,6 +59,8 @@ public abstract class Sanitizer {
 
     public static boolean isSanitizable(Class<?> expectedType) { return isEnum(expectedType) || FUNCTIONS_MAP.containsKey(expectedType); }
 
+    public static boolean isBinary(Object object) { return object instanceof byte[] || object instanceof ByteBuffer; }
+
     public static Object sanitize(Class<?> expectedType, Object value) {
         if (value == null) return null;
         else if (isEnum(expectedType)) { return fetchEnumValueFor(expectedType, String.valueOf(value)); }

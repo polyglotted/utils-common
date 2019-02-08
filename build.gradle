@@ -24,7 +24,11 @@ repositories {
 
 ext {
     bcprovVersion = '1.60'
+    commonsBeanUtilsVersion = '1.9.3'
     commonsCodecVersion = '1.11'
+    commonsCollVersion = '3.2.2'
+    commonsLang3Version = '3.5'
+    commonsTextVersion = '1.1'
     configVersion = '1.3.3'
     failureAccessVersion = '1.0.1'
     findbugsVersion = '3.0.2'
@@ -33,7 +37,7 @@ ext {
     httpCoreVersion = '4.4.10'
     httpClientVersion = '4.5.6'
     httpClientAsyncVersion = '4.1.4'
-    injectVersion = '1'
+    jaxrsVersion = '2.1'
     jacksonVersion = '2.9.8'
     jasyptVersion = '1.9.2'
     jodaVersion = '2.10.1'
@@ -69,8 +73,13 @@ dependencies {
         exclude group: "org.apache.logging.log4j", module: "log4j-core"
     }
     compile "commons-codec:commons-codec:${commonsCodecVersion}"
+    compile "commons-collections:commons-collections:${commonsCollVersion}"
+    compile("commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"){
+        exclude group: "commons-logging", module: "commons-logging"
+        exclude group: "commons-collections", module: "commons-collections"
+    }
     compile "joda-time:joda-time:${jodaVersion}"
-    compile "javax.inject:javax.inject:${injectVersion}"
+    compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
     compile "org.jasypt:jasypt:${jasyptVersion}"
     compile "com.typesafe:config:${configVersion}"
     compile "com.google.code.findbugs:jsr305:${findbugsVersion}"
@@ -128,7 +137,11 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
         exclude group: "org.yaml", module: "snakeyaml"
     }
-    compile"org.apache.httpcomponents:httpcore:${httpCoreVersion}"
+    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    compile("org.apache.commons:commons-text:${commonsTextVersion}") {
+        exclude group: "org.apache.commons", module: "commons-lang"
+    }
+    compile "org.apache.httpcomponents:httpcore:${httpCoreVersion}"
     compile("org.apache.httpcomponents:httpcore-nio:${httpCoreVersion}") {
         exclude group: "org.apache.httpcomponents", module: "httpcore"
     }

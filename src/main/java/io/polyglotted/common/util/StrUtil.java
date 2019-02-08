@@ -16,6 +16,10 @@ public abstract class StrUtil {
 
     public static String nullAsEmpty(String string) { return nullOrEmpty(string) ? "" : string; }
 
+    public static String nullOrStr(Object object) { return object == null ? null : String.valueOf(object); }
+
+    public static String toLower(Object object) { return object == null ? "" : String.valueOf(object).toLowerCase(); }
+
     public static String nonNullStr(String nullable) { return requireNonNull(emptyAsNull(nullable), "required String is null"); }
 
     public static String nonNullStr(String nullable, String checked) { return emptyAsNull(nullable) != null ? nullable : checked; }

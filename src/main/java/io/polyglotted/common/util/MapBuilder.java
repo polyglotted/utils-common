@@ -7,6 +7,7 @@ import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.ImmutableMapResult;
 import io.polyglotted.common.model.MapResult.ImmutableResult;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
+import io.polyglotted.common.model.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,17 @@ import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> {
     MB put(K key, V value);
 
-    MB putList(K key, List<?> values);
+    default MB putList(K key, List<?> values) {
+        if (values != null && !values.isEmpty()) put(key, (V) values); return (MB) this;
+    }
 
-    MB putAll(Map<K, V> map);
+    default MB putAll(Map<K, V> map) {
+        for (Map.Entry<K, V> e : map.entrySet()) { put(e.getKey(), e.getValue()); } return (MB) this;
+    }
+
+    default MB putTransformed(Map<K, V> map, PairTransformer transformer) {
+        for (Map.Entry<K, V> e : map.entrySet()) { Pair<K, V> pair = transformer.transform(e); put(pair._a, pair._b); } return (MB) this;
+    }
 
     int size();
 
@@ -109,14 +118,6 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
         @Override public ImmutableMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
-        @Override public ImmutableMapBuilder<K, V> putList(K key, List<?> values) {
-            if (values != null && !values.isEmpty()) builder.put(key, (V) values); return this;
-        }
-
-        @Override public ImmutableMapBuilder<K, V> putAll(Map<K, V> map) {
-            for (Map.Entry<K, V> e : map.entrySet()) { put(e.getKey(), e.getValue()); } return this;
-        }
-
         @Override public int size() { return fieldValue(builder, "size"); }
 
         @Override public ImmutableMap<K, V> build() { return builder.build(); }
@@ -142,14 +143,6 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
         @Override public SimpleMapBuilder<K, V> put(K key, V value) { if (value != null) builder.put(key, value); return this; }
 
-        @Override public SimpleMapBuilder<K, V> putList(K key, List<?> values) {
-            if (values != null && !values.isEmpty()) builder.put(key, (V) values); return this;
-        }
-
-        @Override public SimpleMapBuilder<K, V> putAll(Map<K, V> map) {
-            for (Map.Entry<K, V> e : map.entrySet()) { put(e.getKey(), e.getValue()); } return this;
-        }
-
         @Override public int size() { return builder.size(); }
 
         @Override public Map<K, V> build() { return builder; }
@@ -161,5 +154,9 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
         }
 
         @Override public ImmutableResult immutableResult() { return new ImmutableMapResult(ImmutableMap.copyOf((Map<String, Object>) builder)); }
+    }
+
+    interface PairTransformer<K, V> {
+        Pair<K, V> transform(Map.Entry<K, V> entry);
     }
 }
