@@ -66,7 +66,7 @@ public abstract class AbstractHttpHandler {
         try {
 
         } catch (Exception ex) {
-            sendResult(outputStream, SC_INTERNAL_SERVER_ERROR, immutableMap(), ex.getMessage());
+            sendResult(outputStream, SC_INTERNAL_SERVER_ERROR, immutableMap(), ex.getMessage()); return;
         }
     }
 
