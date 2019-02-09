@@ -2,6 +2,7 @@ package io.polyglotted.common.util;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.MapResult.ImmutableMapResult;
@@ -18,9 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static io.polyglotted.common.util.MapRetriever.safeEntries;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 
-@SuppressWarnings({"unchecked", "unused", "WeakerAccess"})
+@SuppressWarnings({"unchecked", "unused", "WeakerAccess", "UnstableApiUsage"})
 public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> {
     MB put(K key, V value);
 
@@ -45,6 +47,10 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
     MapResult result();
 
     ImmutableResult immutableResult();
+
+    static <K, V> ImmutableMultimap<K, V> immutableMultimap(Map<K, V> map) { return ImmutableMultimap.copyOf(safeEntries(map)); }
+
+    static <K, V> ImmutableMultimap<K, V> immutableMultimap() { return ImmutableMultimap.of(); }
 
     static <K, V, M extends Map<K, V>, MB extends MapBuilder<K, V, M, MB>> ImmutableBiMap<K, V> immutableBiMap(MapBuilder<K, V, M, MB> builder) {
         return immutableBiMap(builder.build());

@@ -5,6 +5,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
+import static org.apache.http.HttpStatus.SC_METHOD_NOT_ALLOWED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
@@ -32,7 +33,9 @@ public class WebException extends RuntimeException {
 
     public static WebException unauthorisedException(String message) { return new WebException(SC_UNAUTHORIZED, message); }
 
-    public static WebException notFoundException(String item) { return new WebException(SC_NOT_FOUND, item + " not found"); }
+    public static WebException notFoundException(String item) { return new WebException(SC_NOT_FOUND, item + ": Not Found"); }
+
+    public static WebException methodNotAllowedException(String message) { return new WebException(SC_METHOD_NOT_ALLOWED, message); }
 
     public static WebException conflictException(String message) { return new WebException(SC_CONFLICT, message); }
 

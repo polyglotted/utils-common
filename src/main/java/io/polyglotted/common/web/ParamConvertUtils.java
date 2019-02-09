@@ -35,7 +35,6 @@ import java.util.function.Function;
                 // Void and Character has no valueOf. It's ok to ignore them
             }
         }
-
         PRIMITIVES_PARSE_METHODS = methods;
     }
 
@@ -43,8 +42,6 @@ import java.util.function.Function;
         if (!(resultType instanceof Class)) { throw new IllegalArgumentException("Unsupported @PathParam type " + resultType); }
         return value -> ConvertUtils.convert(value, (Class<?>) resultType);
     }
-
-    static Function<List<String>, Object> createHeaderParamConverter(Type resultType) { return createListConverter(resultType); }
 
     static Function<List<String>, Object> createQueryParamConverter(Type resultType) { return createListConverter(resultType); }
 
@@ -56,9 +53,7 @@ import java.util.function.Function;
         if (resultClass == String.class) {
             return new BasicConverter(Defaults.defaultValue(resultClass)) {
                 @Override
-                protected Object convert(String value) {
-                    return value;
-                }
+                protected Object convert(String value) { return value; }
             };
         }
 

@@ -1,5 +1,6 @@
 package io.polyglotted.common.util;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 import io.polyglotted.common.model.MapResult;
 import io.polyglotted.common.model.Pair;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -192,4 +194,6 @@ public abstract class MapRetriever {
     public static <T> T removeIfExists(Map<String, Object> map, String prop) { return removeIfExists(map, prop, null); }
 
     public static <T> T removeIfExists(Map<String, Object> map, String prop, T defVl) { return map.containsKey(prop) ? (T) map.remove(prop) : defVl; }
+
+    public static <K, V> Set<Map.Entry<K, V>> safeEntries(Map<K, V> map) { return map == null ? ImmutableSet.of() : map.entrySet(); }
 }

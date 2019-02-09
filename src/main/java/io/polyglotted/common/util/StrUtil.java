@@ -2,6 +2,7 @@ package io.polyglotted.common.util;
 
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -43,4 +44,6 @@ public abstract class StrUtil {
     public static String stringOf(List<String> strings) { String result = String.valueOf(strings); return result.substring(1, result.length() - 1); }
 
     public static String[] toStrArray(Iterable<String> strings) { return CollUtil.toArray(strings, String.class); }
+
+    public static String strLen(String value) { return value == null ? "0" : String.valueOf(value.getBytes(UTF_8).length); }
 }
