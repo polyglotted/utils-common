@@ -26,7 +26,6 @@ import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.web.ParamConvertUtils.createPathParamConverter;
 import static io.polyglotted.common.web.ParamConvertUtils.createQueryParamConverter;
 import static io.polyglotted.common.web.WebException.internalServerException;
-import static io.polyglotted.common.web.WebException.methodNotAllowedException;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"WeakerAccess", "unchecked"})
@@ -69,7 +68,6 @@ public final class HttpResourceModel {
                 }
                 paramAnnotations.put(annotationType, parameterInfo);
             }
-
             // Must have either @PathParam, @QueryParam or @HeaderParam, but not two or more.
             if (Sets.intersection(SUPPORTED_PARAM_ANNOTATIONS, paramAnnotations.keySet()).size() != 1) {
                 throw new IllegalArgumentException(String.format("Must have exactly one annotation from %s " +
@@ -82,27 +80,17 @@ public final class HttpResourceModel {
 
     void handle(AbstractHttpHandler handler, HttpRequest request, HttpResponder responder, Map<String, String> groupValues) {
         try {
-            if (httpMethods.contains(request.method)) {
-                //Setup args for reflection call
-                Object[] args = new Object[paramsInfo.size() + 2];
-                args[0] = request; args[1] = responder;
-
-                int idx = 2;
-                for (Map<Class<? extends Annotation>, ParameterInfo<?>> info : paramsInfo) {
-                    if (info.containsKey(PathParam.class)) {
-                        args[idx++] = getPathParamValue(info, groupValues);
-                    }
-                    else if (info.containsKey(QueryParam.class)) {
-                        args[idx++] = getQueryParamValue(info, request);
-                    }
-                }
-                method.invoke(handler, args);
+            Object[] args = new Object[paramsInfo.size() + 2];
+            args[0] = request; args[1] = responder;
+            int idx = 2;
+            for (Map<Class<? extends Annotation>, ParameterInfo<?>> info : paramsInfo) {
+                if (info.containsKey(PathParam.class)) { args[idx++] = getPathParamValue(info, groupValues); }
+                else if (info.containsKey(QueryParam.class)) { args[idx++] = getQueryParamValue(info, request); }
             }
-            else {
-                throw methodNotAllowedException(String.format("Problem accessing:\"%s\" Reason: Method Not Allowed", request.uriPath));
-            }
+            method.invoke(handler, args);
         } catch (Throwable e) {
-            throw internalServerException(String.format("Error in executing request: %s %s", request.method, request.uriPath), e);
+            String deepMessage = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
+            throw internalServerException("Error in " + request.method + " " + request.uriPath + ": " + deepMessage);
         }
     }
 
@@ -114,10 +102,10 @@ public final class HttpResourceModel {
     }
 
     private static Object getQueryParamValue(Map<Class<? extends Annotation>, ParameterInfo<?>> annotations, HttpRequest request) {
-        ParameterInfo<Object> info = (ParameterInfo<Object>) annotations.get(QueryParam.class);
+        ParameterInfo<List<String>> info = (ParameterInfo<List<String>>) annotations.get(QueryParam.class);
         QueryParam queryParam = info.getAnnotation();
-        Object values = request.queryParams.get(queryParam.value());
-        return (values == null) ? info.convert(defaultValue(annotations)) : info.convert(values);
+        List<String> values = request.queryParams.get(queryParam.value());
+        return (values.isEmpty()) ? info.convert(defaultValue(annotations)) : info.convert(values);
     }
 
     private static List<String> defaultValue(Map<Class<? extends Annotation>, ParameterInfo<?>> annotations) {
@@ -129,8 +117,6 @@ public final class HttpResourceModel {
     private static final class ParameterInfo<T> {
         private final Annotation annotation;
         private final Function<T, Object> converter;
-
-        static <V> ParameterInfo<V> create(Annotation annotation, Function<V, Object> function) { return new ParameterInfo<>(annotation, function); }
 
         @SuppressWarnings("unchecked") <V extends Annotation> V getAnnotation() { return (V) annotation; }
 

@@ -1,4 +1,21 @@
+simple-ok={"statusCode":200,"headers":{"Content-Type":"application/json"},"isBase64Encoded":false,"body":"{\"result\":\"ok\"}"}
 simple-get-agw-i={"httpMethod":"GET","path":"/test/v1/simple"}
-simple-get-agw-o={"statusCode":200,"headers":{"Content-Type":"application/json"},"isBase64Encoded":false,"body":"{\"result\":\"handled in simple\"}"}
 simple-get-alb-i={"httpMethod":"GET","path":"/test/v1/simple","requestContext":{"elb":true}}
-simple-get-alb-o={"statusCode":200,"statusDescription":"200 OK","headers":{"Content-Type":"application/json"},"multiValueHeaders":{"Content-Type":["application/json"]},"isBase64Encoded":false,"body":"{\"result\":\"handled in simple\"}"}
+simple-get-alb-o={"statusCode":200,"statusDescription":"200 OK","headers":{"Content-Type":"application/json"},"multiValueHeaders":{"Content-Type":["application/json"]},"isBase64Encoded":false,"body":"{\"result\":\"ok\"}"}
+tweet-get={"httpMethod":"GET","path":"/test/v1/tweets/1"}
+tweet-put={"httpMethod":"PUT","path":"/test/v1/tweets/1"}
+tweet-put-result={"statusCode":200,"headers":{"Content-Length":"6","Content-Type":"application/octet-stream"},"isBase64Encoded":true,"body":"cmVzdWx0"}
+not-found={"httpMethod":"GET","path":"/test/v1/not-found"}
+not-found-result={"statusCode":404,"headers":{"Content-Type":"text/plain; charset=utf-8"},"isBase64Encoded":false,"body":"/test/v1/not-found: Not Found"}
+no-method={"httpMethod":"PUT","path":"/test/v1/facebook/1/message"}
+no-method-result={"statusCode":405,"headers":{"Content-Type":"text/plain; charset=utf-8"},"isBase64Encoded":false,"body":"/test/v1/facebook/1/message: Method Not Allowed"}
+handle-ex={"httpMethod":"GET","path":"/test/v1/exception"}
+handle-ex-result={"statusCode":500,"headers":{"Content-Type":"text/plain; charset=utf-8"},"isBase64Encoded":false,"body":"Error in GET /test/v1/exception: Illegal argument"}
+exact-foo={"httpMethod":"GET","path":"/test/v1/multi-match/foo"}
+exact-foo-result={"statusCode":200,"headers":{"Content-Type":"application/json"},"isBase64Encoded":false,"body":"{\"result\":\"foo\"}"}
+multi-match-1={"httpMethod":"GET","path":"/test/v1/multi-match/foo/baz/id"}
+multi-match-enc={"httpMethod":"GET","path":"/test/v1/multi-match-pqp/foo%2Fbaz%2Fid%2Ftx","queryStringParameters":{"p1":"p1"}}
+multi-match-enc-result={"statusCode":200,"headers":{"Content-Type":"text/plain; charset=utf-8"},"isBase64Encoded":false,"body":"multi-match-pqp-foo-baz/id/tx:p1:p2"}
+multi-match-multi={"httpMethod":"GET","path":"/test/v1/multi-match-multi/foo%2Fbaz%2Fid%2Ftx","multiValueQueryStringParameters":{"pList":["p1","p2"]}}
+multi-match-multi-result={"statusCode":200,"headers":{"Content-Type":"text/plain; charset=utf-8"},"isBase64Encoded":false,"body":"multi-match-multi-foo-baz/id/tx:p1,p2"}
+

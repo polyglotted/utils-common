@@ -15,9 +15,7 @@ public abstract class StrUtil {
 
     public static String emptyAsNull(String string) { return nullOrEmpty(string) ? null : string; }
 
-    public static String nullAsEmpty(String string) { return nullOrEmpty(string) ? "" : string; }
-
-    public static String nullOrStr(Object object) { return object == null ? null : String.valueOf(object); }
+    public static String nullAsEmpty(String string) { return string == null ? "" : string; }
 
     public static String toLower(Object object) { return object == null ? "" : String.valueOf(object).toLowerCase(); }
 

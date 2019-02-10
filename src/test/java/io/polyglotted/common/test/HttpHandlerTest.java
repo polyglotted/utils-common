@@ -19,13 +19,22 @@ public class HttpHandlerTest {
 
     public static Object[][] httpInputs() {
         return new Object[][]{
-            {"simple-get-agw-i", "simple-get-agw-o"},
+            {"simple-get-agw-i", "simple-ok"},
             {"simple-get-alb-i", "simple-get-alb-o"},
+            {"tweet-get", "simple-ok"},
+            {"tweet-put", "tweet-put-result"},
+            {"not-found", "not-found-result"},
+            {"no-method", "no-method-result"},
+            {"handle-ex", "handle-ex-result"},
+            {"exact-foo", "exact-foo-result"},
+            {"multi-match-1", "simple-ok"},
+            {"multi-match-enc", "multi-match-enc-result"},
+            {"multi-match-multi", "multi-match-multi-result"},
         };
     }
 
     @Test @Parameters(method = "httpInputs")
-    public void doHttpHandle(String input, String output) throws Exception {
+    public void doHttpHandle(String input, String output) {
         HttpDemoHandler handler = new HttpDemoHandler();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         handler.handle(new ByteArrayInputStream(MESSAGES.get(input).getBytes()), outputStream);

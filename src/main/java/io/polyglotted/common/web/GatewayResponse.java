@@ -30,11 +30,8 @@ public class GatewayResponse {
     @JsonInclude(NON_EMPTY) public final Multimap<String, String> multiValueHeaders;
 
     public static void sendError(boolean isLoadBalanced, OutputStream output, Exception ex) {
-        sendResult(isLoadBalanced, output, ex instanceof WebException ? ((WebException) ex).httpStatus : SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-    }
-
-    public static void sendResult(boolean isLoadBalanced, OutputStream output, int httpStatus, String result) {
-        sendResult(isLoadBalanced, output, httpStatus, result, false, immutableMap(CONTENT_TYPE, "application/json"));
+        sendResult(isLoadBalanced, output, ex instanceof WebException ? ((WebException) ex).httpStatus : SC_INTERNAL_SERVER_ERROR,
+            ex.getMessage(), false, immutableMap(CONTENT_TYPE, "text/plain; charset=utf-8"));
     }
 
     @SneakyThrows public static void sendResult(boolean isLoadBalanced, OutputStream output, int status, String result,

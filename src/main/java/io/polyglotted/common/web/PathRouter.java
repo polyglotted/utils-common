@@ -32,9 +32,8 @@ public final class PathRouter<T> {
 
         String[] parts = path.split("/");
         if (parts.length - 1 > maxPathParts) {
-            throw new IllegalArgumentException(String.format("Number of parts of path %s exceeds allowed limit %s", source, maxPathParts));
+            throw new IllegalArgumentException("Number of parts of path " + source + " exceeds allowed limit " + maxPathParts);
         }
-
         StringBuilder sb = new StringBuilder();
         List<String> groupNames = Lists.newArrayList();
         for (String part : parts) {

@@ -35,7 +35,6 @@ public abstract class AbstractHttpHandler {
     private final PathRouter<HttpResourceModel> patternRouter = PathRouter.create(25);
 
     protected AbstractHttpHandler() {
-        log.trace("Parsing handler {}", getClass().getName());
         String basePath = "";
         if (getClass().isAnnotationPresent(Path.class)) {
             basePath = getClass().getAnnotation(Path.class).value();
@@ -51,9 +50,9 @@ public abstract class AbstractHttpHandler {
                 if (method.getAnnotation(Path.class) != null) {
                     relativePath = method.getAnnotation(Path.class).value();
                 }
-                String absolutePath = String.format("%s/%s", basePath, relativePath);
+                String absolutePath = basePath + "/" + relativePath;
                 Set<HttpMethod> httpMethods = getHttpMethods(method);
-                checkBool(httpMethods.size() >= 1, String.format("No HttpMethod found for method: %s", method.getName()));
+                checkBool(httpMethods.size() >= 1, "No HttpMethod found for method: " + method.getName());
                 log.info("registering " + httpMethods + " on " + absolutePath);
 
                 HttpResourceModel resourceModel = new HttpResourceModel(httpMethods, absolutePath, method);
@@ -77,7 +76,7 @@ public abstract class AbstractHttpHandler {
 
             RoutableDestination<HttpResourceModel> matchedDestination = getMatchedDestination(routableDestinations, request.method, request.uriPath);
             if (matchedDestination == null) {
-                throw methodNotAllowedException(String.format("\"%s\": Method Not Allowed", request.uriPath));
+                throw methodNotAllowedException(request.uriPath + ": Method Not Allowed");
             }
             HttpResourceModel httpResourceModel = matchedDestination.destination;
             httpResourceModel.handle(this, request, new HttpResponder(isLoadBalanced, outputStream), matchedDestination.groupNameValues);
@@ -87,7 +86,6 @@ public abstract class AbstractHttpHandler {
 
     private RoutableDestination<HttpResourceModel> getMatchedDestination(List<RoutableDestination<HttpResourceModel>> routableDestinations,
                                                                          HttpMethod targetHttpMethod, String requestUri) {
-        log.trace("Routable destinations for request {}: {}", requestUri, routableDestinations);
         Iterable<String> requestUriParts = SPLITTER.split(requestUri);
         List<RoutableDestination<HttpResourceModel>> matchedDestinations = newArrayListWithExpectedSize(routableDestinations.size());
 
@@ -110,10 +108,8 @@ public abstract class AbstractHttpHandler {
                 }
             }
         }
-
         if (matchedDestinations.size() > 1) {
-            throw new IllegalStateException(String.format("Multiple matched handlers found for request uri %s: %s",
-                requestUri, matchedDestinations));
+            throw new IllegalStateException("Multiple matched handlers found for request uri " + requestUri + ": " + matchedDestinations);
         }
         return matchedDestinations.size() == 1 ? matchedDestinations.get(0) : null;
     }

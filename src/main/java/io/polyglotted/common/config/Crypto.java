@@ -18,7 +18,7 @@ public final class Crypto {
     public Crypto(String password) { this(notNullOrEmpty(password), create(notNullOrEmpty(password) ? password : "abcde")); }
 
     public String encrypt(String toEncrypt) {
-        return (supportEncryption && notNullOrEmpty(toEncrypt)) ? String.format("%s%s%s", PREFIX, encryptor.encrypt(toEncrypt), SUFFIX) : toEncrypt;
+        return (supportEncryption && notNullOrEmpty(toEncrypt)) ? PREFIX + encryptor.encrypt(toEncrypt) + SUFFIX : toEncrypt;
     }
 
     public String decrypt(String encrypted) {
