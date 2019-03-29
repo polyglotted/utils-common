@@ -25,12 +25,12 @@ import static io.polyglotted.common.util.ListBuilder.immutableSet;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.web.ParamConvertUtils.createPathParamConverter;
 import static io.polyglotted.common.web.ParamConvertUtils.createQueryParamConverter;
-import static io.polyglotted.common.web.WebException.internalServerException;
+import static io.polyglotted.common.web.WebHttpException.internalServerException;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"WeakerAccess", "unchecked"})
 @Accessors(fluent = true) @ToString(of = {"httpMethods", "path", "method"})
-public final class HttpResourceModel {
+public final class WebResourceModel {
     private static final Set<Class<? extends Annotation>> SUPPORTED_PARAM_ANNOTATIONS = immutableSet(PathParam.class, QueryParam.class);
 
     @Getter private final Set<HttpMethod> httpMethods;
@@ -38,7 +38,7 @@ public final class HttpResourceModel {
     private final Method method;
     private final List<Map<Class<? extends Annotation>, ParameterInfo<?>>> paramsInfo;
 
-    HttpResourceModel(Set<HttpMethod> httpMethods, String path, Method method) {
+    WebResourceModel(Set<HttpMethod> httpMethods, String path, Method method) {
         this.httpMethods = httpMethods;
         this.path = path;
         this.method = method;
@@ -78,7 +78,7 @@ public final class HttpResourceModel {
         return result.build();
     }
 
-    void handle(AbstractHttpHandler handler, HttpRequest request, HttpResponder responder, Map<String, String> groupValues) {
+    void handle(AbstractGatewayHandler handler, WebHttpRequest request, WebHttpResponder responder, Map<String, String> groupValues) {
         try {
             Object[] args = new Object[paramsInfo.size() + 2];
             args[0] = request; args[1] = responder;
@@ -101,7 +101,7 @@ public final class HttpResourceModel {
         return info.convert(requireNonNull(value, "Could not resolve value for parameter " + pathParam.value()));
     }
 
-    private static Object getQueryParamValue(Map<Class<? extends Annotation>, ParameterInfo<?>> annotations, HttpRequest request) {
+    private static Object getQueryParamValue(Map<Class<? extends Annotation>, ParameterInfo<?>> annotations, WebHttpRequest request) {
         ParameterInfo<List<String>> info = (ParameterInfo<List<String>>) annotations.get(QueryParam.class);
         QueryParam queryParam = info.getAnnotation();
         List<String> values = request.queryParams.get(queryParam.value());

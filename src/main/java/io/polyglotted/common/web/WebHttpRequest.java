@@ -11,7 +11,7 @@ import static io.polyglotted.common.util.MapRetriever.STRING_LIST_CLASS;
 import static io.polyglotted.common.util.StrUtil.toLower;
 
 @RequiredArgsConstructor
-public final class HttpRequest {
+public final class WebHttpRequest {
     public final HttpMethod method;
     public final String uriPath;
     public final String body; //could be base64Encoded
@@ -19,8 +19,8 @@ public final class HttpRequest {
     public final ListMultimap<String, String> headers;
     public final ListMultimap<String, String> queryParams;
 
-    static HttpRequest from(MapResult event) {
-        return new HttpRequest(HttpMethod.valueOf(event.reqdStr("httpMethod")), event.reqdStr("path"), event.optStr("body"),
+    static WebHttpRequest from(MapResult event) {
+        return new WebHttpRequest(HttpMethod.valueOf(event.reqdStr("httpMethod")), event.reqdStr("path"), event.optStr("body"),
             event.mapVal("requestContext"), buildParams(event, "headers", "multiValueHeaders", true),
             buildParams(event, "queryStringParameters", "multiValueQueryStringParameters", false));
     }

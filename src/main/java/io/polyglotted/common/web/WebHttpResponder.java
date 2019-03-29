@@ -17,7 +17,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 
 @SuppressWarnings("WeakerAccess")
 @Slf4j @RequiredArgsConstructor
-public final class HttpResponder {
+public final class WebHttpResponder {
     final boolean isLoadBalanced;
     final OutputStream outputStream;
 

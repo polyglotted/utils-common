@@ -3,7 +3,7 @@ package io.polyglotted.common.web;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import io.polyglotted.common.model.MapResult.SimpleMapResult;
-import io.polyglotted.common.web.PathRouter.RoutableDestination;
+import io.polyglotted.common.web.WebPathRouter.RoutableDestination;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.DELETE;
@@ -25,16 +25,16 @@ import static io.polyglotted.common.util.BaseSerializer.deserialize;
 import static io.polyglotted.common.util.ListBuilder.immutableSet;
 import static io.polyglotted.common.util.NullUtil.nonNull;
 import static io.polyglotted.common.web.GatewayResponse.sendError;
-import static io.polyglotted.common.web.PathRouter.GROUP_PATTERN;
-import static io.polyglotted.common.web.WebException.methodNotAllowedException;
-import static io.polyglotted.common.web.WebException.notFoundException;
+import static io.polyglotted.common.web.WebPathRouter.GROUP_PATTERN;
+import static io.polyglotted.common.web.WebHttpException.methodNotAllowedException;
+import static io.polyglotted.common.web.WebHttpException.notFoundException;
 
 @SuppressWarnings({"unused", "WeakerAccess"}) @Slf4j
-public abstract class AbstractHttpHandler {
+public abstract class AbstractGatewayHandler {
     private static final Splitter SPLITTER = Splitter.on('/').omitEmptyStrings();
-    private final PathRouter<HttpResourceModel> patternRouter = PathRouter.create(25);
+    private final WebPathRouter<WebResourceModel> patternRouter = WebPathRouter.create(25);
 
-    protected AbstractHttpHandler() {
+    protected AbstractGatewayHandler() {
         String basePath = "";
         if (getClass().isAnnotationPresent(Path.class)) {
             basePath = getClass().getAnnotation(Path.class).value();
@@ -42,8 +42,8 @@ public abstract class AbstractHttpHandler {
 
         for (Method method : getClass().getDeclaredMethods()) {
             if (method.getParameterTypes().length >= 2 &&
-                method.getParameterTypes()[0].isAssignableFrom(HttpRequest.class) &&
-                method.getParameterTypes()[1].isAssignableFrom(HttpResponder.class) &&
+                method.getParameterTypes()[0].isAssignableFrom(WebHttpRequest.class) &&
+                method.getParameterTypes()[1].isAssignableFrom(WebHttpResponder.class) &&
                 Modifier.isPublic(method.getModifiers())) {
 
                 String relativePath = "";
@@ -55,7 +55,7 @@ public abstract class AbstractHttpHandler {
                 checkBool(httpMethods.size() >= 1, "No HttpMethod found for method: " + method.getName());
                 log.info("registering " + httpMethods + " on " + absolutePath);
 
-                HttpResourceModel resourceModel = new HttpResourceModel(httpMethods, absolutePath, method);
+                WebResourceModel resourceModel = new WebResourceModel(httpMethods, absolutePath, method);
                 log.trace("Adding resource model {}", resourceModel);
                 patternRouter.add(absolutePath, resourceModel);
             }
@@ -66,32 +66,32 @@ public abstract class AbstractHttpHandler {
         SimpleMapResult event = deserialize(inputStream, SimpleMapResult.class);
         boolean isLoadBalanced = nonNull(event.deepRetrieve("requestContext.elb"), false);
 
-        HttpRequest request;
+        WebHttpRequest request;
         try {
-            request = HttpRequest.from(event);
+            request = WebHttpRequest.from(event);
         } catch (Exception ex) { sendError(isLoadBalanced, outputStream, ex); return; }
         try {
-            List<RoutableDestination<HttpResourceModel>> routableDestinations = patternRouter.getDestinations(request.uriPath);
+            List<RoutableDestination<WebResourceModel>> routableDestinations = patternRouter.getDestinations(request.uriPath);
             if (routableDestinations.isEmpty()) { throw notFoundException(request.uriPath); }
 
-            RoutableDestination<HttpResourceModel> matchedDestination = getMatchedDestination(routableDestinations, request.method, request.uriPath);
+            RoutableDestination<WebResourceModel> matchedDestination = getMatchedDestination(routableDestinations, request.method, request.uriPath);
             if (matchedDestination == null) {
                 throw methodNotAllowedException(request.uriPath + ": Method Not Allowed");
             }
-            HttpResourceModel httpResourceModel = matchedDestination.destination;
-            httpResourceModel.handle(this, request, new HttpResponder(isLoadBalanced, outputStream), matchedDestination.groupNameValues);
+            WebResourceModel webResourceModel = matchedDestination.destination;
+            webResourceModel.handle(this, request, new WebHttpResponder(isLoadBalanced, outputStream), matchedDestination.groupNameValues);
 
         } catch (Exception ex) { sendError(isLoadBalanced, outputStream, ex); }
     }
 
-    private RoutableDestination<HttpResourceModel> getMatchedDestination(List<RoutableDestination<HttpResourceModel>> routableDestinations,
-                                                                         HttpMethod targetHttpMethod, String requestUri) {
+    private RoutableDestination<WebResourceModel> getMatchedDestination(List<RoutableDestination<WebResourceModel>> routableDestinations,
+                                                                        HttpMethod targetHttpMethod, String requestUri) {
         Iterable<String> requestUriParts = SPLITTER.split(requestUri);
-        List<RoutableDestination<HttpResourceModel>> matchedDestinations = newArrayListWithExpectedSize(routableDestinations.size());
+        List<RoutableDestination<WebResourceModel>> matchedDestinations = newArrayListWithExpectedSize(routableDestinations.size());
 
         long maxScore = 0;
-        for (RoutableDestination<HttpResourceModel> destination : routableDestinations) {
-            HttpResourceModel resourceModel = destination.destination;
+        for (RoutableDestination<WebResourceModel> destination : routableDestinations) {
+            WebResourceModel resourceModel = destination.destination;
             for (HttpMethod httpMethod : resourceModel.httpMethods()) {
                 if (targetHttpMethod.equals(httpMethod)) {
                     long score = getWeightedMatchScore(requestUriParts, SPLITTER.split(resourceModel.path()));

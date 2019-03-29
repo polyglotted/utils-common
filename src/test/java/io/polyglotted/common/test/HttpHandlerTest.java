@@ -35,7 +35,7 @@ public class HttpHandlerTest {
 
     @Test @Parameters(method = "httpInputs")
     public void doHttpHandle(String input, String output) {
-        HttpDemoHandler handler = new HttpDemoHandler();
+        GatewayDemoHandler handler = new GatewayDemoHandler();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         handler.handle(new ByteArrayInputStream(MESSAGES.get(input).getBytes()), outputStream);
 

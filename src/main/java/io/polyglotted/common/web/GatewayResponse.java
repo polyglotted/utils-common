@@ -30,7 +30,7 @@ public class GatewayResponse {
     @JsonInclude(NON_EMPTY) public final Multimap<String, String> multiValueHeaders;
 
     public static void sendError(boolean isLoadBalanced, OutputStream output, Exception ex) {
-        sendResult(isLoadBalanced, output, ex instanceof WebException ? ((WebException) ex).httpStatus : SC_INTERNAL_SERVER_ERROR,
+        sendResult(isLoadBalanced, output, ex instanceof WebHttpException ? ((WebHttpException) ex).httpStatus : SC_INTERNAL_SERVER_ERROR,
             ex.getMessage(), false, immutableMap(CONTENT_TYPE, "text/plain; charset=utf-8"));
     }
 

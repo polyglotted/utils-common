@@ -11,16 +11,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class PathRouter<T> {
+public final class WebPathRouter<T> {
     static final Pattern GROUP_PATTERN = Pattern.compile("\\{(.*?)\\}");
     private static final Pattern WILD_CARD_PATTERN = Pattern.compile("\\*\\*");
 
     private final int maxPathParts;
     private final List<Pair<Pattern, RouteDestinationWithGroups>> patternRouteList;
 
-    public static <T> PathRouter<T> create(int maxPathParts) { return new PathRouter<>(maxPathParts); }
+    public static <T> WebPathRouter<T> create(int maxPathParts) { return new WebPathRouter<>(maxPathParts); }
 
-    private PathRouter(int maxPathParts) {
+    private WebPathRouter(int maxPathParts) {
         this.maxPathParts = maxPathParts;
         this.patternRouteList = Lists.newArrayList();
     }
