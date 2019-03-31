@@ -17,20 +17,13 @@ public class AuthHeader {
 
     public Header[] headers() { return nullOrEmpty(authHeader) ? new Header[0] : new Header[]{new BasicHeader(AUTHORIZATION, authHeader)}; }
 
-    public static AuthHeader basicAuth(String user, String passwd) { return new AuthHeader(AuthType.BASIC.header(user, passwd)); }
+    public static AuthHeader basicAuth(String user, String passwd) { return new AuthHeader("Basic " + b64Encode(user, passwd)); }
 
-    public static AuthHeader bearerToken(String token) { return new AuthHeader(AuthType.BEARER.header(null, token)); }
+    public static AuthHeader customAuth(String type, String user, String passwd) { return new AuthHeader(type + " " + b64Encode(user, passwd)); }
+
+    public static AuthHeader bearerToken(String token) { return new AuthHeader("Bearer " + token); }
 
     @SuppressWarnings("unused") public static AuthHeader authHeader(Object auth) { return new AuthHeader(auth == null ? null : String.valueOf(auth)); }
 
-    public enum AuthType {
-        BASIC {
-            @Override String header(String user, String creds) { return "Basic " + encodeBase64String((user + ":" + creds).getBytes(UTF_8)); }
-        },
-        BEARER {
-            @Override String header(String user, String token) { return "Bearer " + token; }
-        };
-
-        abstract String header(String user, String creds);
-    }
+    private static String b64Encode(String user, String creds) { return encodeBase64String((user + ":" + creds).getBytes(UTF_8)); }
 }

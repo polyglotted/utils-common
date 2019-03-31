@@ -66,7 +66,7 @@ public class BaseSerializerTest extends BaseSerializer {
                     new SimpleClass().aDate(LocalDate.of(2017, 1, 25)))).schemeMap(immutableMap(BAZ, new SimpleClass().anInt(25)))
             },
             {
-                subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").metadata("mfaEnabled", false).build()
+                subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").attribute("mfaEnabled", false).build()
             },
             {
                 tokenBuilder().accessToken("y7nvAiCrpP8HRJkxgdb3s3T4").expiresIn(1200).tokenType("Bearer").refreshToken("fooBarBaz").build()
@@ -81,14 +81,14 @@ public class BaseSerializerTest extends BaseSerializer {
         assertThat(serialize(actual), actual, is(expected));
 
         MapResult mapResult = deserialize(json);
-        assertThat(serialize(mapResult), json, is(serialize(mapResult)));
+        assertThat(serialize(NON_ORDERED_MAPPER, mapResult), json, is(serialize(NON_ORDERED_MAPPER, mapResult)));
     }
 
     @Test @Parameters(method = "objInputs")
     public void serializeAndConstruct(Object expected) {
         byte[] bytes = serializeBytes(expected);
         MapResult mapResult = deserialize(bytes);
-        assertThat(serialize(mapResult), bytes, is(serializeBytes(mapResult)));
+        assertThat(serialize(NON_ORDERED_MAPPER, mapResult), bytes, is(serializeBytes(NON_ORDERED_MAPPER, mapResult)));
     }
 
     public static Object[][] jsonInputs() {

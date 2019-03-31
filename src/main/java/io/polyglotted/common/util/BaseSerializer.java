@@ -38,8 +38,10 @@ import static io.polyglotted.common.util.MapRetriever.MAP_LIST_CLASS;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class BaseSerializer {
     //COMPATIBLE WITH SPRING-BOOT
-    public static final ObjectMapper MAPPER = configureMapper(
-        new ObjectMapper().registerModule(new GuavaModule()).registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule()));
+    public static final ObjectMapper MAPPER = configureMapper(new ObjectMapper().registerModule(new GuavaModule())
+        .registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule())).configure(ORDER_MAP_ENTRIES_BY_KEYS, true);
+    public static final ObjectMapper NON_ORDERED_MAPPER = configureMapper(new ObjectMapper().registerModule(new GuavaModule())
+        .registerModule(new Jdk8Module()).registerModule(new ParameterNamesModule()));
     public static final JsonFactory FACTORY = new JsonFactory(MAPPER);
 
     public static ObjectMapper configureMapper(ObjectMapper objectMapper) {
@@ -51,7 +53,6 @@ public abstract class BaseSerializer {
             .configure(ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
             .configure(FAIL_ON_NULL_FOR_PRIMITIVES, true)
             .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
             .configure(READ_ENUMS_USING_TO_STRING, true)
             .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
             .configure(WRITE_DATES_AS_TIMESTAMPS, true)
@@ -59,11 +60,19 @@ public abstract class BaseSerializer {
             .setVisibility(new VisibilityChecker.Std(NONE, NONE, NONE, ANY, ANY));
     }
 
-    @SneakyThrows public static byte[] serializeBytes(Object object) { return MAPPER.writeValueAsBytes(object); }
+    public static byte[] serializeBytes(Object object) { return serializeBytes(MAPPER, object); }
 
-    @SneakyThrows public static String serialize(Object object) { return MAPPER.writeValueAsString(object); }
+    @SneakyThrows public static byte[] serializeBytes(ObjectMapper mapper, Object object) { return mapper.writeValueAsBytes(object); }
 
-    @SneakyThrows public static String prettyPrint(Object object) { return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object); }
+    public static String serialize(Object object) { return serialize(MAPPER, object); }
+
+    @SneakyThrows public static String serialize(ObjectMapper mapper, Object object) { return mapper.writeValueAsString(object); }
+
+    public static String prettyPrint(Object object) { return prettyPrint(MAPPER, object); }
+
+    @SneakyThrows public static String prettyPrint(ObjectMapper mapper, Object object) {
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    }
 
     @SneakyThrows public static <T> T deserialize(String json, Class<T> clazz) { return MAPPER.readValue(json, clazz); }
 
