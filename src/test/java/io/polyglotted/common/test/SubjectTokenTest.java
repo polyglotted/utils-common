@@ -8,6 +8,7 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static io.polyglotted.common.model.AuthHeader.basicAuth;
 import static io.polyglotted.common.model.AuthToken.authToken;
 import static io.polyglotted.common.model.AuthToken.tokenBuilder;
 import static io.polyglotted.common.model.Builder.buildWith;
@@ -52,4 +53,12 @@ public class SubjectTokenTest {
 
     @Test @Parameters(method = "jsonInputs2")
     public void serializeDirect(String json, Object expected, Class<?> clazz) { assertThat(json, deserialize(json, clazz), is(expected)); }
+
+    @Test
+    public void testAuthDecipher() {
+        String[] expected = basicAuth("foo", "barBazTux").decipher();
+        assertThat(expected[0], is("Basic"));
+        assertThat(expected[1], is("foo"));
+        assertThat(expected[2], is("barBazTux"));
+    }
 }
