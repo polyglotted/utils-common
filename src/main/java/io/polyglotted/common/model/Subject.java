@@ -24,8 +24,10 @@ import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapBuilder.simpleMapBuilder;
+import static io.polyglotted.common.util.NullUtil.nonNull;
 import static io.polyglotted.common.util.UrnUtil.safeUrnOf;
 import static java.util.Objects.requireNonNull;
+import static javax.management.timer.Timer.ONE_HOUR;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -41,6 +43,34 @@ public final class Subject {
 
     /* ignore - for serialisation */
     private Subject() { this(null, immutableResult(), immutableList(), immutableMap()); }
+
+    public <T> T attribute(String key) { return attributes.optValue(key); }
+
+    public String id() { return principal; }
+
+    public String realm() { return attribute("REALM"); }
+
+    public String userId() { return attribute("USER_ID"); }
+
+    public String credential() { return attribute("CREDENTIAL"); }
+
+    public String token() { return attribute("ACCESS_TOKEN"); }
+
+    public String proxyUser() { return attribute("PROXY_USER"); }
+
+    public String email() { return attribute("EMAIL"); }
+
+    public String remoteAddr() { return nonNull(attribute("REMOTE_ADDR"), "10.0.0.1"); }
+
+    public boolean isPartial() { return Boolean.TRUE.equals(attribute("PARTIAL_AUTH")); }
+
+    public String authScheme() { return nonNull(attribute("AUTH_SCHEME"), "Basic"); }
+
+    public String user() { return nonNull(attribute("DISPLAY_NAME"), principal); }
+
+    public boolean isTrusted() { return Boolean.TRUE.equals(attribute("TRUSTED")); }
+
+    public long userTtl() { return nonNull(attribute("USER_TTL"), ONE_HOUR); }
 
     public static Subject buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 

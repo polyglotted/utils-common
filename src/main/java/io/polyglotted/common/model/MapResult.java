@@ -36,22 +36,6 @@ public interface MapResult extends Map<String, Object> {
 
     default Entry<String, Object> firstEntry(Entry<String, Object> def) { return firstOf(entrySet(), def); }
 
-    default String model() { return reqdValue("&model"); }
-
-    default String reqdId() { return reqdValue("&id"); }
-
-    default String reqdKey() { return reqdValue("&key"); }
-
-    default String id() { return optValue("&id"); }
-
-    default String parent() { return optValue("&parent"); }
-
-    default long timestamp() { return longStrVal("&timestamp", -3); }
-
-    default Long tstamp() { return longStrVal("&timestamp"); }
-
-    default String keyString() { return urnOf(model(), id()); }
-
     default <T> T deepRetrieve(String property) { return MapRetriever.deepRetrieve(this, property); }
 
     default <T> List<T> deepCollect(String property, Class<? super T> clazz) { return MapRetriever.deepCollect(this, property, clazz); }
