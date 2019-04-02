@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static io.polyglotted.common.model.AuthHeader.customAuth;
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.model.MapResult.immutableResultBuilder;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
@@ -69,6 +70,8 @@ public final class Subject {
     public String remoteAddr() { return nonNull(attribute("REMOTE_ADDR"), "10.0.0.1"); }
 
     public String token() { return attribute("ACCESS_TOKEN"); }
+
+    public AuthHeader tokenHeader() { return customAuth("TOKEN", principal, token()); }
 
     public String user() { return nonNull(displayName(), principal); }
 

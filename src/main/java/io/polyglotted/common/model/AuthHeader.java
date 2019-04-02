@@ -32,7 +32,7 @@ public class AuthHeader {
 
     public static AuthHeader bearerToken(String token) { return new AuthHeader("Bearer " + token); }
 
-    @SuppressWarnings("unused") public static AuthHeader authHeader(Object auth) { return new AuthHeader(auth == null ? null : String.valueOf(auth)); }
+    public static AuthHeader authHeader(Object auth) { return new AuthHeader(auth == null ? null : String.valueOf(auth)); }
 
     private static String b64Encode(String user, String creds) { return encodeBase64String((user + ":" + creds).getBytes(UTF_8)); }
 }
