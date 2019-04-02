@@ -38,7 +38,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public final class Subject {
     public final String principal;
     public final MapResult attributes;
-    public final List<String> roles;
+    @Getter public final List<String> roles;
     @Getter @JsonInclude(NON_EMPTY) private final Map<String, Object> _meta;
 
     /* ignore - for serialisation */
@@ -48,27 +48,31 @@ public final class Subject {
 
     public String id() { return principal; }
 
-    public String realm() { return attribute("REALM"); }
-
-    public String userId() { return attribute("USER_ID"); }
+    public String authScheme() { return nonNull(attribute("AUTH_SCHEME"), "Basic"); }
 
     public String credential() { return attribute("CREDENTIAL"); }
 
-    public String token() { return attribute("ACCESS_TOKEN"); }
-
-    public String proxyUser() { return attribute("PROXY_USER"); }
+    public String displayName() { return attribute("DISPLAY_NAME"); }
 
     public String email() { return attribute("EMAIL"); }
 
-    public String remoteAddr() { return nonNull(attribute("REMOTE_ADDR"), "10.0.0.1"); }
-
     public boolean isPartial() { return Boolean.TRUE.equals(attribute("PARTIAL_AUTH")); }
 
-    public String authScheme() { return nonNull(attribute("AUTH_SCHEME"), "Basic"); }
-
-    public String user() { return nonNull(attribute("DISPLAY_NAME"), principal); }
-
     public boolean isTrusted() { return Boolean.TRUE.equals(attribute("TRUSTED")); }
+
+    public String mfaId() { return attribute("MFA_ID"); }
+
+    public String proxyUser() { return attribute("PROXY_USER"); }
+
+    public String realm() { return attribute("REALM"); }
+
+    public String remoteAddr() { return nonNull(attribute("REMOTE_ADDR"), "10.0.0.1"); }
+
+    public String token() { return attribute("ACCESS_TOKEN"); }
+
+    public String user() { return nonNull(displayName(), principal); }
+
+    public String userId() { return attribute("USER_ID"); }
 
     public long userTtl() { return nonNull(attribute("USER_TTL"), ONE_HOUR); }
 
@@ -89,6 +93,32 @@ public final class Subject {
         public Builder role(String role) { this.roles.add(role); return this; }
 
         public Builder roles(Iterable<String> roles) { this.roles.addAll(roles); return this; }
+
+        public Builder authScheme(String scheme) { return attribute("AUTH_SCHEME", scheme); }
+
+        public Builder credential(String credential) { return attribute("CREDENTIAL", credential); }
+
+        public Builder displayName(String displayName) { return attribute("DISPLAY_NAME", displayName); }
+
+        public Builder email(String email) { return attribute("EMAIL", email); }
+
+        public Builder mfaId(String mfaId) { return attribute("MFA_ID", mfaId); }
+
+        public Builder partial(boolean partial) { return attribute("PARTIAL_AUTH", partial); }
+
+        public Builder proxyUser(String proxyUser) { return attribute("PROXY_USER", proxyUser); }
+
+        public Builder realm(String realm) { return attribute("REALM", realm); }
+
+        public Builder remoteAddr(String remoteAddr) { return attribute("REMOTE_ADDR", remoteAddr); }
+
+        public Builder token(String token) { return attribute("ACCESS_TOKEN", token); }
+
+        public Builder trusted() { return attribute("TRUSTED", Boolean.TRUE); }
+
+        public Builder userId(String userId) { return attribute("USER_ID", userId); }
+
+        public Builder userTtl(long value) { return attribute("USER_TTL", value); }
 
         public Builder attribute(String key, Object value) { this.attributes.put(key, value); return this; }
 
