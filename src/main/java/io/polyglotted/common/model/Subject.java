@@ -76,6 +76,8 @@ public final class Subject {
 
     public long userTtl() { return nonNull(attribute("USER_TTL"), ONE_HOUR); }
 
+    public String userType() { return attribute("USER_TYPE"); }
+
     public static Subject buildWith(Map<String, Object> map) { return io.polyglotted.common.model.Builder.buildWith(map, Builder.class); }
 
     public static Builder subjectBuilder() { return new Builder(); }
@@ -119,6 +121,8 @@ public final class Subject {
         public Builder userId(String userId) { return attribute("USER_ID", userId); }
 
         public Builder userTtl(long value) { return attribute("USER_TTL", value); }
+
+        public Builder userType(String userType) { return attribute("USER_TYPE", userType); }
 
         public Builder attribute(String key, Object value) { this.attributes.put(key, value); return this; }
 
