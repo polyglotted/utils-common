@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.polyglotted.common.model.AuthToken.tokenBuilder;
-import static io.polyglotted.common.model.Subject.subjectBuilder;
 import static io.polyglotted.common.test.BaseSerializerTest.MyConst.BAZ;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableSet;
@@ -64,13 +62,7 @@ public class BaseSerializerTest extends BaseSerializer {
             {
                 new RefClass().simplified(new Simplified().email("b@c.io")).simples(immutableList(new SimpleClass().aString("oui"),
                     new SimpleClass().aDate(LocalDate.of(2017, 1, 25)))).schemeMap(immutableMap(BAZ, new SimpleClass().anInt(25)))
-            },
-            {
-                subjectBuilder().usernameMd5("foo.bar.baz", "mister@misty.co").role("my_role1").attribute("mfaEnabled", false).build()
-            },
-            {
-                tokenBuilder().accessToken("y7nvAiCrpP8HRJkxgdb3s3T4").expiresIn(1200).tokenType("Bearer").refreshToken("fooBarBaz").build()
-            },
+            }
         };
     }
 
