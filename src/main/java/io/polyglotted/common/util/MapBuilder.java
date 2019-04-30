@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static io.polyglotted.common.util.MapRetriever.safeEntries;
+import static io.polyglotted.common.util.NullUtil.nonNull;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 
 @SuppressWarnings({"unchecked", "unused", "WeakerAccess", "UnstableApiUsage"})
@@ -143,7 +144,7 @@ public interface MapBuilder<K, V, M extends Map<K, V>, MB extends MapBuilder<K, 
 
         public V get(K key) { return builder.get(key); }
 
-        public V getOrDefault(K key, V defaultValue) { return builder.getOrDefault(key, defaultValue); }
+        public V getOrDefault(K key, V defaultValue) { return nonNull(builder.get(key), defaultValue); }
 
         public V remove(K key) { return builder.remove(key); }
 

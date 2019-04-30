@@ -24,6 +24,7 @@ import static io.polyglotted.common.util.EnumCache.fetchEnumValueFor;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.ListBuilder.immutableListBuilder;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
+import static io.polyglotted.common.util.NullUtil.nonNull;
 import static io.polyglotted.common.util.ReflectionUtil.declaredField;
 import static io.polyglotted.common.util.ReflectionUtil.fieldValue;
 import static io.polyglotted.common.util.ReflectionUtil.isAssignable;
@@ -151,7 +152,7 @@ public abstract class MapRetriever {
     }
 
     public static String stringVal(Map<String, Object> map, String prop, boolean required, String defVal) {
-        return (String) map.getOrDefault(required ? reqdProp(map, prop) : prop, defVal);
+        return nonNull((String) map.get(required ? reqdProp(map, prop) : prop), defVal);
     }
 
     public static String[] strArrayVal(Map<String, Object> map, String prop) { return toArray(listVal(map, prop), String.class); }
@@ -170,7 +171,7 @@ public abstract class MapRetriever {
 
     public static Map<String, Object> mapVal(Map<String, Object> map, String prop) { return asValue(map, prop, MAP_CLASS, immutableMap()); }
 
-    public static <T> T asNullable(Map<String, Object> map, String prop, Class<T> clazz) { return clazz.cast(map.getOrDefault(prop, null)); }
+    public static <T> T asNullable(Map<String, Object> map, String prop, Class<T> clazz) { return clazz.cast(map.get(prop)); }
 
     public static <E extends Enum<E>> E enumValue(Map<String, Object> map, String prop, Class<E> enumClass) {
         Object obj = map.get(reqdProp(map, prop));
@@ -179,11 +180,11 @@ public abstract class MapRetriever {
 
     public static <T> T optValue(Map<String, Object> map, String prop) { return (T) map.get(prop); }
 
-    public static <T> T optValue(Map<String, Object> map, String prop, T defValue) { return (T) map.getOrDefault(prop, defValue); }
+    public static <T> T optValue(Map<String, Object> map, String prop, T defValue) { return (T) nonNull(map.get(prop), defValue); }
 
     public static <T> T reqdValue(Map<String, Object> map, String prop) { return (T) map.get(reqdProp(map, prop)); }
 
-    public static <T> T asValue(Map<String, Object> map, String prop, Class<T> clazz, T defVal) { return clazz.cast(map.getOrDefault(prop, defVal)); }
+    public static <T> T asValue(Map<String, Object> map, String prop, Class<T> clazz, T defVal) { return nonNull(clazz.cast(map.get(prop)), defVal); }
 
     public static String reqdProp(Map<String, Object> map, String prop) { return checkContains(map, prop); }
 

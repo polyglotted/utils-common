@@ -22,7 +22,7 @@ import static io.polyglotted.common.util.CollUtil.toArray;
 import static io.polyglotted.common.util.ListBuilder.immutableList;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
 import static io.polyglotted.common.util.MapRetriever.MAP_CLASS;
-import static io.polyglotted.common.util.UrnUtil.urnOf;
+import static io.polyglotted.common.util.NullUtil.nonNull;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"unused", "unchecked", "deprecation", "ConstantConditions"})
@@ -66,9 +66,7 @@ public interface MapResult extends Map<String, Object> {
         return value == null ? defaultValue : value instanceof Number ? ((Number) value).longValue() : Long.parseLong(String.valueOf(value));
     }
 
-    default String stringVal(String prop, boolean required, String defVal) {
-        return (String) getOrDefault(required ? reqdProp(prop) : prop, defVal);
-    }
+    default String stringVal(String prop, boolean required, String defVal) { return nonNull((String) get(required ? reqdProp(prop) : prop), defVal); }
 
     default String[] strArrayVal(String prop) { return toArray(listVal(prop), String.class); }
 
@@ -82,11 +80,11 @@ public interface MapResult extends Map<String, Object> {
 
     default <T> T optValue(String prop) { return (T) get(prop); }
 
-    default <T> T optValue(String prop, T defValue) { return (T) getOrDefault(prop, defValue); }
+    default <T> T optValue(String prop, T defValue) { return (T) nonNull(get(prop), defValue); }
 
     default <T> T reqdValue(String prop) { return (T) get(reqdProp(prop)); }
 
-    default <T> T asValue(String prop, Class<T> clazz, T defVal) { return clazz.cast(getOrDefault(prop, defVal)); }
+    default <T> T asValue(String prop, Class<T> clazz, T defVal) { return nonNull(clazz.cast(get(prop)), defVal); }
 
     default String reqdProp(String prop) { return checkContains(this, prop); }
 
