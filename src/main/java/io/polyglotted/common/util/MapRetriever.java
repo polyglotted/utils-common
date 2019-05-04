@@ -71,10 +71,12 @@ public abstract class MapRetriever {
         else { safeFieldValue(object, property, newValue); }
     }
 
-    public static <T> T deepRetrieve(Object map, String property) {
+    public static <T> T deepRetrieve(Object map, String property) { return deepRetrieve(map, property, null); }
+
+    public static <T> T deepRetrieve(Object map, String property, T defVal) {
         if (!property.contains(".")) { return mapGetOrReflect(map, property); }
         Pair<Object, String> lastChild = lastChild(map, property);
-        return lastChild == null ? null : (T) mapGetOrReflect(lastChild._a, lastChild._b);
+        return lastChild == null ? defVal : mapGetOrReflect(lastChild._a, lastChild._b, defVal);
     }
 
     private static Pair<Object, String> lastChild(Object map, String property) {
@@ -88,17 +90,19 @@ public abstract class MapRetriever {
         return Pair.pair(child, parts[parts.length - 1]);
     }
 
-    public static <T> T mapGetOrReflect(Object object, String property) {
+    public static <T> T mapGetOrReflect(Object object, String property) { return mapGetOrReflect(object, property, null); }
+
+    public static <T> T mapGetOrReflect(Object object, String property, T defVal) {
         if (object instanceof List) {
             Matcher matcher = LIST_PATTERN.matcher(property);
             checkBool(matcher.matches(), "property `" + property + "` not formatted as a [index]");
             List list = (List) object;
             int index = Integer.parseInt(matcher.group(1));
-            return index < list.size() ? (T) list.get(index) : null;
+            return index < list.size() ? (T) list.get(index) : defVal;
         }
-        if (object instanceof Map) return (T) ((Map) object).get(property);
+        if (object instanceof Map) return (T) nonNull(((Map) object).get(property), defVal);
         Field field = declaredField(object.getClass(), property);
-        return field == null ? null : (T) fieldValue(object, field);
+        return field == null ? defVal : nonNull(fieldValue(object, field), defVal);
     }
 
     public static <T> List<T> deepCollect(Map<String, Object> map, String property, Class<? super T> clazz) {
