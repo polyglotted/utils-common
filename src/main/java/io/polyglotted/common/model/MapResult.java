@@ -38,6 +38,8 @@ public interface MapResult extends Map<String, Object> {
 
     default <T> T deepRetrieve(String property) { return MapRetriever.deepRetrieve(this, property); }
 
+    default <T> T deepRetrieve(String property, T defVal) { return MapRetriever.deepRetrieve(this, property, defVal); }
+
     default <T> List<T> deepCollect(String property, Class<? super T> clazz) { return MapRetriever.deepCollect(this, property, clazz); }
 
     default MapResult deepReplace(String property, Object newValue) { MapRetriever.deepReplace(this, property, newValue); return this; }
