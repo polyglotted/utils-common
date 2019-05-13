@@ -96,6 +96,16 @@ public interface MapResult extends Map<String, Object> {
 
     default <T> T removeIfExists(String prop, T defVl) { return containsKey(prop) ? (T) remove(prop) : defVl; }
 
+    default MapResult putX(String prop, Object val) { put(prop, val); return this; }
+
+    default MapResult putIfAbsentX(String prop, Object val) { putIfAbsent(prop, val); return this; }
+
+    default MapResult putAllX(Map<String, Object> map) { putAll(map); return this; }
+
+    default MapResult removeX(String prop) { remove(prop); return this; }
+
+    default MapResult removeIfExistsX(String prop) { removeIfExists(prop); return this; }
+
     static ImmutableMapResult immutableResult() { return ImmutableMapResult.EMPTY; }
 
     static ImmutableMapResult immutableResult(String k1, Object v1) { return (ImmutableMapResult) immutableResultBuilder().put(k1, v1).result(); }

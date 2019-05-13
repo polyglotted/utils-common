@@ -2,6 +2,7 @@ package io.polyglotted.common.util;
 
 import com.google.common.io.CharStreams;
 import io.polyglotted.common.model.MapResult;
+import io.polyglotted.common.util.HttpRequestBuilder.HttpReqType;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -28,19 +29,21 @@ import static org.apache.http.HttpStatus.SC_OK;
 public abstract class HttpUtil {
     public static HttpRequestBuilder buildGet(String uri) { return buildGet(uri, null); }
 
-    public static HttpRequestBuilder buildGet(String uri, String path) { return new HttpRequestBuilder(GET, uri, path); }
+    public static HttpRequestBuilder buildGet(String uri, String path) { return buildRequest(GET, uri, path); }
 
     public static HttpRequestBuilder buildPost(String uri) { return buildPost(uri, null); }
 
-    public static HttpRequestBuilder buildPost(String uri, String path) { return new HttpRequestBuilder(POST, uri, path); }
+    public static HttpRequestBuilder buildPost(String uri, String path) { return buildRequest(POST, uri, path); }
 
     public static HttpRequestBuilder buildPut(String uri) { return buildPut(uri, null); }
 
-    public static HttpRequestBuilder buildPut(String uri, String path) { return new HttpRequestBuilder(PUT, uri, path); }
+    public static HttpRequestBuilder buildPut(String uri, String path) { return buildRequest(PUT, uri, path); }
 
     public static HttpRequestBuilder buildDelete(String uri) { return buildDelete(uri, null); }
 
-    public static HttpRequestBuilder buildDelete(String uri, String path) { return new HttpRequestBuilder(DELETE, uri, path); }
+    public static HttpRequestBuilder buildDelete(String uri, String path) { return buildRequest(DELETE, uri, path); }
+
+    public static HttpRequestBuilder buildRequest(HttpReqType type, String uri, String path) { return new HttpRequestBuilder(type, uri, path); }
 
     public static MapResult execute(HttpClient client, HttpRequestBuilder builder) { return execute(client, builder.request()); }
 
