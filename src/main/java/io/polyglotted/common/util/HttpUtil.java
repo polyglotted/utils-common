@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 import static io.polyglotted.common.model.MapResult.simpleResult;
 import static io.polyglotted.common.util.Assertions.checkBetween;
@@ -55,7 +56,7 @@ public abstract class HttpUtil {
 
     @SneakyThrows public static <H extends HttpRequestBase, R> R execute(HttpClient client, H post, Class<R> clazz) {
         try {
-            return deserialize(executeRaw(client, post).getEntity().getContent(), clazz);
+            return deserialize(doRaw(client, post).getEntity().getContent(), clazz);
         } finally { post.releaseConnection(); }
     }
 
@@ -63,19 +64,20 @@ public abstract class HttpUtil {
 
     @SneakyThrows public static <H extends HttpRequestBase> String executePlain(HttpClient client, H post) {
         try {
-            return CharStreams.toString(new InputStreamReader(executeRaw(client, post).getEntity().getContent(), UTF_8));
+            return CharStreams.toString(new InputStreamReader(doRaw(client, post).getEntity().getContent(), UTF_8));
         } finally { post.releaseConnection(); }
     }
 
-    public static HttpResponse executeRaw(HttpClient client, HttpRequestBuilder builder) { return executeRaw(client, builder.request()); }
-
-    @SneakyThrows public static <H extends HttpRequestBase> HttpResponse executeRaw(HttpClient client, H post) {
+    public static void executeRaw(HttpClient client, HttpRequestBuilder builder, Consumer<HttpResponse> consumer) {
+        HttpRequestBase request = builder.request();
         try {
-            return checkStatus(client.execute(post));
-        } finally { post.releaseConnection(); }
+            consumer.accept(doRaw(client, request));
+        } finally { request.releaseConnection(); }
     }
 
-    private static HttpResponse checkStatus(HttpResponse response) throws IOException {
+    @SneakyThrows private static HttpResponse doRaw(HttpClient client, HttpRequestBase post) { return checkStatus(client.execute(post)); }
+
+    public static HttpResponse checkStatus(HttpResponse response) throws IOException {
         int statusCode = response.getStatusLine().getStatusCode();
         if (!checkBetween(statusCode, SC_OK, SC_MULTIPLE_CHOICES, true, false)) {
             String errorMessage = CharStreams.toString(new InputStreamReader(response.getEntity().getContent(), UTF_8));
