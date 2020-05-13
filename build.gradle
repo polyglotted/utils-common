@@ -23,6 +23,9 @@ repositories {
 }
 
 ext {
+    activationVersion = '1.1'
+    asmVersion = '5.0.4'
+    base64Version = '2.3.9'
     bcprovVersion = '1.64'
     commonsBeanUtilsVersion = '1.9.4'
     commonsCodecVersion = '1.13'
@@ -31,6 +34,7 @@ ext {
     commonsLang3Version = '3.9'
     commonsTextVersion = '1.8'
     configVersion = '1.4.0'
+    csvVersion = '4.6'
     failureAccessVersion = '1.0.1'
     findbugsVersion = '3.0.2'
     guavaVersion = '28.1-jre'
@@ -39,15 +43,19 @@ ext {
     httpClientVersion = '4.5.10'
     httpClientAsyncVersion = '4.1.4'
     jaxrsVersion = '2.1.1'
-    jacksonVersion = '2.10.1'
+    jacksonVersion = '2.11.0'
     jasyptVersion = '1.9.3'
     jodaVersion = '2.10.5'
     jschVersion = '0.1.55'
+    jsonPathVersion = '2.4.0'
     junitVersion = '4.12'
     junitParamsVersion = '1.1.1'
     log4jVersion = '2.12.1'
     lombokVersion = '1.18.10'
+    mailVersion = '1.4.7'
     slf4jVersion = '1.7.29'
+    smartAcVersion = '1.2'
+    smartJsonVersion = '2.3'
     snakeyamlVersion = '1.25'
     stax2Version = '4.2'
     woodstoxVersion = '5.3.0'
@@ -75,9 +83,18 @@ dependencies {
     }
     compile "commons-codec:commons-codec:${commonsCodecVersion}"
     compile "commons-collections:commons-collections:${commonsCollVersion}"
-    compile("commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"){
+    compile("commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}") {
         exclude group: "commons-logging", module: "commons-logging"
         exclude group: "commons-collections", module: "commons-collections"
+    }
+    compile "org.apache.commons:commons-collections4:${commonsColl4Version}"
+    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    compile("org.apache.commons:commons-text:${commonsTextVersion}") {
+        exclude group: "org.apache.commons", module: "commons-lang"
+    }
+    compile "javax.activation:activation:${activationVersion}"
+    compile("javax.mail:mail:${mailVersion}") {
+        exclude group: "javax.activation", module: "activation"
     }
     compile "joda-time:joda-time:${jodaVersion}"
     compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
@@ -95,7 +112,24 @@ dependencies {
         exclude group: "com.google.guava", module: "failureaccess"
         exclude group: "com.google.guava", module: "listenablefuture"
     }
+    compile("com.opencsv:opencsv:${csvVersion}") {
+        exclude(group: 'commons-beanutils', module: 'commons-beanutils')
+        exclude(group: 'org.apache.commons', module: 'commons-lang3')
+        exclude(group: 'org.apache.commons', module: 'commons-text')
+        exclude(group: 'org.apache.commons', module: 'commons-collections')
+    }
     compile "com.jcraft:jsch:${jschVersion}"
+    compile "net.iharder:base64:${base64Version}"
+    compile("com.jayway.jsonpath:json-path:${jsonPathVersion}"){
+        exclude group: "net.minidev", module: "json-smart"
+    }
+    compile("net.minidev:accessors-smart:${smartAcVersion}"){
+        exclude group: "org.ow2.asm", module: "asm"
+    }
+    compile("net.minidev:json-smart:${smartJsonVersion}"){
+        exclude group: "net.minidev", module: "accessors-smart"
+    }
+    compile "org.ow2.asm:asm:${asmVersion}"
     compile "org.bouncycastle:bcprov-jdk15on:${bcprovVersion}"
     compile "org.yaml:snakeyaml:${snakeyamlVersion}"
     compile "org.codehaus.woodstox:stax2-api:${stax2Version}"
@@ -137,11 +171,6 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
         exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
         exclude group: "org.yaml", module: "snakeyaml"
-    }
-    compile "org.apache.commons:commons-collections4:${commonsColl4Version}"
-    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
-    compile("org.apache.commons:commons-text:${commonsTextVersion}") {
-        exclude group: "org.apache.commons", module: "commons-lang"
     }
     compile "org.apache.httpcomponents:httpcore:${httpCoreVersion}"
     compile("org.apache.httpcomponents:httpcore-nio:${httpCoreVersion}") {
@@ -225,27 +254,27 @@ uploadArchives {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
             pom.project {
-                name 'utils-common'
-                packaging 'jar'
-                description 'Polyglotted Common Utils'
+                name = 'utils-common'
+                packaging = 'jar'
+                description = 'Polyglotted Common Utils'
 
-                url 'https://github.com/polyglotted/utils-common'
+                url = 'https://github.com/polyglotted/utils-common'
                 scm {
-                    connection 'scm:git:git@github.com:polyglotted/utils-common.git'
-                    developerConnection 'scm:git:git@github.com:polyglotted/utils-common.git'
-                    url 'https://github.com/polyglotted/utils-common'
+                    connection = 'scm:git:git@github.com:polyglotted/utils-common.git'
+                    developerConnection = 'scm:git:git@github.com:polyglotted/utils-common.git'
+                    url = 'https://github.com/polyglotted/utils-common'
                 }
                 licenses {
                     license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
                 developers {
                     developer {
-                        id 'vshank77'
-                        name 'Shankar Vasduevan'
-                        email 'shankar [at] polyglotted [dot] io'
+                        id = 'vshank77'
+                        name = 'Shankar Vasduevan'
+                        email = 'shankar [at] polyglotted [dot] io'
                     }
                 }
             }
