@@ -4,8 +4,12 @@ import io.polyglotted.common.util.ReflectionUtil;
 import lombok.Data;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static io.polyglotted.common.model.MapResult.immutableResult;
 import static io.polyglotted.common.util.MapBuilder.immutableMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -78,12 +82,19 @@ public class ReflectionUtilTest extends ReflectionUtil {
         assertNull(safeInvoke(new InvokeHelper(), "handleNotFound"));
     }
 
+    @Test
+    public void testDetectClass() {
+        assertEquals(detectValueClass("", () -> declaredField(MyInner.class, "myObj")), Object.class);
+        assertEquals(detectValueClass(immutableMap(), () -> declaredField(MyInner.class, "myObj")), Map.class);
+    }
+
     @Data
     static class MyInner {
         private final static int STA = 5;
         private final String value;
         private final transient int none;
         private volatile boolean vol = false;
+        private Object myObj;
     }
 
     public static class MyChild extends MyInner {

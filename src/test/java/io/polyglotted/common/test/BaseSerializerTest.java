@@ -4,6 +4,7 @@ import io.polyglotted.common.model.GeoPoint;
 import io.polyglotted.common.model.GeoShape;
 import io.polyglotted.common.model.GeoType;
 import io.polyglotted.common.model.MapResult;
+import io.polyglotted.common.model.Nil;
 import io.polyglotted.common.util.BaseSerializer;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -37,6 +38,7 @@ import static io.polyglotted.common.util.UuidUtil.uuidFrom;
 import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(JUnitParamsRunner.class)
 public class BaseSerializerTest extends BaseSerializer {
@@ -102,6 +104,12 @@ public class BaseSerializerTest extends BaseSerializer {
         Simplified expected = new Simplified().fullStr("");
         String json = serialize(expected);
         assertThat(json, deserialize(json, Simplified.class), is(new Simplified()));
+    }
+
+    @Test
+    public void serializeNilToNull() {
+        String json = serialize(Nil.NIL_OBJECT);
+        assertThat(json, is("null"));
     }
 
     @SuppressWarnings("unused") enum MyConst {FOO, BAR, BAZ}
